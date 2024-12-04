@@ -84,8 +84,12 @@ const config: Config = {
           title: 'Docs',
           items: [
             {
-              label: 'Tutorial',
-              to: '/docs/intro',
+              label: 'Home',
+              to: '/',
+            },
+            {
+              label: 'tucca-rna-seq',
+              to: '/tucca-rna-seq/introduction'
             },
           ],
         },
@@ -120,7 +124,7 @@ const config: Config = {
           ],
         },
       ],
-      copyright: `Copyright © ${new Date().getFullYear()} My Project, Inc. Built with Docusaurus.`,
+      copyright: `Copyright © ${new Date().getFullYear()} My Organization, Inc. Built with Docusaurus.`,
     },
     prism: {
       theme: prismThemes.github,
