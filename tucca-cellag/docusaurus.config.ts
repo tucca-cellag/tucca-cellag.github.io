@@ -38,10 +38,12 @@ const config: Config = {
       {
         docs: {
           sidebarPath: './sidebars.ts',
+          routeBasePath: '/', // Serve the docs at the site's root
         },
         theme: {
           customCss: './src/css/custom.css',
         },
+        blog: false,
       } satisfies Preset.Options,
     ],
   ],
