@@ -1,11 +1,22 @@
 ---
-title: Installation
+title: Workflow Installation for New Users
 ---
 
 import Tabs from "@theme/Tabs";
 import TabItem from "@theme/TabItem";
-import Button from "@mui/material/Button";
-import LinkIcon from "@mui/icons-material/Link";
+import LinkButton from "@site/src/components/LinkButton";
+
+:::warning
+**🚧 Coming Soon! 🚧**
+
+Our website is currently under construction and will be launching soon.
+Stay tuned!
+
+In the meantime, feel free to [contact us](mailto:benjamin.bromberg@tufts.edu)
+with any questions.
+
+Thank you for your patience
+:::
 
 <Tabs>
   <TabItem value="tufts-hpc" label="Tufts HPC Users" default>
@@ -23,45 +34,59 @@ import LinkIcon from "@mui/icons-material/Link";
 
     <Tabs>
       <TabItem value="hpc-mainpage" label="Tufts HPC Home Page">
+
         <p>Home page for the Tufts HPC with helpful cheat sheets for the
         cluster at the bottom of the page</p>
+
         <p></p>
-        <Button variant="contained" size="large" endIcon={<LinkIcon />}
-          onClick={() => {
-          window.location.href = 'https://it.tufts.edu/high-performance-computing';
-        }}
-        >Tufts HPC Home Page</Button>
+
+        <LinkButton
+          url="https://it.tufts.edu/high-performance-computing"
+          text="Tufts HPC Home Page"
+        />
+
       </TabItem>
       <TabItem value="hpc-welcomepage" label="Tufts HPC's Welcome Page">
+
         <p>Contains links to many introductory resources for the Tufts HPC</p>
+
         <p></p>
-        <Button variant="contained" size="large" endIcon={<LinkIcon />}
-          onClick={() => {
-          window.location.href = 'https://it.tufts.edu/high-performance-computing/hpc-welcome-page';
-        }}
-        >Tufts HPC's Welcome Page</Button>
+
+        <LinkButton
+          url="https://it.tufts.edu/high-performance-computing/hpc-welcome-page"
+          text="Tufts HPC's Welcome Page"
+        />
+
       </TabItem>
       <TabItem value="hpc-newuser" label="Tufts HPC's New User Support" default>
+
         <p>Box folder with many helpful introductory PDFs and slideshows that
         outline the ins-and-outs of the Tufts HPC.</p>
 
         <p>The most recent version of the `Intro to Tufts HPC` workshop and
         `New User Guide PAX.pdf` are highly recommend.</p>
+
         <p></p>
-        <Button variant="contained" size="large" endIcon={<LinkIcon />}
-          onClick={() => {
-          window.location.href = 'https://tufts.app.box.com/v/HPC-New-User/folder/46988375653';
-        }}
-        >Tufts HPC's New User Support</Button>
+
+        <LinkButton
+          url="https://tufts.app.box.com/v/HPC-New-User/folder/46988375653"
+          text="Tufts HPC's New User Support"
+        />
+
       </TabItem>
     </Tabs>
 
     :::
 
-    :::note
+    :::warning
 
     The process of requesting and being approved for a Tufts HPC account can
     take multiple business days.
+
+    <LinkButton
+          url="https://access.tufts.edu/research-cluster-account"
+          text="Request an Account"
+        />
 
     :::
 
@@ -71,7 +96,8 @@ import LinkIcon from "@mui/icons-material/Link";
     onto a compute node so that you can start performing computations.
 
     After login you are on a Login Node of the cluster (`login-prod-0x`) and in
-    your Home Directory (`~` or `/cluster/home/your_utln`).
+    your Home Directory (`~` or `/cluster/home/your_utln`). Your terminal
+    should look like this:
 
     ```bash
     $ [your_utln@login-prod-02 ~]
@@ -89,16 +115,39 @@ import LinkIcon from "@mui/icons-material/Link";
     `--mem=` , an alternative partition `-p` , and/or runtime `--time=` .
 
     Depending on the current usage of the Tufts HPC, you may need to wait in a
-    queue to be allocated enough resources.
+    queue to be allocated enough resources. This could take some time depending
+    on the current usage of the cluster.
 
     ### 3. Clone the repository
 
-    Go to the desired directory/folder on your file system on the Tufts HPC, then
-    clone/get the repository and move into the respective directory with:
+    :::info[As explained on GitHub's Docs...]
+
+    Cloning a repository pulls down a full copy of all the repository data that
+    GitHub.com has at that point in time, including all versions of every file
+    and folder for the project. You can push your changes to the remote
+    repository on GitHub.com, or pull other people's changes from GitHub.com.
+    For more information, see [Using Git][using-git].
+
+    :::
+
+    Navigate to the desired parent directory (aka folder) on the Tufts HPC that
+    you would like to clone (aka copy) the template workflow repository into.
+    Then clone the repository with the following command:
 
     ```bash
     git clone https://github.com/benjibromberg/tucca-rna-seq.git
     ```
+
+    After cloning the repo, you can change the name of the cloned directory
+    to suit your project. The default name will always be `tucca-rna-seq`.
+
+    :::tip
+
+    For Kaplan Lab users, it is recommended to clone the repository into your
+    personal directory in the `kaplanlab` workspace. Refer to the Tufts HPC
+    resources linked above if this does not make sense.
+
+    :::
 
     ### 4. Dependencies installation
 
@@ -110,9 +159,9 @@ import LinkIcon from "@mui/icons-material/Link";
     You will need to add the `bioconda` channel to your `base` conda environment
     which loads everytime you load a conda manager like [miniforge][miniforge].
     If this is problematic for some reason, you will need to load another conda
-    environment that includes the `conda-forge`, `bioconda`, and `default` channels
-    before loading the `snakemake` conda environment which will require manually
-    modifying the `run.sh` runner script.
+    environment that includes the `conda-forge`, `bioconda`, and `default`
+    channels before loading the `snakemake` conda environment which will
+    require manually modifying the `run.sh` runner script.
 
     To add the `bioconda` channel to your `base` conda environment run:
 
@@ -148,3 +197,7 @@ import LinkIcon from "@mui/icons-material/Link";
 
   </TabItem>
 </Tabs>
+
+[conda]: https://docs.conda.io/projects/conda/en/latest/index.html
+[miniforge]: https://github.com/conda-forge/miniforge
+[using-git]: https://docs.github.com/en/get-started/using-git

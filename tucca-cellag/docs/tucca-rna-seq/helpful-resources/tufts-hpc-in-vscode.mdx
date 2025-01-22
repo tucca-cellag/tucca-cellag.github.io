@@ -1,0 +1,279 @@
+---
+title: Setting Up Tufts HPC Access in VSCode
+---
+
+import LinkButton from "@site/src/components/LinkButton";
+
+:::warning
+**🚧 Coming Soon! 🚧**
+
+Our website is currently under construction and will be launching soon.
+Stay tuned!
+
+In the meantime, feel free to [contact us](mailto:benjamin.bromberg@tufts.edu)
+with any questions.
+
+Thank you for your patience
+:::
+
+## **Step 0: Establish a VPN connection**
+
+Whether you are on or off of Tufts campus, you'll will need to be first
+connected to the Tufts VPN. For instructions, see https://access.tufts.edu/vpn
+
+:::warning
+**Even if you are on-campus, we always recommend that you connect to the Tufts
+VPN when interfacing with the Tufts High-Performance Computing (HPC).**
+
+- Only connecting to the HPC through the `Tufts Secure` Wi-Fi network can be
+problematic due to intermittent connection drops that will make you temporarily
+lose connection to the HPC and can potentially lead to errors when running this
+workflow. This problem is especially prevalent when connecting via VSCode.
+
+- Additionally, you will not need to need to authorize your interactions with
+the HPC on Duo as frequently, if at all, after you initially connect to the VPN.
+:::
+
+## **Step 1: Download and Install Visual Studio Code (VSCode)**
+
+Visual Studio Code (VSCode) is a free, open-source code editor developed by
+Microsoft. It's widely used for software development due to its versatility,
+rich feature set, and extensive extension ecosystem. In the context of
+interacting with the Tufts High-Performance Computing (HPC) resources, VSCode
+offers several advantages:
+
+- **Remote Development**: VSCode can seamlessly connect to remote servers,
+  allowing you to edit files, run code, and manage projects directly on the
+  HPC without leaving your local environment.
+- **Integrated Terminal**: Access the HPC terminal within VSCode, enabling
+  efficient command-line operations alongside your coding activities.
+- **Extensions and Customization**: Enhance your development experience with
+  extensions tailored for specific programming languages, debugging tools, and
+  workflow optimizations.
+
+---
+
+### Download and Install VSCode
+
+- Visit the [official Visual Studio Code website](https://code.visualstudio.com/).
+- Click on the download button that corresponds to your operating system
+  (Windows, macOS, or Linux).
+
+<LinkButton
+  url="https://code.visualstudio.com/download"
+  text="VSCode Download Page"
+/>
+
+#### **Windows:**
+
+- Run the downloaded `.exe` installer.
+- Follow the installation prompts, accepting the license agreement and
+  selecting desired installation options (e.g., adding VSCode to your PATH).
+
+#### **macOS:**
+
+- Open the downloaded `.dmg` file.
+- Drag and drop the VSCode application into the Applications folder.
+
+---
+
+### Launch VSCode
+
+After installation, open VSCode from your application launcher or by
+  running `code` in your terminal (if added to PATH).
+
+## **Step 2: Install Recommended Extensions for HPC Access**
+
+To enhance your experience when working with the Tufts HPC, consider
+installing the following extensions:
+
+:::tip
+While not all of these extensions are required they are all
+**highly recommended** as they will dramatically improve your coding
+experience when using VSCode in conjunction with this workflow.
+:::
+
+---
+
+### 🔒 SSH Extensions – 🚨[Required]🚨
+
+Facilitate secure connections and file transfers:
+
+- **[`SSH FS`](https://marketplace.visualstudio.com/items?itemName=Kelvin.vscode-sshfs)**  
+  Mounts SSH remote filesystems locally for easy access and editing.  
+  **Essential for connecting to the Tufts HPC.**
+
+:::note
+There are multiple options for SSH extensions in VSCode that can replace the
+functionality of `SSH FS`, but this extension is the extension used currently
+by the creators of this workflow. If you are already familiar with another
+extension, feel free to use it instead.
+:::
+
+---
+
+### 🐍 Python Extensions – 🚨[Required]🚨
+
+Enhance Python development with debugging and language support:
+
+- **[`Python`](https://marketplace.visualstudio.com/items?itemName=ms-python.python)**  
+  Provides rich support for Python, including IntelliSense, linting, and debugging.
+
+- **[`Pylance`](https://marketplace.visualstudio.com/items?itemName=ms-python.vscode-pylance)**  
+  Offers fast and feature-rich language support for Python.
+
+- **[`Python Debugger`](https://marketplace.visualstudio.com/items?itemName=ms-python.python)**  
+  Integrated debugging capabilities for Python applications.
+
+---
+
+### 🐍 Snakemake Extensions – 🚨[Required]🚨
+
+Streamline Snakemake workflows:
+
+- **[`Snakemake Language`](https://marketplace.visualstudio.com/items?itemName=neurocortex.snakefile)**  
+  Adds syntax highlighting and snippets for Snakemake files.
+
+- **[`Snakefmt`](https://marketplace.visualstudio.com/items?itemName=snakemake.snakefmt)**  
+  Formats Snakemake files according to best practices.
+
+---
+
+### 🔧 VSCode Quality of Life Extensions
+
+Improve your coding environment with these quality-of-life extensions:
+
+- **[`indent-rainbow`](https://marketplace.visualstudio.com/items?itemName=oderwat.indent-rainbow)**  
+  Highlights indentation levels with different colors for better readability.
+
+- **[`Material Icon Theme`](https://marketplace.visualstudio.com/items?itemName=PKief.material-icon-theme)**  
+  Provides a set of icons for various file types to enhance the visual appeal of your file explorer.
+
+- **[`oh-lucy`](https://marketplace.visualstudio.com/items?itemName=Hermitter.oh-lucy-vscode)**  
+  Adds aesthetic themes and enhancements to your editor.
+
+- **[`Prettier`](https://marketplace.visualstudio.com/items?itemName=esbenp.prettier-vscode)**  
+  An opinionated code formatter that supports many languages.
+
+- **[`Todo Tree`](https://marketplace.visualstudio.com/items?itemName=Gruntfuggly.todo-tree)**  
+  Displays TODOs, FIXMEs, and other annotations in a tree view.
+
+- **[`vscode-pdf`](https://marketplace.visualstudio.com/items?itemName=tomoki1207.pdf)**  
+  Enables PDF viewing directly within VSCode.
+
+---
+
+### 📄 Markdown Extensions
+
+Improve Markdown editing and linting:
+
+- **[`Markdown All in One`](https://marketplace.visualstudio.com/items?itemName=yzhang.markdown-all-in-one)**  
+  Provides comprehensive Markdown support with shortcuts and previews.
+
+- **[`markdownlint`](https://marketplace.visualstudio.com/items?itemName=DavidAnson.vscode-markdownlint)**  
+  Lints Markdown files to enforce consistent style and formatting.
+
+---
+
+### 📈 Excel/CSV File Extensions
+
+Manage Excel and CSV files seamlessly:
+
+- **[`Rainbow CSV`](https://marketplace.visualstudio.com/items?itemName=mechatroner.rainbow-csv)**  
+  Highlights CSV and other delimited files with different colors for each column.
+
+- **[`Excel Viewer`](https://marketplace.visualstudio.com/items?itemName=GrapeCity.gc-excelviewer)**  
+  Allows viewing Excel files directly within VSCode.
+
+---
+
+### 🗂️ Git Extensions
+
+Optimize your Git workflows:
+
+- **[`Git Graph`](https://marketplace.visualstudio.com/items?itemName=mhutchie.git-graph)**  
+  Visualize Git repositories with a comprehensive graph view.
+
+---
+
+### 📊 R Extensions
+
+Enhance R programming with debugging and documentation:
+
+- **[`R`](https://marketplace.visualstudio.com/items?itemName=Ikuyadeu.r)**  
+  Provides R language support, including syntax highlighting and snippets.
+
+- **[`R Debugger`](https://marketplace.visualstudio.com/items?itemName=RDebugger.r-debugger)**  
+  Implements debugging tools for R scripts.
+
+- **[`Doxygen Documentation Generator`](https://marketplace.visualstudio.com/items?itemName=neilding.doxygen-document-generator)**  
+  Assists in generating Doxygen-style documentation from R code.
+
+---
+
+### 📌 Additional Notes
+
+- **Installation:**  
+  To install these extensions, open VSCode, navigate to the Extensions view by
+  clicking on the Extensions icon in the sidebar or pressing `Ctrl+Shift+X`
+  (`Cmd+Shift+X` on macOS), and search for each extension by name.
+
+- **Configuration:**  
+  Some extensions require additional configuration. Refer to each extension's
+  documentation for set-up and usage instructions.
+
+- **Sync Settings:**
+
+  Ensure that your VSCode settings are optimized for remote work. Consider
+  synchronizing settings across devices if you work from multiple machines.
+  You can accomplish this by signing into VSCode using a GitHub account.
+
+## **Step 3: Configuring `SSH FS` to Remotely Connect to the Tufts HPC**
+
+### Set-Up SSH Keyless Access to the Tufts HPC
+
+Please follow the instructions below to setup your SSH keyless access.
+This will make your life much easier in the long run as you will not need to
+input your password every time you connect to the cluster using VSCode.
+
+<LinkButton
+  url="https://www.tecmint.com/ssh-passwordless-login-using-ssh-keygen-in-5-easy-steps/"
+  text="Instructions to Set-Up SSH Keyless Access"
+/>
+
+{/* 
+TODO: Finish translating the linked instructions to this document 
+TODO: Test with Archana
+*/}
+
+You'll need your Tufts Username, which usually looks something like 'jdoe02' or
+'dkaplan29'.
+
+Execute the following SSH command at a UNIX-like terminal at your laptop or
+desktop:
+
+Terminal of your laptop IN:
+
+    ssh TUFTS_USERNAME@login.cluster.tufts.edu
+
+Expected OUT:
+
+    (prompt for a password)
+
+You'll be prompted to enter your Tufts password. Please enter it.
+
+After successful password entry, you should see an active terminal session appear. If you look at your terminal prompt, you'll see something like 'TUFTS_USERNAME@login001'. This means you've successfully ssh-ed into a 'login' node on the cluster.
+
+
+
+### Setting Up `SSH FS`
+
+{/* 
+TODO: Write this section 
+*/}
+
+## **Step 4: Learning to Connect and Navigate the Tufts HPC in VSCode**
+
+{/* 
+TODO: Write this section 
+*/}

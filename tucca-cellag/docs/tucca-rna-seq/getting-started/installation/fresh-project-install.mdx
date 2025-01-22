@@ -1,0 +1,185 @@
+---
+title: Setting Up a Fresh Project
+---
+
+import Tabs from "@theme/Tabs";
+import TabItem from "@theme/TabItem";
+import LinkButton from "@site/src/components/LinkButton";
+
+:::warning
+**🚧 Coming Soon! 🚧**
+
+Our website is currently under construction and will be launching soon.
+Stay tuned!
+
+In the meantime, feel free to [contact us](mailto:benjamin.bromberg@tufts.edu)
+with any questions.
+
+Thank you for your patience
+:::
+
+<Tabs>
+  <TabItem value="tufts-hpc" label="Tufts HPC Users" default>
+
+    ## 1. Login to the Tufts HPC
+
+    You can SSH into the Tufts HPC through the command line or you can access
+    the cluster through Tufts' OnDemand service. You will need a Tufts Cluster
+    Account to be able to log in to the Tufts HPC.
+
+    :::info
+
+    If you are not familiar with accessing the Tufts HPC check out these
+    fantastic resources to learn more:
+
+    <Tabs>
+      <TabItem value="hpc-mainpage" label="Tufts HPC Home Page">
+
+        <p>Home page for the Tufts HPC with helpful cheat sheets for the
+        cluster at the bottom of the page</p>
+
+        <p></p>
+
+        <LinkButton
+          url="https://it.tufts.edu/high-performance-computing"
+          text="Tufts HPC Home Page"
+        />
+
+      </TabItem>
+      <TabItem value="hpc-welcomepage" label="Tufts HPC's Welcome Page">
+
+        <p>Contains links to many introductory resources for the Tufts HPC</p>
+
+        <p></p>
+
+        <LinkButton
+          url="https://it.tufts.edu/high-performance-computing/hpc-welcome-page"
+          text="Tufts HPC's Welcome Page"
+        />
+
+      </TabItem>
+      <TabItem value="hpc-newuser" label="Tufts HPC's New User Support" default>
+
+        <p>Box folder with many helpful introductory PDFs and slideshows that
+        outline the ins-and-outs of the Tufts HPC.</p>
+
+        <p>The most recent version of the `Intro to Tufts HPC` workshop and
+        `New User Guide PAX.pdf` are highly recommend.</p>
+
+        <p></p>
+
+        <LinkButton
+          url="https://tufts.app.box.com/v/HPC-New-User/folder/46988375653"
+          text="Tufts HPC's New User Support"
+        />
+
+      </TabItem>
+    </Tabs>
+
+    :::
+
+    :::warning
+
+    The process of requesting and being approved for a Tufts HPC account can
+    take multiple business days.
+
+    :::
+
+    ## 2. Get off of a login node
+
+    Once logged into the Tufts HPC run the following to get off a login node and
+    onto a compute node so that you can start performing computations.
+
+    After login you are on a Login Node of the cluster (`login-prod-0x`) and in
+    your Home Directory (`~` or `/cluster/home/your_utln`). Your terminal
+    should look like this:
+
+    ```bash
+    $ [your_utln@login-prod-02 ~]
+    ```
+
+    To get off a login node run:
+
+    ```bash
+    srun -p interactive --pty bash
+    ```
+
+    This will allocate a compute node with bash shell, 1 CPU core (default),
+    4 hours (interactive partition default and maxmimum value), and 2GB of CPU
+    memory (default). If desired, modify with number of CPU cores `-n` , memory
+    `--mem=` , an alternative partition `-p` , and/or runtime `--time=` .
+
+    Depending on the current usage of the Tufts HPC, you may need to wait in a
+    queue to be allocated enough resources. This could take some time depending
+    on the current usage of the cluster.
+
+    ### 3. Clone the repository
+
+    Go to the desired directory (aka folder) on your file system on the Tufts
+    HPC. Then clone (aka copy) the repository and move into the respective
+    directory with:
+
+    ```bash
+    git clone https://github.com/benjibromberg/tucca-rna-seq.git
+    ```
+
+    :::tip
+
+    For Kaplan Lab users, it is recommended to clone the repository into your
+    personal directory in the `kaplanlab` workspace. After cloning the repo,
+    you can change the name of the cloned directory to suit your project. Refer
+    to the Tufts HPC resources linked above if this does not make sense.
+
+    :::
+
+    ### 4. Dependencies installation
+
+    For improved reproducibility and reusability of the workflow,
+    each individual step of the workflow runs either in its own [Conda][conda]
+    virtual environment. As a consequence, running this workflow has very few
+    individual dependencies.
+
+    You will need to add the `bioconda` channel to your `base` conda environment
+    which loads everytime you load a conda manager like [miniforge][miniforge].
+    If this is problematic for some reason, you will need to load another conda
+    environment that includes the `conda-forge`, `bioconda`, and `default` channels
+    before loading the `snakemake` conda environment which will require manually
+    modifying the `run.sh` runner script.
+
+    To add the `bioconda` channel to your `base` conda environment run:
+
+    ```bash
+    module load miniforge/24.7.1-py312
+    conda activate base
+    conda config --add channels bioconda
+    conda config --add channels conda-forge
+    conda config --set channel_priority strict
+    conda config --show channels
+    ```
+
+    The result of the final command should match the following:
+
+    ```bash
+    channels:
+      - conda-forge
+      - bioconda
+      - defaults
+    ```
+
+    Then run the following to create the `snakemake` conda environment:
+
+    ```bash
+    conda env create -f tucca-rna-seq/install/snakemake.yaml
+    ```
+
+  </TabItem>
+  <TabItem value="external" label="External Users">
+    TODO
+
+    Hello world
+
+  </TabItem>
+</Tabs>
+
+[conda]: https://docs.conda.io/projects/conda/en/latest/index.html
+[miniforge]: https://github.com/conda-forge/miniforge

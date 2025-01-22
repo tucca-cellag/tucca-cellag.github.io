@@ -25,13 +25,26 @@ const sidebars: SidebarsConfig = {
     'tucca-rna-seq/introduction',
     {
       type: 'category',
+      label: 'Background Learning',
+      link: {
+        type: 'generated-index',
+      },
+      collapsed: false,
+      items: [
+        'tucca-rna-seq/background-learning/learn-rna-seq',
+        'tucca-rna-seq/background-learning/learn-unix',
+      ],
+    },
+    {
+      type: 'category',
       label: 'Getting Started',
       link: {
         type: 'generated-index',
       },
       collapsed: false,
       items: [
-        'tucca-rna-seq/getting-started/installation/installation',
+        'tucca-rna-seq/getting-started/installation/new-user-install',
+        'tucca-rna-seq/getting-started/installation/fresh-project-install',
         {
           type: 'category',
           label: 'The `config` directory',
@@ -47,6 +60,43 @@ const sidebars: SidebarsConfig = {
         },
       ],
     },
+    {
+      type: 'category',
+      label: 'Running the Workflow',
+      link: {
+        type: 'generated-index',
+      },
+      collapsed: true,
+      items: [
+        'tucca-rna-seq/running-the-workflow/salmon-counts',
+      ],
+    },
+    {
+      type: 'category',
+      label: 'Helpful Resources',
+      link: {
+        type: 'generated-index',
+      },
+      collapsed: true,
+      items: [
+        'tucca-rna-seq/helpful-resources/tufts-hpc-in-vscode',
+        'tucca-rna-seq/helpful-resources/useful-r-extensions',
+      ],
+    },
+    {
+      type: 'category',
+      label: 'Reproducibility',
+      link: {
+        type: 'generated-index',
+      },
+      collapsed: true,
+      items: [
+        'tucca-rna-seq/reproducibility/git',
+        'tucca-rna-seq/reproducibility/renv',
+        'tucca-rna-seq/reproducibility/snakemake',
+      ],
+    },
+    'tucca-rna-seq/citing-the-workflow',
     'tucca-rna-seq/help',
   ],
 };
