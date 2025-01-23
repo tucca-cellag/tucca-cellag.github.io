@@ -110,14 +110,16 @@ const Home: React.FC = () => {
                       <h2>tucca-rna-seq Workflow 🛠️</h2>
                     </CardHeader>
                     <CardBody className="text--left">
-                      Enhance your understanding of bioinformatics with our
-                      curated lists of tutorials and workshops.
+                      Discover our lightning-fast, automated RNA-Seq workflow
+                      tailored for cellular agriculture bioinformatics. Empower
+                      your research with user-friendly tools that ensure
+                      accurate, reproducible, and scalable data analysis.
                     </CardBody>
                     <CardFooter>
                       <Button
                         className="button--block"
-                        label="Find Resources"
-                        link="/category/background-learning"
+                        label="Start Using tucca-rna-seq"
+                        link="/tucca-rna-seq/introduction"
                         variant="primary"
                       />
                     </CardFooter>
