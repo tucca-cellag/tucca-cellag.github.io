@@ -29,10 +29,13 @@ const sidebars: SidebarsConfig = {
       link: {
         type: 'generated-index',
       },
-      collapsed: false,
+      collapsed: true,
       items: [
         'tucca-rna-seq/background-learning/learn-rna-seq',
         'tucca-rna-seq/background-learning/learn-unix',
+        'tucca-rna-seq/background-learning/learn-r',
+        'tucca-rna-seq/background-learning/learn-vscode',
+        'tucca-rna-seq/background-learning/learn-chatgpt',
       ],
     },
     {
@@ -44,20 +47,7 @@ const sidebars: SidebarsConfig = {
       collapsed: false,
       items: [
         'tucca-rna-seq/getting-started/installation/new-user-install',
-        'tucca-rna-seq/getting-started/installation/fresh-project-install',
-        {
-          type: 'category',
-          label: 'The `config` directory',
-          link: {
-            type: 'generated-index',
-            description: 'How to configure the tucca-rna-seq pipeline for your experiment'
-          },
-          items: [
-            'tucca-rna-seq/getting-started/config-setup/config-yaml',
-            'tucca-rna-seq/getting-started/config-setup/multiqc-config-yaml',
-            'tucca-rna-seq/getting-started/config-setup/samples-and-units'
-          ]
-        },
+        'tucca-rna-seq/getting-started/config-setup',
       ],
     },
     {
@@ -71,6 +61,7 @@ const sidebars: SidebarsConfig = {
         'tucca-rna-seq/running-the-workflow/salmon-counts',
       ],
     },
+    'tucca-rna-seq/fresh-project-install',
     {
       type: 'category',
       label: 'Helpful Resources',
@@ -79,23 +70,12 @@ const sidebars: SidebarsConfig = {
       },
       collapsed: true,
       items: [
+        'tucca-rna-seq/helpful-resources/reproducibility',
         'tucca-rna-seq/helpful-resources/tufts-hpc-in-vscode',
-        'tucca-rna-seq/helpful-resources/useful-r-extensions',
+        'tucca-rna-seq/helpful-resources/r-extensions',
       ],
     },
-    {
-      type: 'category',
-      label: 'Reproducibility',
-      link: {
-        type: 'generated-index',
-      },
-      collapsed: true,
-      items: [
-        'tucca-rna-seq/reproducibility/git',
-        'tucca-rna-seq/reproducibility/renv',
-        'tucca-rna-seq/reproducibility/snakemake',
-      ],
-    },
+    
     'tucca-rna-seq/citing-the-workflow',
     'tucca-rna-seq/help',
   ],

@@ -28,3 +28,23 @@
   --ifm-color-primary-lightest: #4fddbf;
   --docusaurus-highlighted-code-line-bg: rgba(0, 0, 0, 0.3);
 }
+
+/* Custom CSS */
+.center-content {
+  text-align: center;
+}
+
+.two-columns {
+  display: flex;
+  justify-content: space-around;
+  align-items: flex-start;
+  flex-wrap: wrap;
+  gap: 20px; /* Optional: Adds space between columns */
+  margin-top: 20px; /* Optional: Adds space above the columns */
+  margin-bottom: 20px; /* Optional: Adds space above the columns */
+}
+
+.column {
+  flex: 1 1 45%;
+  text-align: center;
+}

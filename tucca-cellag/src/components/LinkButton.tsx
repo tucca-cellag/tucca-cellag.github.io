@@ -5,7 +5,7 @@ import Button from "@mui/material/Button";
 import LinkIcon from "@mui/icons-material/Link";
 import PropTypes from "prop-types";
 
-const LinkButton = ({ url, text }) => {
+const LinkButton = ({ url, text, mb = 3 }) => {
   const handleClick = () => {
     window.open(url, "_blank", "noopener,noreferrer");
   };
@@ -16,7 +16,7 @@ const LinkButton = ({ url, text }) => {
       size="large"
       endIcon={<LinkIcon />}
       onClick={handleClick}
-      sx={{ margin: 1 }}
+      sx={{ margin: 1, mb }}
       aria-label={text}
     >
       {text}
@@ -27,6 +27,7 @@ const LinkButton = ({ url, text }) => {
 LinkButton.propTypes = {
   url: PropTypes.string.isRequired,
   text: PropTypes.string.isRequired,
+  mb: PropTypes.number,
 };
 
 export default LinkButton;

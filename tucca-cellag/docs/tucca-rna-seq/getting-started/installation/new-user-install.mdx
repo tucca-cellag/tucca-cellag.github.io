@@ -5,6 +5,7 @@ title: Workflow Installation for New Users
 import Tabs from "@theme/Tabs";
 import TabItem from "@theme/TabItem";
 import LinkButton from "@site/src/components/LinkButton";
+import Link from '@docusaurus/Link';
 
 :::warning
 **🚧 Coming Soon! 🚧**
@@ -18,14 +19,58 @@ with any questions.
 Thank you for your patience
 :::
 
+:::tip
+
+**🔄 Setting Up a Fresh Project**
+
+If you've already run the `tucca-rna-seq` workflow but want to start a new
+project or analysis without affecting your previous work—which is crucial for
+maintaining reproducibility—check out our guide on setting up a fresh project:
+
+- **[Setting Up a Fresh Project](/tucca-rna-seq/fresh-project-install)**
+
+:::
+
+{/* 
+  TODO: Maybe recommend that the workflow be copied to their own git account as 
+  git template and then cloned to the cluster so that their changes can be
+  version controlled on git?
+  */}
+
 <Tabs>
   <TabItem value="tufts-hpc" label="Tufts HPC Users" default>
 
     ## 1. Login to the Tufts HPC
 
-    You can SSH into the Tufts HPC through the command line or you can access
-    the cluster through Tufts' OnDemand service. You will need a Tufts Cluster
-    Account to be able to log in to the Tufts HPC.
+    You can SSH into the Tufts HPC in the command-line of your preferred
+    terminal or you can access the cluster through Tufts' OnDemand service. You
+    will need a Tufts Cluster Account to be able to log in to the Tufts HPC.
+
+    :::warning
+
+    The process of requesting and being approved for a Tufts HPC account can
+    take multiple business days.
+
+    <LinkButton
+      url="https://access.tufts.edu/research-cluster-account"
+      text="Request an Account"
+    />
+
+    **Requirements**
+
+    - You must complete an online account request form and be approved to use
+    the Tufts Research Cluster.
+    - Account requests require a valid Tufts Username and Tufts Password
+    - Guest and student accounts require faculty or researcher sponsorship
+
+    :::
+
+    **SSH**, or **Secure Shell**, is a protocol that allows you to securely
+    connect to remote servers over a network. An **HPC**, or **High-Performance
+    Computing** system, provides powerful computational resources for executing
+    complex simulations and data analyses. Using SSH to access the HPC ensures
+    that your data and commands are transmitted securely. The Tufts HPC enables
+    researchers and students to perform large-scale computations efficiently.
 
     :::info
 
@@ -78,17 +123,39 @@ Thank you for your patience
 
     :::
 
-    :::warning
+    :::tip
 
-    The process of requesting and being approved for a Tufts HPC account can
-    take multiple business days.
+    For this workflow, we highly recommend SSHing into the cluster via
+    **VSCode** as it provides a convenient user experience.
+
+    **Visual Studio Code (VSCode)** is a free, open-source code editor
+    developed by Microsoft. It's widely used for software development due to
+    its versatility, rich feature set, and extensive extension ecosystem. In
+    the context of interacting with the Tufts High-Performance Computing (HPC)
+    resources, VSCode offers several advantages:
+
+    - **Remote Development**: VSCode can seamlessly connect to remote servers,
+      allowing you to edit files, run code, and manage projects directly on the
+      HPC without leaving your local environment.
+      
+    - **Integrated Terminal**: Access the HPC terminal within VSCode, enabling
+      efficient command-line operations alongside your coding activities.
+      
+    - **Extensions and Customization**: Enhance your development experience
+      with extensions tailored for specific programming languages, debugging
+      tools, and workflow optimizations.
+
+    Additionally, you can connect via the OnDemand service or your preferred
+    terminal.
 
     <LinkButton
-          url="https://access.tufts.edu/research-cluster-account"
-          text="Request an Account"
-        />
+    url="https://ondemand.pax.tufts.edu/"
+    text="Tufts OnDemand"
+    />
 
     :::
+
+    ---
 
     ## 2. Get off of a login node
 
@@ -118,7 +185,9 @@ Thank you for your patience
     queue to be allocated enough resources. This could take some time depending
     on the current usage of the cluster.
 
-    ### 3. Clone the repository
+    ---
+
+    ## 3. Clone the repository
 
     :::info[As explained on GitHub's Docs...]
 
@@ -144,12 +213,15 @@ Thank you for your patience
     :::tip
 
     For Kaplan Lab users, it is recommended to clone the repository into your
-    personal directory in the `kaplanlab` workspace. Refer to the Tufts HPC
-    resources linked above if this does not make sense.
+    personal directory in the `kaplanlab` workspace. After cloning the repo,
+    you can change the name of the cloned directory to suit your project. Refer
+    to the Tufts HPC resources linked above if this does not make sense.
 
     :::
 
-    ### 4. Dependencies installation
+    ---
+
+    ## 4. Dependencies installation
 
     For improved reproducibility and reusability of the workflow,
     each individual step of the workflow runs either in its own [Conda][conda]
@@ -191,9 +263,12 @@ Thank you for your patience
 
   </TabItem>
   <TabItem value="external" label="External Users">
-    TODO
-
-    Hello world
+    Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod
+    tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,
+    quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo
+    consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse
+    cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat
+    non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
 
   </TabItem>
 </Tabs>

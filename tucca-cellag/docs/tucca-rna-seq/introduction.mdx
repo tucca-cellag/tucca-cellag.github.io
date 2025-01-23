@@ -2,6 +2,9 @@
 title: Introduction
 ---
 
+import Link from '@docusaurus/Link';
+import LinkButton from "@site/src/components/LinkButton";
+
 :::warning
 **🚧 Coming Soon! 🚧**
 
@@ -14,9 +17,189 @@ with any questions.
 Thank you for your patience
 :::
 
-# Introduction
+# Welcome to your Journey in Cellular Agriculture Bioinformatics 🚀🔬
 
-This workflow is split into two primary sections:
+Welcome to the **`tucca-rna-seq` Workflow docs**! Whether you're new to RNA
+Sequencing (RNA-Seq) and programming 🧑‍💻 or you're seeking a **⚡️ 
+lightning-fast**, **automated 🦾🤖** RNA-Seq workflow to efficiently analyze
+your data 📊, you've come to the right place. The **`tucca-rna-seq`** workflow
+and this comprehensive documentation are meticulously crafted to support and
+enhance your journey in cellular agriculture bioinformatics 🧬.
 
-1. Automated reads to Salmon pseudocounts
-2.
+Our goal is to empower researchers and bioinformaticians with a robust 💪,
+**user-friendly** toolset that streamlines RNA-Seq data analysis, ensuring 
+**accuracy** ✅, **reproducibility** 🔄, and **scalability** 📈. Dive in to
+explore how `tucca-rna-seq` can accelerate your research and unlock new
+insights 🔍 in cellular agriculture.
+
+---
+
+## What is Cellular Agriculture? 🧬🌱
+
+**Cellular Agriculture** is a cutting-edge field that harnesses biotechnology
+to produce agricultural products directly from cells. Unlike traditional
+farming, which relies on raising and harvesting whole organisms, cellular
+agriculture focuses on cultivating animal cells in controlled environments to
+create sustainable alternatives for meat, dairy, and other animal-derived
+products.
+
+### **Why Cellular Agriculture Matters**
+
+- **Sustainability 🌍:** Reduces the environmental impact associated with
+  conventional agriculture, including lower greenhouse gas emissions, reduced
+  land and water usage, and minimized waste production.
+- **Ethical Considerations 🐮❤️:** Offers humane alternatives by eliminating the
+  need for animal slaughter, addressing animal welfare concerns.
+- **Food Security 🍽️:** Enhances the ability to produce food in areas with
+  limited agricultural resources, contributing to global food security.
+- **Innovation and Research 🔬:** Drives advancements in biotechnology,
+  genetics, and bioinformatics, fostering interdisciplinary collaboration and
+  novel scientific discoveries.
+
+<div className="center-content">
+  ### Learn more about TUCCA
+
+  <LinkButton
+    url="https://access.tufts.edu/research-cluster-account"
+    text="Request an Account"
+    md="0"
+  />
+</div>
+
+---
+
+## About the Workflow
+
+The **`tucca-rna-seq`** workflow is designed to provide a seamless and efficient
+pipeline for RNA-Seq data analysis, tailored specifically for cellular
+agriculture applications. Here's what makes our workflow stand out ⭐:
+
+- **Cell Ag-Specfic Analysis Modes** 🥩🍔:
+  - 🚧 More Info Coming Soon! 🚧
+
+  {/* 
+  TODO: Write this section, but maybe don't publish until the workflow is done?
+  */}
+
+- **Automated with Snakemake** 🐍: Utilizes `Snakemake`, a Python-based workflow
+management system, to create readable and maintainable pipelines that simplify
+complex bioinformatics tasks.
+  
+- **Comprehensive Data Processing** 📂:
+  - **Quality Control** 📋: Implements `FastQC` and `Qualimap` for quality
+    assessment.
+  - **Salmon for Quantification** 🐟: Employs `Salmon` for fast, accurate
+    transcript quantification, while taking into account experimental attributes
+    and biases commonly observed in RNA-Seq data.
+  - **Meta-Analysis** 📊: Aggregates these results using `MultiQC` to provide a
+    unified overview of your data quality and processing metrics.
+  
+- **Differential Gene Expression Analysis** 🧬:
+  - **Robust Statistical Tools** ✖️➗: Leverages `DESeq2` for differential
+    expression analysis, ensuring reliable and statistically sound results.
+  - **Parallel Processing** ⚙️⏱️: Employs `BiocParallel` and other R
+    parallelization packages to efficiently parallelize differential gene
+    expression analyses across multiple `DESeq2` contrasts simultaneously,
+    significantly reducing computation time.
+  - **Pathway and Enrichment Analysis** 🧩: Integrates `ClusterProfiler`, `GO`,
+    `KEGG`, `msigdbr`, and `SPIA` to facilitate comprehensive pathway and
+    functional enrichment analyses. These analyses include:
+    - **Over-Representation Analysis (ORA):** Identifies pathways or gene sets
+      that are over-represented in your differentially expressed genes compared
+      to a background set.
+    - **Functional Class Scoring Analyses (e.g., Gene Set Enrichment Analysis
+      [GSEA]):** Assesses whether predefined sets of genes show statistically
+      significant differences between two biological states.
+    - **Topology-Based Analyses (e.g., SPIA):** Incorporates pathway topology
+      information to evaluate the impact of gene expression changes on specific
+      biological pathways.
+  - **Visualization** 📸: Utilizes `ggplot2`, `EnhancedVolcano`, `pheatmap`,
+    `ClusterProfiler`, and many other visualization tools to create insightful
+    and publication-ready figures.
+  
+- **High Reproducibility** 🔄:
+  - **Environment Management** 🔧🌐: Employs `conda` and `renv` to manage and
+    replicate computational environments, ensuring consistency across different
+    systems and projects.
+  - **Version Control** 🗃️📝: Maintains version-controlled workflows with
+    `Snakemake` and `git`, enabling easy tracking and replication of analysis
+    steps.
+
+- **Scalability and Flexibility** 📈🎛️: Designed to handle datasets of varying
+  sizes and complexities, making it suitable for both small-scale studies and
+  large, high-throughput projects.
+
+By integrating these powerful tools into a cohesive workflow, 
+**`tucca-rna-seq`** provides a reliable and efficient platform for your RNA-Seq
+data analysis needs, allowing you to focus on deriving meaningful biological
+insights 🧠 without getting bogged down by technical complexities ⚙️.
+
+---
+
+## External Learning Resources
+
+If you're just beginning your journey with RNA-Seq or need to strengthen your
+coding fundamentals, we recommend checking out our pages that will direct you
+towards many fantastic (and freely available) learning resources that we have
+curated for each of the topics outlined below.
+
+These workshops and tutorials will provide you with the foundational knowledge
+needed to effectively utilize our automated RNA-Seq Workflow.
+
+### New to RNA-Seq and/or Coding? 🆕👩‍🔬
+
+- **[RNA-Seq Fundamentals](/tucca-rna-seq/background-learning/learn-rna-seq)**:
+  Learn the basics of RNA sequencing, data generation, and analysis.
+- **[UNIX Shell for Beginners](/tucca-rna-seq/background-learning/learn-unix)**:
+  Get comfortable with the command-line operations that are essential for
+  bioinformatics workflows.
+- **[R for Beginners](/tucca-rna-seq/background-learning/learn-r)**:
+- **[VSCode for Beginners](/tucca-rna-seq/background-learning/learn-vscode)**:
+- **[ChatGPT for Bioinformatics](/tucca-rna-seq/background-learning/learn-chatgpt)**:
+
+### Already Familiar with RNA-Seq and UNIX Shell?
+
+- **[Getting Started with the Workflow](/tucca-rna-seq/getting-started/installation/new-user-install)**:
+  Learn how to install and configure the **`tucca-rna-seq`** workflow tailored
+  for cellular agriculture applications.
+- **[Setting Up a Fresh Analysis](/tucca-rna-seq/fresh-project-install)**:
+  If you've already set-up and used the **`tucca-rna-seq`** workflow once for a
+  project, learn to set-up the workflow again for a fresh project.
+  
+### Want to learn to make your own changes to the workflow?
+
+- **[Snakemake Funamentals](/tucca-rna-seq/background-learning/learn-snakemake)**:
+  Learn to create and edit Snakemake workflows
+
+---
+
+## Additional Resources
+
+To further support your work and ensure reproducibility, explore our curated
+resources:
+
+- **[Reproducibility in Bioinformatics](/tucca-rna-seq/helpful-resources/reproducibility)**: Learn about best
+  practices for writing reproducible code and managing bioinformatics projects.
+- **[VSCode Extensions](/tucca-rna-seq/helpful-resources/tufts-hpc-in-vscode)**: Enhance your coding experience
+  with recommended Visual Studio Code extensions.
+- **[R Extensions](/tucca-rna-seq/helpful-resources/r-extensions)**: Optimize your data analysis workflows
+  with essential R packages and tools.
+
+---
+
+## Connect With Us
+
+We're here to help! If you have questions, feedback, or need assistance, feel
+free to reach out through our social channels:
+
+- [Tufts University Center for Cellular Agriculture](https://cellularagriculture.tufts.edu/)
+- [TUCCA on LinkedIn](https://www.linkedin.com/company/tufts-cell-ag/)
+- [TUCCA on X](https://twitter.com/tuftscellag)
+- [TUCCA on YouTube](https://www.youtube.com/channel/UC29F8uqsu_K7aRxOgjfG_HQ)
+
+Alternatively, visit our [GitHub Repository](https://github.com/tucca-cellag)
+to explore more of TUCCA's projects.
+
+---
+
+*Happy researching!*
