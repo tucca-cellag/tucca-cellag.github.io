@@ -33,11 +33,7 @@ const Home: React.FC = () => {
       description="tucca-rna-seq Workflow documentation for Cellular Agriculture
       Bioinformatics"
     >
-      <header
-        data-aos="fade-down"
-        data-aos-duration="1000"
-        className={clsx("hero", styles.heroBanner)}
-      >
+      <header className={clsx("hero", styles.heroBanner)}>
         <div className="container">
           <Card
             shadow="tl"
