@@ -1,0 +1,9 @@
+/* src/components/Card/CardImage/CardImage.module.css */
+
+.ourTeamCardImage {
+  width: 300px; /* Set desired width */
+  height: 300px; /* Set desired height */
+  border-radius: 30%; /* Optional: Makes the image circular */
+  display: block;
+  margin: 0 auto; /* Centers the image horizontally */
+}

@@ -3,7 +3,7 @@ title: Introduction
 ---
 
 import Link from '@docusaurus/Link';
-import LinkButton from "@site/src/components/LinkButton";
+import Button from "@site/src/components/Button";
 
 :::warning
 **🚧 Coming Soon! 🚧**
@@ -59,10 +59,10 @@ products.
 <div className="center-content">
   ### Learn more about TUCCA
 
-  <LinkButton
-    url="https://access.tufts.edu/research-cluster-account"
-    text="Request an Account"
-    md="0"
+  <Button
+    label="Request an Account"
+    link="https://access.tufts.edu/research-cluster-account"
+    variant="primary"
   />
 </div>
 
@@ -79,6 +79,11 @@ agriculture applications. Here's what makes our workflow stand out ⭐:
 
   {/* 
   TODO: Write this section, but maybe don't publish until the workflow is done?
+  */}
+
+  {/* 
+  TODO: Add something somewhere about species analysis automation
+  TODO: Add something somewhere about genome download automation
   */}
 
 - **Automated with Snakemake** 🐍: Utilizes `Snakemake`, a Python-based workflow

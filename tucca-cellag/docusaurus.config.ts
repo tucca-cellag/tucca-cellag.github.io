@@ -50,7 +50,7 @@ const config: Config = {
 
   themeConfig: {
     // Replace with your project's social card
-    //image: 'img/docusaurus-social-card.jpg',
+    image: 'img/Center for Cellular Agriculture_blk+bl_vert.png',
     navbar: {
       title: 'TUCCA Bioinformatics Docs',
       /* logo: {
@@ -65,10 +65,9 @@ const config: Config = {
           label: 'tucca-rna-seq',
         },
         {
-          type: 'docSidebar',
-          sidebarId: 'tutorial',
+          to: 'our-team',
+          label: 'Our Team',
           position: 'left',
-          label: 'Tutorial',
         },
         {
           href: 'https://github.com/tucca-cellag',
@@ -124,7 +123,8 @@ const config: Config = {
           ],
         },
       ],
-      copyright: `Copyright © ${new Date().getFullYear()} My Organization, Inc. Built with Docusaurus.`,
+      copyright: `Copyright © ${new Date().getFullYear()} Tufts University
+      Center for Cellular Agriculture. Built with Docusaurus.`,
     },
     prism: {
       theme: prismThemes.github,

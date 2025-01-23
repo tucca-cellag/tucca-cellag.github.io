@@ -1,0 +1,45 @@
+/* src/pages/index.module.css */
+
+.heroBanner {
+  background: linear-gradient(to right, #3172AE, #002E6D);
+  color: white;
+  padding: 4rem 0;
+  text-align: center;
+}
+
+.hero__title {
+  font-size: 3rem;
+  margin-bottom: 1rem;
+}
+
+.hero__subtitle {
+  font-size: 1.5rem;
+  margin-bottom: 2rem;
+}
+  
+.resources .MuiButton-root {
+  width: 100%;
+  text-align: center;
+}
+
+.about {
+  padding: 4rem 0;
+  text-align: center;
+}
+
+.cardSection {
+  padding: 4rem 0;
+}
+
+.comingSoon {
+  padding: 2rem 0;
+  background-color: #fff3cd;
+  text-align: center;
+}
+
+.comingSoon .alert {
+  background-color: #fff3cd;
+  border: 1px solid #ffeeba;
+  padding: 1.5rem;
+  border-radius: 8px;
+}
