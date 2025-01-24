@@ -104,7 +104,7 @@ const Home: React.FC = () => {
                 </div>
               </Column>
               <Column className="text--center">
-                <div data-aos="fade-right" data-aos-duration="2500">
+                <div>
                   <Card shadow="tl">
                     <CardHeader>
                       <h2>About Cellular Agriculture 🥩</h2>
