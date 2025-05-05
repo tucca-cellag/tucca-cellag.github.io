@@ -39,6 +39,8 @@ const config: Config = {
         docs: {
           sidebarPath: './sidebars.ts',
           routeBasePath: '/', // Serve the docs at the site's root
+          showLastUpdateAuthor: true,
+          showLastUpdateTime: true,
         },
         theme: {
           customCss: './src/css/custom.css',
@@ -60,9 +62,15 @@ const config: Config = {
       items: [
         {
           type: 'docSidebar',
-          sidebarId: 'tuccarnaseq',
+          sidebarId: 'tucca_rna_seq',
           position: 'left',
           label: 'tucca-rna-seq',
+        },
+        {
+          type: 'docSidebar',
+          sidebarId: 'helpful_resources',
+          position: 'left',
+          label: 'Helpful Resources',
         },
         {
           to: 'our-team',

@@ -1,0 +1,323 @@
+---
+title: Installing tucca-rna-seq on the Tufts HPC
+---
+
+import Tabs from "@theme/Tabs";
+import TabItem from "@theme/TabItem";
+import Link from '@docusaurus/Link';
+import Button from "@site/src/components/Button";
+import { Group } from '@mui/icons-material';
+
+:::warning
+**🚧 Coming Soon! 🚧**
+
+Our website is currently under construction and will be launching soon.
+Stay tuned!
+
+In the meantime, feel free to [contact us](mailto:benjamin.bromberg@tufts.edu)
+with any questions.
+
+Thank you for your patience
+:::
+
+# Workflow Installation on the Tufts HPC
+
+:::danger Prerequisites
+
+Prior to installing this workflow, we highly recommend that you are familiar
+with:
+- Version Control
+- Git/GitHub
+- Best practices for reproducibility in scientific computing
+
+<Button
+  label="Click here for more details about these topics"
+  link="/helpful-resources/reproducibility"
+  variant="primary"
+/>
+
+:::
+
+---
+
+### 1. Login to the Tufts HPC
+
+You can SSH into the Tufts HPC in the command-line of your preferred
+terminal or you can access the cluster through Tufts' OnDemand service. You
+will need a **Tufts Cluster Account** to be able to log in to the Tufts HPC.
+
+:::warning
+
+The process of requesting and being approved for a Tufts HPC account can
+take multiple business days.
+
+<Button
+  label="Request an Account"
+  link="https://access.tufts.edu/research-cluster-account"
+  variant="primary"
+  style={{ marginBottom: '20px' }}
+/>
+
+**Requirements**
+
+- You must complete an online account request form and be approved to use
+the Tufts Research Cluster.
+- Account requests require a valid Tufts Username and Tufts Password
+- Guest and student accounts require faculty or researcher sponsorship
+
+<Button
+label="TTS Research Technology Guides - HPC Account Request"
+link="https://rtguides.it.tufts.edu/hpc/access/10-account-request.html"
+variant="primary"
+/>
+
+:::
+
+**SSH**, or **Secure Shell**, is a protocol that allows you to securely
+connect to remote servers over a network. An **HPC**, or **High-Performance
+Compute** cluster, is a remote network of servers that provide powerful
+computational resources for executing complex simulations and data analyses
+enabling researchers and students to perform large-scale computations
+more efficiently, than if they were ran on their own hardware. The Tufts HPC
+cluster must be accessed via SHH, to ensure that your data and commands are
+transmitted securely.
+
+:::info
+
+If you are not familiar with high-performance computing or the Tufts HPC
+you can check out these fantastic resources about to learn more:
+
+<Tabs>
+  <TabItem value="hpc-mainpage" label="Tufts HPC Home Page">
+
+    <p>Tuft's Technology Service's (TTS) home page for the Tufts University
+    HPC</p>
+
+    <p></p>
+
+    <Button
+      label="HPC Home Page"
+      link="https://it.tufts.edu/high-performance-computing"
+      variant="primary"
+    />
+
+  </TabItem>
+  <TabItem value="hpc-docs" label="Tufts HPC User Guide and Documentation">
+
+    <p>Tufts University HPC user guide and technical documentation provided
+    by TTS Research Technology</p>
+
+    <p></p>
+
+    <Button
+      label="HPC User Guide and Documentation"
+      link="https://rtguides.it.tufts.edu/hpc/"
+      variant="primary"
+    />
+
+  </TabItem>
+  <TabItem value="hpc-carpentry" label="HPC Carpentry Lessons">
+
+    <p>HPC Carpentry teaches basic skills for high-performance computing</p>
+
+    <p></p>
+
+    <Button
+      label="HPC Carpentry"
+      link="https://www.hpc-carpentry.org/"
+      variant="primary"
+    />
+
+      </TabItem>
+    </Tabs>
+
+    :::
+
+    :::tip
+
+    For this workflow, we highly recommend SSHing into the cluster via
+    **VSCode** as it provides a convenient user experience.
+
+    **Visual Studio Code (VSCode)** is a free, open-source code editor
+    developed by Microsoft. It's widely used for software development due to
+    its versatility, rich feature set, and extensive extension ecosystem. In
+    the context of interacting with the Tufts High-Performance Computing (HPC)
+    resources, VSCode offers several advantages:
+
+    - **Remote Development**: VSCode can seamlessly connect to remote servers,
+      allowing you to edit files, run code, and manage projects directly on the
+      HPC without leaving your local environment.
+      
+    - **Integrated Terminal**: Access the HPC terminal within VSCode, enabling
+      efficient command-line operations alongside your coding activities.
+      
+    - **Extensions and Customization**: Enhance your development experience
+      with extensions tailored for specific programming languages, debugging
+      tools, and workflow optimizations.
+
+    <Button
+    label="Setting Up Tufts HPC Access in VSCode"
+    link="/helpful-resources/tufts-hpc-in-vscode"
+    variant="primary"
+    style={{ marginBottom: '20px' }}
+    />
+
+    Additionally, you can connect via the OnDemand web service that provides
+    easy access to the HPC environment using a web browser (Chrome or FireFox).
+
+    <Button
+    label="OnDemand - Tufts HPC Cluster Web Interface"
+    link="https://rtguides.it.tufts.edu/hpc/access/15-ondemand.html"
+    variant="primary"
+    />
+
+    :::
+
+    ---
+
+    ### 2. Get off of a login node
+
+    Once you are logged into the Tufts HPC via a terminal you will need to get
+    off a login node and onto a compute node so that you can start performing
+    computations.
+
+    After login, you are on a **login node** of the cluster (`login-prod-0x`)
+    and in your Home Directory (`~` or `/cluster/home/your_utln`). Your terminal
+    should look like this:
+
+    ```bash
+    $ [your_utln@login-prod-02 ~]
+    ```
+
+    To get off a login node run:
+
+    ```bash
+    srun -p interactive --pty bash
+    ```
+
+    This will allocate a compute node with bash shell, 1 CPU core (default),
+    4 hours (interactive partition default and maxmimum value), and 2GB of CPU
+    memory (default). If desired, modify with number of CPU cores `-n`, memory
+    `--mem=`, an alternative partition `-p`, and/or runtime `--time=`.
+
+    Depending on the current usage of the Tufts HPC, you may need to wait in a
+    queue to be allocated enough resources. This could take some time depending
+    on the current usage of the cluster.
+
+    :::info Relevant TTS Research Technology Guides
+    
+    <Button
+      label="Cluster Login Guide"
+      link="https://rtguides.it.tufts.edu/hpc/access/20-cli.html"
+      variant="primary"
+      />
+
+    <p></p>
+
+    <Button
+      label="Computing Resources Guide"
+      link="https://rtguides.it.tufts.edu/hpc/compute/index.html"
+      variant="primary"
+      />
+    :::
+
+    ---
+
+    ### 3. Create a fresh directory to work in
+
+    Now you will need to set set up a new directory (folder) on the Tufts HPC
+    that will hold the workflow and all necessary configuration files you will
+    need to set up for your specific project.
+
+    If your lab/research group has a dedicated workspace on the Tufts HPC, it is
+    recommended to clone the repository into a new directory in your personal
+    directory in your lab's workspace (`/cluster/tufts/your_lab/your_utln`).
+
+    :::note
+    For Kaplan Lab users, this will be
+    `/cluster/tufts/kaplanlab/your_utln`.
+    :::
+
+    For example:
+
+    ```bash
+    cd /cluster/tufts/your_lab/your_utln
+    mkdir new_project_directory
+    cd new_project_directory
+    ```
+
+    For more information about lab research project storage on the Tufts HPC,
+    please refer to the Tufts HPC official docs 
+
+    <Button
+      label="TTS Research Technology Lab Research Project Storage Guide"
+      link="https://rtguides.it.tufts.edu/hpc/access/30-storage.html"
+      variant="primary"
+    />
+
+    ---
+
+    ### 4. Clone the repo into your new directory
+
+    :::warning
+    If you are not familiar with version control, Git/GitHub, or best practices
+    for reproducibility in scientific computing, it is **highly recommended**
+    that you familiarize yourself with these tools and concepts
+
+    <Button
+      label="Click here for more details about these topics"
+      link="/helpful-resources/reproducibility"
+      variant="primary"
+    />
+    :::
+
+    Now that you have created and navigated to a fresh project directory,
+    we need to clone the `tucca-rna-seq` workflow repository into the new
+    directory. You can clone the repository with the following command:
+
+    ```bash
+    git clone https://github.com/tucca-cellag/tucca-rna-seq.git
+    ```
+
+    :::info[Cloning a repo (as explained on GitHub's docs...)]
+
+    Cloning a repository pulls down a full copy of all the repository data that
+    GitHub.com has at that point in time, including all versions of every file
+    and folder for the project. You can push your changes to the remote
+    repository on GitHub.com, or pull other people's changes from GitHub.com.
+    For more information, see [Using Git on GitHub][using-git] or [check out our
+    recommended Git resources][git-resources].
+
+    <Card shadow="tl">
+      <CardImage
+        cardImageUrl="/img/How-To-Clone-a-Git-Repository.png"
+        alt="A diagram of the tucca-rna-seq workflow"
+        title="tucca-rna-seq workflow diagram"
+      />
+      <CardFooter>
+        <h4>Image Credit: [Juno's Notes][junos-notes]</h4>
+      </CardFooter>
+    </Card>
+
+    :::
+
+    :::tip
+    If you would like to track your changes for your workflow via version
+    control, or you would like to share your project's specific
+    configurations and/or alternations to the workflow via GitHub, you can fork
+    the repo and then clone your fork of the repo to the cluster.
+
+    <Button
+      label="GeeksforGeeks Guide to Forking with Git"
+      link="https://www.geeksforgeeks.org/git-fork/"
+      variant="primary"
+    />
+    :::
+
+    ---
+
+    Now we just need to configure the workflow for your specific analysis!
+
+[using-git]: https://docs.github.com/en/get-started/using-git
+[git-resources]: /helpful-resources/reproducibility#introduction-to-gitgithub
+[junos-notes]:(https://www.junosnotes.com/git/how-to-clone-a-git-repository/)

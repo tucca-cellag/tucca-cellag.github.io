@@ -1,0 +1,145 @@
+---
+title: Deciding how you will deploy the workflow
+---
+
+import Tabs from "@theme/Tabs";
+import TabItem from "@theme/TabItem";
+import Link from '@docusaurus/Link';
+import Button from "@site/src/components/Button";
+import { Group } from '@mui/icons-material';
+
+:::warning
+**🚧 Coming Soon! 🚧**
+
+Our website is currently under construction and will be launching soon.
+Stay tuned!
+
+In the meantime, feel free to [contact us](mailto:benjamin.bromberg@tufts.edu)
+with any questions.
+
+Thank you for your patience
+:::
+
+# Workflow Installation
+
+:::tip
+If you are Tufts staff/student/faculty, please refer to the Tufts HPC-specific
+workflow documentation:
+
+<Button
+  label="Click here Tufts-specific tucca-rna-seq docs"
+  link="/tucca-rna-seq/getting-started-tufts/installation"
+  variant="primary"
+/>
+
+:::
+
+---
+
+### 0a. Deciding how you will run the workflow
+
+TODO: Explain that this workflow requires Snakemake and conda (developed using
+miniforge) (https://snakemake.readthedocs.io/en/stable/snakefiles/deployment.html#integrated-package-management)
+
+TODO: Additionally/recommended Singularity or Apptainer (developed using Singularity) (https://snakemake.readthedocs.io/en/stable/snakefiles/deployment.html#ad-hoc-combination-of-conda-package-management-with-containers)
+
+TODO: Explain https://snakemake.readthedocs.io/en/stable/executing/cli.html#profiles
+
+TODO: Explain executor plugins available (https://snakemake.github.io/snakemake-plugin-catalog/index.html)
+
+TODO: Explain profile configured for slurm on Tufts HPC (https://github.com/snakemake/snakemake-executor-plugin-slurm)
+
+TODO: Explain profile configured for GitHub Actions
+
+TODO: Explain executor plugins available (https://snakemake.github.io/snakemake-plugin-catalog/index.html)
+
+**SSH**, or **Secure Shell**, is a protocol that allows you to securely
+connect to remote servers over a network. An **HPC**, or **High-Performance
+Compute** cluster, is a remote network of servers that provide powerful
+computational resources for executing complex simulations and data analyses
+enabling researchers and students to perform large-scale computations
+more efficiently, than if they were ran on their own hardware. Many HPC
+clusters must be accessed via SHH, to ensure that your data and commands are
+transmitted securely. 
+
+:::info
+
+If you are not familiar with high-performance computing you can check out
+these fantastic resources about to learn more:
+
+<Tabs>
+  <TabItem value="hpc-carpentry" label="HPC Carpentry Lessons">
+
+    <p>HPC Carpentry teaches basic skills for high-performance computing</p>
+
+    <p></p>
+
+    <Button
+      label="HPC Carpentry"
+      link="https://www.hpc-carpentry.org/"
+      variant="primary"
+    />
+
+  </TabItem>
+  <TabItem value="hpc-mainpage" label="Tufts HPC Home Page">
+
+    <p>Tuft's Technology Service's (TTS) home page for the Tufts University
+    HPC</p>
+
+    <p></p>
+
+    <Button
+      label="HPC Home Page"
+      link="https://it.tufts.edu/high-performance-computing"
+      variant="primary"
+    />
+
+  </TabItem>
+  <TabItem value="hpc-docs" label="Tufts HPC User Guide and Documentation">
+
+    <p>Tufts University HPC user guide and technical documentation provided
+    by TTS Research Technology</p>
+
+    <p></p>
+
+    <Button
+      label="HPC User Guide and Documentation"
+      link="https://rtguides.it.tufts.edu/hpc/"
+      variant="primary"
+    />
+
+  </TabItem>
+</Tabs>
+
+:::
+
+:::tip
+
+For using this workflow, we highly recommend using an integrated development
+environment (IDE), such as **VSCode**.
+
+**Visual Studio Code (VSCode)** is a free, open-source code editor
+developed by Microsoft. It's widely used for software development due to
+its versatility, rich feature set, and extensive extension ecosystem. In
+the context of interacting with the Tufts High-Performance Computing (HPC)
+resources, VSCode offers several advantages:
+
+- **Remote Development**: VSCode can seamlessly connect to remote servers,
+  allowing you to edit files, run code, and manage projects directly on the
+  HPC without leaving your local environment.
+  
+- **Integrated Terminal**: Access the HPC terminal within VSCode, enabling
+  efficient command-line operations alongside your coding activities.
+  
+- **Extensions and Customization**: Enhance your development experience
+  with extensions tailored for specific programming languages, debugging
+  tools, and workflow optimizations.
+
+<Button
+  label="Setting Up Tufts HPC Access in VSCode"
+  link="/helpful-resources/tufts-hpc-in-vscode"
+  variant="primary"
+  style={{ marginBottom: '20px' }}
+/>
+
+:::

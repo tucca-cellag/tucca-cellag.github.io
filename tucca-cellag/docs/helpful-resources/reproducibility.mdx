@@ -1,0 +1,91 @@
+---
+title: Reproducibility in Scientific Computing
+---
+
+import Tabs from "@theme/Tabs";
+import TabItem from "@theme/TabItem";
+import Link from '@docusaurus/Link';
+import Button from "@site/src/components/Button";
+import { Group } from '@mui/icons-material';
+import ReactPlayer from 'react-player/youtube'
+
+:::warning
+**🚧 Coming Soon! 🚧**
+
+Our website is currently under construction and will be launching soon.
+Stay tuned!
+
+In the meantime, feel free to [contact us](mailto:benjamin.bromberg@tufts.edu)
+with any questions.
+
+Thank you for your patience
+:::
+
+# Reproducibility in Scientific Computing
+
+---
+
+## Good enough practices in scientific computing
+
+We highly recommend reading **Good enough practices in scientific computing**
+by Wilson *et al*. The first author, Greg Wilson, was a co-founder of Software
+Carpentry, an educational resource for researchers that "develops and teaches
+workshops on the fundamental programming skills needed to conduct research.
+[Software Carpentry's] mission is to provide researchers high-quality,
+domain-specific training covering all aspects of research software engineering."
+[1](https://software-carpentry.org/about-us/)
+
+<Button
+  label="Link to the paper"
+  link="https://doi.org/10.1371/journal.pcbi.1005510"
+  variant="primary"
+  style={{ marginBottom: '20px' }}
+/>
+
+Alternatively, there is a **self-lead lesson** inspired by and based on the
+paper available on [The Carpentries Lab](carpentries-lab) (a collection of
+peer-reviewed lessons from the carpentries community). The lesson does not need
+any specific software installed beyond a web browser. It is mostly
+discussion-based, with examples of data organization given and used for the
+discussion.
+
+<Button
+  label="Link to the lesson"
+  link="https://carpentries-lab.github.io/good-enough-practices/"
+  variant="primary"
+/>
+
+---
+
+## Introduction to Git/GitHub
+
+Git is a distributed version control system that tracks changes to files and
+directories through a series of commits, letting developers branch and merge
+code safely while maintaining a full history. GitHub is a cloud-based hosting
+service for Git repositories that adds a user-friendly web interface, issue
+tracking, pull requests for code review, and integrations with CI/CD and project
+management tools. Together, they let teams collaborate on the same codebase
+concurrently, manage versions, share work publicly or privately, and streamline
+development and deployment workflows.
+
+### What is Git? Explained in 2 Minutes!
+
+<ReactPlayer url='https://www.youtube.com/watch?v=2ReR1YJrNOM' controls='True'/>
+
+:::note
+The thumbnail for this video is wrong. The video is only 3 minutes long.
+:::
+
+### Software Carpentry's Version Control with Git Tutorial
+
+<Button
+  label="Version Control with Git Tutorial"
+  link="https://swcarpentry.github.io/git-novice/"
+  variant="primary"
+/>
+
+## References
+
+1. About us. Software Carpentry https://software-carpentry.org/about-us/.
+
+[carpentries-lab]: https://carpentries-lab.org/

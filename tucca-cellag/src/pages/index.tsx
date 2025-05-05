@@ -148,6 +148,11 @@ const Home: React.FC = () => {
                     <CardHeader>
                       <h2>tucca-rna-seq Workflow 🛠️</h2>
                     </CardHeader>
+                    <CardImage
+                      cardImageUrl="/img/tucca-rna-seq-logo.png"
+                      alt="A green snake head and a blue elephant head"
+                      title="The tucca-rna-seq logo"
+                    />
                     <CardBody className="text--left">
                       Discover our lightning-fast, automated RNA-Seq workflow
                       tailored for cellular agriculture bioinformatics. Empower
