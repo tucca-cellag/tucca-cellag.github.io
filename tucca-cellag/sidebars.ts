@@ -25,9 +25,6 @@ const sidebars: SidebarsConfig = {
     {
       type: 'category',
       label: 'Background Learning',
-      link: {
-        type: 'generated-index',
-      },
       collapsed: true,
       items: [
         'tucca-rna-seq/background-learning/learn-rna-seq',
@@ -40,9 +37,6 @@ const sidebars: SidebarsConfig = {
     {
       type: 'category',
       label: 'Getting Started',
-      link: {
-        type: 'generated-index',
-      },
       collapsed: false,
       items: [
         'tucca-rna-seq/getting-started/deployment',
@@ -54,9 +48,6 @@ const sidebars: SidebarsConfig = {
     {
       type: 'category',
       label: 'Deployment via Tufts HPC',
-      link: {
-        type: 'generated-index',
-      },
       collapsed: true,
       items: [
         'tucca-rna-seq/getting-started-tufts/installation',
