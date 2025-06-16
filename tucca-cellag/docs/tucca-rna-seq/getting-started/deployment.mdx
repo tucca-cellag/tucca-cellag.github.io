@@ -7,6 +7,13 @@ import TabItem from "@theme/TabItem";
 import Link from '@docusaurus/Link';
 import Button from "@site/src/components/Button";
 import { Group } from '@mui/icons-material';
+import ReactPlayer from "react-player";
+import Card from "@site/src/components/Card";
+import CardHeader from "@site/src/components/Card/CardHeader";
+import CardBody from "@site/src/components/Card/CardBody";
+import CardFooter from "@site/src/components/Card/CardFooter";
+import Columns from "@site/src/components/Columns";
+import Column from "@site/src/components/Column";
 
 :::warning
 **🚧 Coming Soon! 🚧**
@@ -145,3 +152,81 @@ resources, VSCode offers several advantages:
 />
 
 :::
+
+## Learning Resources for Visual Studio Code
+
+Visual Studio Code is a powerful and versatile code editor. Here are some resources to help you get started and become more productive.
+
+<Columns>
+  <Column>
+    <Card shadow="md">
+      <CardHeader>
+        <h3>Official Documentation</h3>
+      </CardHeader>
+      <CardBody>
+        <p>
+          The official VS Code documentation is the best place to start. It
+          covers everything from basic setup to advanced features.
+        </p>
+        <Button
+          label="VS Code Docs"
+          link="https://code.visualstudio.com/docs"
+          variant="primary"
+          className="button--block"
+        />
+        <Button
+          label="Getting Started"
+          link="https://code.visualstudio.com/docs/getstarted/getting-started"
+          variant="secondary"
+          className="button--block"
+          style={{ marginTop: "10px" }}
+        />
+        <Button
+          label="Introductory Videos"
+          link="https://code.visualstudio.com/docs/getstarted/introvideos"
+          variant="info"
+          className="button--block"
+          style={{ marginTop: "10px" }}
+        />
+      </CardBody>
+    </Card>
+  </Column>
+  <Column>
+    <Card shadow="md">
+      <CardHeader>
+        <h3>VS Code in 100 Seconds</h3>
+      </CardHeader>
+      <CardBody>
+        <ReactPlayer
+          url="https://www.youtube.com/watch?v=KMxo3T_MTvY"
+          width="100%"
+          height="100%"
+          controls
+        />
+      </CardBody>
+      <CardFooter>
+        <p>A quick and concise introduction to the key features of VS Code.</p>
+      </CardFooter>
+    </Card>
+  </Column>
+  <Column>
+    <Card shadow="md">
+      <CardHeader>
+        <h3>25 VS Code Productivity Tips</h3>
+      </CardHeader>
+      <CardBody>
+        <ReactPlayer
+          url="https://www.youtube.com/watch?v=ifTF3ags0XI"
+          width="100%"
+          height="100%"
+          controls
+        />
+      </CardBody>
+      <CardFooter>
+        <p>
+          Boost your productivity with these tips and speed hacks for VS Code.
+        </p>
+      </CardFooter>
+    </Card>
+  </Column>
+</Columns>
