@@ -3,6 +3,13 @@ title: Setting Up Tufts HPC Access in VSCode
 ---
 
 import Button from "@site/src/components/Button";
+import ReactPlayer from "react-player";
+import Card from "@site/src/components/Card";
+import CardHeader from "@site/src/components/Card/CardHeader";
+import CardBody from "@site/src/components/Card/CardBody";
+import CardFooter from "@site/src/components/Card/CardFooter";
+import Columns from "@site/src/components/Columns";
+import Column from "@site/src/components/Column";
 
 :::warning
 **🚧 Coming Soon! 🚧**
@@ -51,185 +58,146 @@ offers several advantages:
   extensions tailored for specific programming languages, debugging tools, and
   workflow optimizations.
 
----
+<Columns>
+  <Column>
+    <Card shadow="md" style={{ marginTop: "20px" }}>
+      <CardHeader>
+        <h3>Official Documentation</h3>
+      </CardHeader>
+      <CardBody>
+        <p>
+          The official docs are the best place to start, covering everything
+          from basic setup to advanced features.
+        </p>
+        <Button
+          label="VS Code Docs"
+          link="https://code.visualstudio.com/docs"
+          variant="primary"
+          className="button--block"
+        />
+        <Button
+          label="Getting Started Guide"
+          link="https://code.visualstudio.com/docs/getstarted/getting-started"
+          variant="secondary"
+          className="button--block"
+          style={{ marginTop: "10px" }}
+        />
+        <Button
+          label="Introductory Videos"
+          link="https://code.visualstudio.com/docs/getstarted/introvideos"
+          variant="info"
+          className="button--block"
+          style={{ marginTop: "10px" }}
+        />
+      </CardBody>
+    </Card>
+  </Column>
+  <Column>
+    <Card shadow="md" style={{ marginTop: "20px" }}>
+      <CardHeader>
+        <h3>VS Code in 100 Seconds</h3>
+      </CardHeader>
+      <CardBody>
+        <ReactPlayer
+          url="https://www.youtube.com/watch?v=KMxo3T_MTvY"
+          width="100%"
+          height="100%"
+          controls
+        />
+      </CardBody>
+      <CardFooter>
+        <p>
+          A quick overview of VS Code's core features, including the command
+          palette, integrated terminal, and extensions.
+        </p>
+      </CardFooter>
+    </Card>
+  </Column>
+  <Column>
+    <Card shadow="md" style={{ marginTop: "20px" }}>
+      <CardHeader>
+        <h3>25 VS Code Productivity Tips</h3>
+      </CardHeader>
+      <CardBody>
+        <ReactPlayer
+          url="https://www.youtube.com/watch?v=ifTF3ags0XI"
+          width="100%"
+          height="100%"
+          controls
+        />
+      </CardBody>
+      <CardFooter>
+        <p>
+          Improve your workflow with tips on keyboard shortcuts, multi-line
+          editing, and useful extensions like GitLens and Quokka.
+        </p>
+      </CardFooter>
+    </Card>
+  </Column>
+</Columns>
 
-### Download and Install VSCode
-
-- Visit the [official Visual Studio Code website](https://code.visualstudio.com/).
-- Click on the download button that corresponds to your operating system
-  (Windows, macOS, or Linux).
-
-<Button
-  label="VSCode Download Page"
-  link="https://code.visualstudio.com/download"
-  variant="primary"
-/>
-
-#### **Windows:**
-
-- Run the downloaded `.exe` installer.
-- Follow the installation prompts, accepting the license agreement and
-  selecting desired installation options (e.g., adding VSCode to your PATH).
-
-#### **macOS:**
-
-- Open the downloaded `.dmg` file.
-- Drag and drop the VSCode application into the Applications folder.
-
----
-
-### Launch VSCode
-
-After installation, open VSCode from your application launcher or by
-  running `code` in your terminal (if added to PATH).
-
-## **Step 2: Install Recommended Extensions for HPC Access**
-
-To enhance your experience when working with the Tufts HPC, consider
-installing the following extensions:
-
-:::tip
-While not all of these extensions are required they are all
-**highly recommended** as they will dramatically improve your coding
-experience when using VSCode in conjunction with this workflow.
-:::
-
----
-
-### 🔒 SSH Extensions
-
-Facilitate secure connections and file transfers:
-
-- **[`SSH FS`](https://marketplace.visualstudio.com/items?itemName=Kelvin.vscode-sshfs)**  
-  Mounts SSH remote filesystems locally for easy access and editing.  
-  **Essential for connecting to the Tufts HPC.**
-
-:::note
-There are multiple options for SSH extensions in VSCode that can replace the
-functionality of `SSH FS`, but this extension is the extension used currently
-by the creators of this workflow. If you are already familiar with another
-extension, feel free to use it instead.
-:::
-
----
-
-### 🐍 Python Extensions
-
-Enhance Python development with debugging and language support:
-
-- **[`Python`](https://marketplace.visualstudio.com/items?itemName=ms-python.python)**  
-  Provides rich support for Python, including IntelliSense, linting, and debugging.
-
-- **[`Pylance`](https://marketplace.visualstudio.com/items?itemName=ms-python.vscode-pylance)**  
-  Offers fast and feature-rich language support for Python.
-
-- **[`Python Debugger`](https://marketplace.visualstudio.com/items?itemName=ms-python.python)**  
-  Integrated debugging capabilities for Python applications.
-
----
-
-### 🐍 Snakemake Extensions
-
-Streamline Snakemake workflows:
-
-- **[`Snakemake Language`](https://marketplace.visualstudio.com/items?itemName=neurocortex.snakefile)**  
-  Adds syntax highlighting and snippets for Snakemake files.
-
-- **[`Snakefmt`](https://marketplace.visualstudio.com/items?itemName=snakemake.snakefmt)**  
-  Formats Snakemake files according to best practices.
-
----
-
-### 🔧 VSCode Quality of Life Extensions
-
-Improve your coding environment with these quality-of-life extensions:
-
-- **[`indent-rainbow`](https://marketplace.visualstudio.com/items?itemName=oderwat.indent-rainbow)**  
-  Highlights indentation levels with different colors for better readability.
-
-- **[`Material Icon Theme`](https://marketplace.visualstudio.com/items?itemName=PKief.material-icon-theme)**  
-  Provides a set of icons for various file types to enhance the visual appeal of your file explorer.
-
-- **[`oh-lucy`](https://marketplace.visualstudio.com/items?itemName=Hermitter.oh-lucy-vscode)**  
-  Adds aesthetic themes and enhancements to your editor.
-
-- **[`Prettier`](https://marketplace.visualstudio.com/items?itemName=esbenp.prettier-vscode)**  
-  An opinionated code formatter that supports many languages.
-
-- **[`Todo Tree`](https://marketplace.visualstudio.com/items?itemName=Gruntfuggly.todo-tree)**  
-  Displays TODOs, FIXMEs, and other annotations in a tree view.
-
-- **[`vscode-pdf`](https://marketplace.visualstudio.com/items?itemName=tomoki1207.pdf)**  
-  Enables PDF viewing directly within VSCode.
-
----
-
-### 📄 Markdown Extensions
-
-Improve Markdown editing and linting:
-
-- **[`Markdown All in One`](https://marketplace.visualstudio.com/items?itemName=yzhang.markdown-all-in-one)**  
-  Provides comprehensive Markdown support with shortcuts and previews.
-
-- **[`markdownlint`](https://marketplace.visualstudio.com/items?itemName=DavidAnson.vscode-markdownlint)**  
-  Lints Markdown files to enforce consistent style and formatting.
-
----
-
-### 📈 Excel/CSV File Extensions
-
-Manage Excel and CSV files seamlessly:
-
-- **[`Rainbow CSV`](https://marketplace.visualstudio.com/items?itemName=mechatroner.rainbow-csv)**  
-  Highlights CSV and other delimited files with different colors for each column.
-
-- **[`Excel Viewer`](https://marketplace.visualstudio.com/items?itemName=GrapeCity.gc-excelviewer)**  
-  Allows viewing Excel files directly within VSCode.
-
----
-
-### 🗂️ Git Extensions
-
-Optimize your Git workflows:
-
-- **[`Git Graph`](https://marketplace.visualstudio.com/items?itemName=mhutchie.git-graph)**  
-  Visualize Git repositories with a comprehensive graph view.
+<Columns>
+  <Column>
+    <Card shadow="md" style={{ marginTop: "20px" }}>
+      <CardHeader>
+        <h3>Download and Install VSCode</h3>
+      </CardHeader>
+      <CardBody>
+        <p>
+          Visit the official Visual Studio Code website to download the
+          installer for your operating system.
+        </p>
+        <Button
+          label="VSCode Download Page"
+          link="https://code.visualstudio.com/download"
+          variant="primary"
+          className="button--block"
+        />
+        <div style={{ marginTop: "20px", textAlign: "left" }}>
+          <h4>Installation Instructions:</h4>
+          <details>
+            <summary>Windows</summary>
+            <ul>
+              <li>Run the downloaded <code>.exe</code> installer.</li>
+              <li>Follow the installation prompts, accepting the license agreement and selecting desired installation options (e.g., adding VSCode to your PATH).</li>
+            </ul>
+          </details>
+          <details>
+            <summary>macOS</summary>
+            <ul>
+              <li>Open the downloaded <code>.dmg</code> file.</li>
+              <li>Drag and drop the VSCode application into the Applications
+              folder.</li>
+            </ul>
+          </details>
+          <details>
+            <summary>Linux</summary>
+            <p>
+              Follow the instructions for your distribution on the VSCode
+              website.
+            </p>
+            <Button
+              label="Linux Setup Instructions"
+              link="https://code.visualstudio.com/docs/setup/linux"
+              variant="secondary"
+              className="button--block"
+            />
+          </details>
+        </div>
+      </CardBody>
+      <CardFooter>
+        <p>
+          After installation, open VSCode from your application launcher or by
+          running <code>code</code> in your terminal (if added to PATH).
+        </p>
+      </CardFooter>
+    </Card>
+  </Column>
+</Columns>
 
 ---
 
-### 📊 R Extensions
-
-Enhance R programming with debugging and documentation:
-
-- **[`R`](https://marketplace.visualstudio.com/items?itemName=Ikuyadeu.r)**  
-  Provides R language support, including syntax highlighting and snippets.
-
-- **[`R Debugger`](https://marketplace.visualstudio.com/items?itemName=RDebugger.r-debugger)**  
-  Implements debugging tools for R scripts.
-
-- **[`Doxygen Documentation Generator`](https://marketplace.visualstudio.com/items?itemName=neilding.doxygen-document-generator)**  
-  Assists in generating Doxygen-style documentation from R code.
-
----
-
-### 📌 Additional Notes
-
-- **Installation:**  
-  To install these extensions, open VSCode, navigate to the Extensions view by
-  clicking on the Extensions icon in the sidebar or pressing `Ctrl+Shift+X`
-  (`Cmd+Shift+X` on macOS), and search for each extension by name.
-
-- **Configuration:**  
-  Some extensions require additional configuration. Refer to each extension's
-  documentation for set-up and usage instructions.
-
-- **Sync Settings:**
-
-  Ensure that your VSCode settings are optimized for remote work. Consider
-  synchronizing settings across devices if you work from multiple machines.
-  You can accomplish this by signing into VSCode using a GitHub account.
-
-## **Step 3: Configuring `SSH FS` to Remotely Connect to the Tufts HPC**
+## **Step 2: Configuring `SSH FS` to Remotely Connect to the Tufts HPC**
 
 ### Set-Up SSH Keyless Access to the Tufts HPC
 
@@ -284,7 +252,7 @@ TODO: Write this section
 TODO: Write this section 
 */}
 
-## **Step 4: Learning to Connect and Navigate the Tufts HPC in VSCode**
+## **Step 3: Learning to Connect and Navigate the Tufts HPC in VSCode**
 
 ### Command Line Access
 
@@ -297,3 +265,225 @@ TODO: Write this section
 {/* 
 TODO: Write this section 
 */}
+
+---
+
+## **Step 4: Install Recommended Extensions for HPC Access**
+
+To enhance your experience when working with the Tufts HPC, consider
+installing the following extensions:
+
+:::tip
+While not all of these extensions are required they are all
+**highly recommended** as they will dramatically improve your coding
+experience when using VSCode in conjunction with this workflow.
+:::
+
+<Columns style={{ marginBottom: "20px" }}>
+  <Column>
+    <Card shadow="md">
+      <CardHeader>
+        <h3>📌 Additional Notes</h3>
+      </CardHeader>
+      <CardBody>
+        <ul>
+          <li>
+            <strong>Installation:</strong> To install these extensions, open
+            VSCode, navigate to the Extensions view by clicking on the
+            Extensions icon in the sidebar or pressing <code>Ctrl+Shift+X</code>
+            (<code>Cmd+Shift+X</code> on macOS), and search for each extension
+            by name.
+          </li>
+          <li>
+            <strong>Configuration:</strong> Some extensions require additional
+            configuration. Refer to each extension's documentation for set-up
+            and usage instructions.
+          </li>
+          <li>
+            <strong>Sync Settings:</strong> Ensure that your VSCode settings
+            are optimized for remote work. Consider synchronizing settings
+            across devices if you work from multiple machines. You can
+            accomplish this by signing into VSCode using a GitHub account.
+          </li>
+        </ul>
+      </CardBody>
+    </Card>
+  </Column>
+</Columns>
+
+<Columns>
+  <Column style={{ marginBottom: "20px" }}>
+    <Card shadow="md">
+      <CardHeader>
+        ### 🔒 SSH Extensions
+      </CardHeader>
+      <CardBody>
+        <p>Facilitate secure connections and file transfers:</p>
+        <ul>
+          <li>
+            <strong><a href="https://marketplace.visualstudio.com/items?itemName=Kelvin.vscode-sshfs"><code>SSH FS</code></a></strong>: Mounts SSH remote filesystems locally for easy access and editing. <strong>Essential for connecting to the Tufts HPC.</strong>
+          </li>
+        </ul>
+        :::note
+          There are multiple options for SSH extensions in VSCode that can
+          replace the functionality of <code>SSH FS</code>, but this extension
+          is the extension used currently by the creators of this workflow. If
+          you are already familiar with another extension, feel free to use it
+          instead.
+        :::
+      </CardBody>
+    </Card>
+  </Column>
+  <Column style={{ marginBottom: "20px" }}>
+    <Card shadow="md">
+      <CardHeader>
+        ### 🐍 Python Extensions
+      </CardHeader>
+      <CardBody>
+        <p>Enhance Python development with debugging and language support:</p>
+        <ul>
+          <li>
+            <strong><a href="https://marketplace.visualstudio.com/items?itemName=ms-python.python"><code>Python</code></a></strong>: Provides rich support for Python, including IntelliSense, linting, and debugging.
+          </li>
+          <li>
+            <strong><a href="https://marketplace.visualstudio.com/items?itemName=ms-python.vscode-pylance"><code>Pylance</code></a></strong>: Offers fast and feature-rich language support for Python.
+          </li>
+          <li>
+            <strong><a href="https://marketplace.visualstudio.com/items?itemName=ms-python.python"><code>Python Debugger</code></a></strong>: Integrated debugging capabilities for Python applications.
+          </li>
+        </ul>
+      </CardBody>
+    </Card>
+  </Column>
+</Columns>
+
+<Columns>
+  <Column style={{ marginBottom: "20px" }}>
+    <Card shadow="md">
+      <CardHeader>
+        ### 🐍 Snakemake Extensions
+      </CardHeader>
+      <CardBody>
+        <p>Streamline Snakemake workflows:</p>
+        <ul>
+          <li>
+            <strong><a href="https://marketplace.visualstudio.com/items?itemName=Snakemake.snakemake-lang"><code>Snakemake Language</code></a></strong>: Adds syntax highlighting and snippets for Snakemake files.
+          </li>
+          <li>
+            <strong><a href="https://marketplace.visualstudio.com/items?itemName=tfehlmann.snakefmt"><code>Snakefmt</code></a></strong>: Formats Snakemake files according to best practices.
+          </li>
+        </ul>
+      </CardBody>
+    </Card>
+  </Column>
+  <Column style={{ marginBottom: "20px" }}>
+    <Card shadow="md">
+      <CardHeader>
+        ### 📄 Markdown Extensions
+      </CardHeader>
+      <CardBody>
+        <p>Improve Markdown editing and linting:</p>
+        <ul>
+          <li>
+            <strong><a href="https://marketplace.visualstudio.com/items?itemName=yzhang.markdown-all-in-one"><code>Markdown All in One</code></a></strong>: Provides comprehensive Markdown support with shortcuts and previews.
+          </li>
+          <li>
+            <strong><a href="https://marketplace.visualstudio.com/items?itemName=DavidAnson.vscode-markdownlint"><code>markdownlint</code></a></strong>: Lints Markdown files to enforce consistent style and formatting.
+          </li>
+        </ul>
+      </CardBody>
+    </Card>
+  </Column>
+</Columns>
+
+<Columns>
+  <Column style={{ marginBottom: "20px" }}>
+    <Card shadow="md">
+      <CardHeader>
+        ### 📈 Excel/CSV File Extensions
+      </CardHeader>
+      <CardBody>
+        <p>Manage Excel and CSV files seamlessly:</p>
+        <ul>
+          <li>
+            <strong><a href="https://marketplace.visualstudio.com/items?itemName=mechatroner.rainbow-csv"><code>Rainbow CSV</code></a></strong>: Highlights CSV and other delimited files with different colors for each column.
+          </li>
+          <li>
+            <strong><a href="https://marketplace.visualstudio.com/items?itemName=GrapeCity.gc-excelviewer"><code>Excel Viewer</code></a></strong>: Allows viewing Excel files directly within VSCode.
+          </li>
+        </ul>
+      </CardBody>
+    </Card>
+  </Column>
+  <Column style={{ marginBottom: "20px" }}>
+    <Card shadow="md">
+      <CardHeader>
+        ### 🗂️ Git Extensions
+      </CardHeader>
+      <CardBody>
+        <p>Optimize your Git workflows:</p>
+        <ul>
+          <li>
+            <strong><a href="https://marketplace.visualstudio.com/items?itemName=mhutchie.git-graph"><code>Git Graph</code></a></strong>: Visualize Git repositories with a comprehensive graph view.
+          </li>
+        </ul>
+      </CardBody>
+    </Card>
+  </Column>
+</Columns>
+
+<Columns>
+  <Column style={{ marginBottom: "20px" }}>
+    <Card shadow="md">
+      <CardHeader>
+        ### 📊 R Extensions
+      </CardHeader>
+      <CardBody>
+        <p>Enhance R programming with debugging and documentation:</p>
+        <ul>
+          <li>
+            <strong><a href="https://marketplace.visualstudio.com/items?itemName=Ikuyadeu.r"><code>R</code></a></strong>: Provides R language support, including syntax highlighting and snippets.
+          </li>
+          <li>
+            <strong><a href="https://marketplace.visualstudio.com/items?itemName=RDebugger.r-debugger"><code>R Debugger</code></a></strong>: Implements debugging tools for R scripts.
+          </li>
+          <li>
+            <strong><a href="https://marketplace.visualstudio.com/items?itemName=neilding.doxygen-document-generator"><code>Doxygen Documentation Generator</code></a></strong>: Assists in generating Doxygen-style documentation from R code.
+          </li>
+        </ul>
+      </CardBody>
+    </Card>
+  </Column>
+  <Column style={{ marginBottom: "20px" }}>
+    <Card shadow="md">
+      <CardHeader>
+        ### 🔧 VSCode Quality of Life Extensions
+      </CardHeader>
+      <CardBody>
+        <p>
+          Improve your coding environment with these quality-of-life extensions:
+        </p>
+        <ul>
+          <li>
+            <strong><a href="https://marketplace.visualstudio.com/items?itemName=oderwat.indent-rainbow"><code>indent-rainbow</code></a></strong>: Highlights indentation levels with different colors for better readability.
+          </li>
+          <li>
+            <strong><a href="https://marketplace.visualstudio.com/items?itemName=PKief.material-icon-theme"><code>Material Icon Theme</code></a></strong>: Provides a set of icons for various file types.
+          </li>
+          <li>
+            <strong><a href="https://marketplace.visualstudio.com/items?itemName=Hermitter.oh-lucy-vscode"><code>oh-lucy</code></a></strong>: Adds aesthetic themes and enhancements to your editor.
+          </li>
+          <li>
+            <strong><a href="https://marketplace.visualstudio.com/items?itemName=esbenp.prettier-vscode"><code>Prettier</code></a></strong>: An opinionated code formatter that supports many languages.
+          </li>
+          <li>
+            <strong><a href="https://marketplace.visualstudio.com/items?itemName=Gruntfuggly.todo-tree"><code>Todo Tree</code></a></strong>: Displays TODOs and other annotations in a tree view.
+          </li>
+          <li>
+            <strong><a href="https://marketplace.visualstudio.com/items?itemName=tomoki1207.pdf"><code>vscode-pdf</code></a></strong>: Enables PDF viewing directly within VSCode.
+          </li>
+        </ul>
+      </CardBody>
+    </Card>
+  </Column>
+</Columns>

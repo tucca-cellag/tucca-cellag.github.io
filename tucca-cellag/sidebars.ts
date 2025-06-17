@@ -24,18 +24,6 @@ const sidebars: SidebarsConfig = {
     'tucca-rna-seq/introduction',
     {
       type: 'category',
-      label: 'Background Learning',
-      collapsed: true,
-      items: [
-        'tucca-rna-seq/background-learning/learn-rna-seq',
-        'tucca-rna-seq/background-learning/learn-unix',
-        'tucca-rna-seq/background-learning/learn-r',
-        'tucca-rna-seq/background-learning/learn-vscode',
-        'tucca-rna-seq/background-learning/learn-chatgpt',
-      ],
-    },
-    {
-      type: 'category',
       label: 'Getting Started',
       collapsed: false,
       items: [

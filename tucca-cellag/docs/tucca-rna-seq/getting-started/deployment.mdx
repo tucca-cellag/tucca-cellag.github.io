@@ -27,7 +27,15 @@ with any questions.
 Thank you for your patience
 :::
 
-# Workflow Installation
+# Workflow Deployment
+
+First, let's define what "deployment" means. In this context, **deployment** is
+the process of setting up and running the `tucca-rna-seq` workflow in your
+chosen computing environment, whether that's your personal computer or a
+high-performance computing (HPC) cluster.
+
+This guide will walk you through the different ways you can deploy and run this
+workflow, each offering a different balance of simplicity and reproducibility.
 
 :::tip
 If you are Tufts staff/student/faculty, please refer to the Tufts HPC-specific
@@ -43,130 +51,491 @@ workflow documentation:
 
 ---
 
-### 0a. Deciding how you will run the workflow
+## The Philosophy: Reproducibility First
 
-TODO: Explain that this workflow requires Snakemake and conda (developed using
-miniforge) (https://snakemake.readthedocs.io/en/stable/snakefiles/deployment.html#integrated-package-management)
+Before diving into the tools, it's important to understand *why* we use them.
+Scientific results need to be reproducible, but this can be challenging in
+computational biology where software versions and system configurations vary.
+Our workflow is built on a combination of tools that solve this problem.
 
-TODO: Additionally/recommended Singularity or Apptainer (developed using Singularity) (https://snakemake.readthedocs.io/en/stable/snakefiles/deployment.html#ad-hoc-combination-of-conda-package-management-with-containers)
+### Snakemake: The Recipe Book
 
-TODO: Explain https://snakemake.readthedocs.io/en/stable/executing/cli.html#profiles
+At its core, our workflow is managed by **Snakemake**.
 
-TODO: Explain executor plugins available (https://snakemake.github.io/snakemake-plugin-catalog/index.html)
+Think of **Snakemake** as a smart recipe book for data analysis. Each analysis
+step (like aligning reads or counting genes) is a "rule," similar to a recipe.
+Each rule clearly defines its inputs (ingredients) and outputs (the dish).
+Snakemake automatically determines the correct order to run these rules, and if
+a file is changed, it knows exactly which steps need to be re-run.
 
-TODO: Explain profile configured for slurm on Tufts HPC (https://github.com/snakemake/snakemake-executor-plugin-slurm)
+### The Reproducibility Problem: Why Your "Oven" Matters
 
-TODO: Explain profile configured for GitHub Actions
+Imagine two people trying to bake the exact same cake using the same recipe.
+One person uses a modern convection oven, while the other uses an older gas
+oven. Even with the same ingredients, the different ovens (their "environment")
+can produce slightly different cakes.
 
-TODO: Explain executor plugins available (https://snakemake.github.io/snakemake-plugin-catalog/index.html)
+This is a common problem in bioinformatics. A script that works perfectly on
+one computer might fail or produce different results on another. This is
+because the "environment"—including the operating system and the specific
+versions of software tools—is different.
 
-TODO: Explain RAM/Storage requirements
+<Card shadow="md" style={{ marginTop: "20px" }}>
+  <CardHeader>
+    <h2>The "It Worked on My Machine" Problem</h2>
+  </CardHeader>
+  <CardBody>
+    <p>
+      In this example, Person #1 can run the analysis successfully. When Person
+      #2 tries to run the same analysis on their computer, it fails because of
+      different software versions. This is a classic reproducibility issue.
+    </p>
+    <CardImage
+      cardImageUrl="https://nbisweden.github.io/excelerate-scRNAseq/logos/conda_illustration.png"
+      alt="A diagram showing how different computer environments can lead to errors."
+      title="Inconsistent environments lead to failed analyses."
+    />
+  </CardBody>
+</Card>
 
-**SSH**, or **Secure Shell**, is a protocol that allows you to securely
-connect to remote servers over a network. An **HPC**, or **High-Performance
-Compute** cluster, is a remote network of servers that provide powerful
-computational resources for executing complex simulations and data analyses
-enabling researchers and students to perform large-scale computations
-more efficiently, than if they were ran on their own hardware. Many HPC
-clusters must be accessed via SHH, to ensure that your data and commands are
-transmitted securely. 
+### Containers: The Perfect "Meal Kit"
 
-:::info
+To solve the environment problem, we use **containers**.
 
-If you are not familiar with high-performance computing you can check out
-these fantastic resources about to learn more:
+A container is like a standardized "meal kit" lunch box. It doesn't just
+contain the ingredients (the code and data), but also the *exact* miniature
+kitchen appliances (specific software versions) and the recipe book (the
+operating system) needed to make the meal perfectly every time.
 
+When you run the workflow using a container, you're running it in a consistent,
+pre-configured environment. This ensures that the analysis will produce the
+exact same results, regardless of what machine it's run on. This is the gold
+standard for reproducible science.
+
+<Card shadow="md" style={{ marginTop: "20px" }}>
+  <CardHeader>
+    <h2>How Containers Create Consistency</h2>
+  </CardHeader>
+  <CardBody>
+    <p>
+      On the left, traditional applications rely on the host operating system's
+      libraries, which can vary. On the right, containers bundle their own
+      libraries, ensuring the application always runs in the exact same
+      environment.
+    </p>
+    <CardImage
+      cardImageUrl="https://www.googleapis.com/download/storage/v1/b/kaggle-forum-message-attachments/o/inbox%2F22172158%2F06eee71eaf3a645680e4c0e37d842d15%2Fconta.png?generation=1725997503681420&alt=media"
+      alt="A diagram comparing a traditional OS to a containerized system."
+      title="Containers bundle dependencies, ensuring consistency across systems."
+    />
+  </CardBody>
+</Card>
+
+---
+
+## Recommended Deployment Strategy
+
+Our workflow combines these three technologies—Snakemake, Conda, and
+Apptainer—for a robust and reproducible analysis.
+
+{/* TODO: Add a High-Level Diagram of the Tech Stack */}
+
+<Columns style={{ marginBottom: "20px" }}>
+  <Column style={{ display: 'flex' }}>
+    <Card shadow="md" style={{ marginTop: "20px", flexGrow: 1 }}>
+      <CardHeader>
+        <h3>Apptainer / Singularity</h3>
+      </CardHeader>
+      <CardBody>
+        <p>
+          The container runtime that allows you to run the workflow in a
+          self-contained environment. We use it to run a Docker container image.
+        </p>
+
+        <Button
+          label="Apptainer User Guide"
+          link="https://apptainer.org/docs/user/main/"
+          variant="primary"
+          className="button--block"
+        />
+        <Button
+          label="Snakemake & Containers"
+          link="https://snakemake.readthedocs.io/en/stable/snakefiles/deployment.html#running-jobs-in-containers"
+          variant="secondary"
+          className="button--block"
+          style={{ marginTop: "10px" }}
+        />
+      </CardBody>
+    </Card>
+  </Column>
+  <Column style={{ display: 'flex' }}>
+    <Card shadow="md" style={{ marginTop: "20px", flexGrow: 1 }}>
+      <CardHeader>
+        <h3>Conda</h3>
+      </CardHeader>
+      <CardBody>
+        <p>
+          The package manager that operates <strong>inside the container</strong> to manage the specific software packages required by the Snakemake rules.
+        </p>
+        <Button
+          label="Docker Hub: continuumio/miniconda3"
+          link="https://hub.docker.com/r/continuumio/miniconda3"
+          variant="primary"
+          className="button--block"
+        />
+        <Button
+          label="Conda User Guide"
+          link="https://docs.conda.io/projects/conda/en/latest/user-guide/index.html"
+          variant="secondary"
+          className="button--block"
+          style={{ marginTop: "10px" }}
+        />
+      </CardBody>
+    </Card>
+  </Column>
+  <Column style={{ display: 'flex' }}>
+    <Card shadow="md" style={{ marginTop: "20px", flexGrow: 1 }}>
+      <CardHeader>
+        <h3>Snakemake</h3>
+      </CardHeader>
+      <CardBody>
+        <p>
+          The workflow management system that orchestrates the analysis, using
+          Conda to create reproducible environments for each step.
+        </p>
+        <p style={{ marginTop: "10px", marginBottom: "4px", fontSize: "0.9em",
+        fontStyle: "italic" }}>
+          This is the most important page to visit when learning how to execute,
+          debug, and configure your workflow.
+        </p>
+        <Button
+          label="Command Line Interface (CLI) Docs"
+          link="https://snakemake.readthedocs.io/en/stable/executing/cli.html"
+          variant="primary"
+          className="button--block"
+        />
+        <Button
+          label="Official Documentation Home"
+          link="https://snakemake.readthedocs.io/en/stable/"
+          variant="secondary"
+          className="button--block"
+          style={{ marginTop: "10px" }}
+        />
+        <p style={{ marginTop: "10px", marginBottom: "4px", fontSize: "0.9em", fontStyle: "italic" }}>
+          While the official tutorial is a great start, we recommend the one
+          from The Carpentries for its detailed, bioinformatics-focused
+          approach.
+        </p>
+        <Button
+          label="Offical Beginner's Tutorial"
+          link="https://snakemake.readthedocs.io/en/stable/tutorial/tutorial.html"
+          variant="secondary"
+          className="button--block"
+          style={{ marginTop: "10px" }}
+        />
+        <Button
+          label="Snakemake Bioinformatics Tutorial (The Carpentries)"
+          link="https://carpentries-incubator.github.io/snakemake-novice-bioinformatics/"
+          variant="info"
+          className="button--block"
+          style={{ marginTop: "10px" }}
+        />
+        <p style={{ marginTop: "10px", marginBottom: "4px", fontSize: "0.9em",
+        fontStyle: "italic" }}>
+          For more advanced needs, or when information isn't in the main docs,
+          the API reference is useful.
+        </p>
+        <Button
+          label="API Reference"
+          link="https://snakemake-api.readthedocs.io/en/stable/"
+          variant="secondary"
+          className="button--block"
+        />
+      </CardBody>
+    </Card>
+  </Column>
+</Columns>
+
+:::warning[A Note on Installation]
+Installing Apptainer/Singularity requires administrator (root) privileges,
+which can make it difficult to set up on a personal machine. 
+
+However, because it is a standard tool in scientific computing, most HPC
+clusters already have it installed. We recommend checking your HPC's
+documentation or contacting its support team to confirm before you start.
+:::
+
+---
+
+### Using Execution Profiles
+
+Snakemake **profiles** are small configuration files that let you specify
+default settings for running a workflow in a specific environment. This allows
+you to avoid typing out a long and complex command with all of your desired
+configuration options every time. For example, the full command to run this
+workflow using the settings in the [default Slurm profile][4] configured for the
+Tufts HPC is:
+
+```bash title="> bash"
+snakemake all \
+    --executor slurm \
+    --use-singularity \
+    --use-conda \
+    --conda-cleanup-pkgs tarballs \
+    --verbose \
+    --show-failed-logs \
+    --jobs 100 \
+    --latency-wait 120 \
+    --default-resources slurm_partition=batch slurm_account=default runtime=4320 mem_mb=32000 cpus_per_task=12 slurm_extra='"--mail-type=ALL --mail-user=firstname.lastname@tufts.edu"' \
+    --set-resources star_index:mem_mb=64000
+```
+
+Instead of typing that, you can simply activate the pre-configured Slurm
+profile, which contains all of those settings:
+
+```bash title="> bash"
+snakemake all --workflow-profile profiles/slurm
+```
+
+<Columns style={{ marginBottom: "20px" }}>
+  <Column>
+    <Card shadow="md">
+      <CardHeader>
+        <h3>Pre-configured Profiles</h3>
+      </CardHeader>
+      <CardBody>
+        <p>We have pre-configured profiles for:</p>
+        <ul>
+          <li>
+            <strong>Tufts HPC</strong>: This profile automatically configures
+            Snakemake to submit jobs to the <strong>Slurm</strong> job
+            scheduler on the Tufts cluster.
+          </li>
+          <li>
+            <strong>GitHub Actions</strong>: This profile allows the workflow to
+            be automatically tested as part of a continuous integration (CI)
+            pipeline on GitHub, ensuring the code remains functional.
+          </li>
+        </ul>
+        <Columns style={{ marginTop: "10px" }}>
+          <Column>
+            <Button
+              label="View Snakemake Docs on Profiles"
+              link="https://snakemake.readthedocs.io/en/stable/executing/cli.html#profiles"
+              variant="secondary"
+              className="button--block"
+            />
+          </Column>
+          <Column>
+            <Button
+              label="Browse tucca-rna-seq Profiles on GitHub"
+              link="https://github.com/tucca-cellag/tucca-rna-seq/tree/main/profiles"
+              variant="secondary"
+              className="button--block"
+            />
+          </Column>
+        </Columns>
+      </CardBody>
+    </Card>
+  </Column>
+</Columns>
+
+:::note[A Note on Modern Snakemake Profiles (v8+)]
+
+With the release of Snakemake version 8, the role of profiles has evolved.
+
+Previously, complex profiles (like the popular `Snakemake-Profiles/slurm`
+cookiecutter) handled all aspects of cluster execution. In modern Snakemake,
+this core functionality is managed by dedicated **executor plugins** (e.g.,
+`snakemake-executor-plugin-slurm`).
+
+Profiles are still essential, but their role has shifted to **fine-tuning these
+plugins** for a specific site or cluster. They are now much simpler, often
+consisting of just a YAML configuration file (`config.yaml`) that specifies
+settings for the executor. The profiles in this project follow this modern,
+simplified approach. For more details, consult the official documentation for
+the relevant [executor plugin][3]. Some documentation has not been updated to
+reflect this, so we note this here as it may lead to some confusion.
+:::
+
+:::info[Running a Full Analysis on GitHub Actions]
+If you don't have access to an HPC, you can repurpose our GitHub Actions
+profile and testing workflow to run your full analysis. This requires using a
+runner with sufficient RAM and storage for your project, which you can achieve
+by either paying for a larger GitHub-hosted runner or by self-hosting your own.
+Please be aware that the default workflow configuration on default runners is
+only suitable for small genomes (e.g., *Saccharomyces cerevisiae*).
+:::
+
+<Columns>
+  <Column>
+    <Card shadow="md" style={{ marginTop: "20px" }}>
+      <CardHeader>
+        <h3>Explore Other Execution Environments</h3>
+      </CardHeader>
+      <CardBody>
+        <p>
+          Snakemake is compatible with a wide range of job schedulers and cloud
+          environments. If your institution uses a different system, you can
+          likely adapt this workflow by using the appropriate executor plugin.
+        </p>
+        <strong>HPC Schedulers</strong>
+        <ul>
+          <li>
+            <strong>SLURM</strong>: A widely used cluster management and job
+            scheduling system for Linux clusters.
+          </li>
+          <li>
+            <strong>LSF</strong>: A workload management platform for distributed
+            HPC environments.
+          </li>
+        </ul>
+        <strong>Cloud Platforms & Container Orchestration</strong>
+        <ul>
+          <li>
+            <strong>Kubernetes</strong>: For deploying and managing
+            containerized workflows on a container cluster.
+          </li>
+          <li>
+            <strong>AWS Batch</strong>: A service for running batch computing
+            workloads on Amazon Web Services.
+          </li>
+          <li>
+            <strong>Google Cloud Batch</strong>: For running batch jobs on
+            Google Cloud Platform.
+          </li>
+          <li>
+            <strong>Microsoft Azure Batch</strong>: A platform for running
+            large-scale parallel and HPC applications in Azure.
+          </li>
+        </ul>
+        <p style={{ marginTop: "16px" }}>
+          The official Snakemake Plugin Catalog provides a comprehensive and
+          up-to-date list of all available executor plugins.
+        </p>
+        <Button
+          label="View the Full Executor Plugin Catalog"
+          link="https://snakemake.github.io/snakemake-plugin-catalog/"
+          variant="secondary"
+          className="button--block"
+        />
+      </CardBody>
+    </Card>
+  </Column>
+</Columns>
+
+### Resource Requirements (RAM/Storage/Time)
+
+The computational resources required to run this workflow will vary depending
+on the size of your input files (the number of samples and sequencing depth).
+Before launching a large-scale analysis on an HPC cluster, we highly recommend
+running the workflow on a small subset of your data first. This will give you a
+benchmark for estimating the total time, memory (RAM), and storage space your
+full analysis will require.
+
+---
+
+### Alternative: Running Locally (Conda-Only)
+
+It is possible to run the workflow on a local machine (e.g., a personal laptop
+or workstation) using only Conda to manage the software dependencies, without
+the Apptainer/Singularity container. This can be done by invoking Snakemake
+with the --use-conda flag and ensuring you do not include the --use-singularity
+flag.
+
+:::warning[Not Recommended]
+While this method is simpler to set up for a local run, we do not advise it for
+producing final or published results. Bypassing the container means the
+analysis is no longer isolated in a standardized environment. This can lead to
+reproducibility issues, as subtle differences in your computer's operating
+system or system-level libraries could cause the workflow to fail or produce
+different results on another machine. The containerized approach is the gold 
+standard for ensuring your analysis is fully reproducible.
+:::
+
+---
+
+## Working on a High-Performance Compute (HPC) Cluster
+
+A **High-Performance Compute (HPC)** cluster is a network of powerful servers
+designed for complex data analysis. Many researchers use HPC clusters to run
+bioinformatics workflows because they can process large datasets much faster
+than a personal computer.
+
+You typically connect to an HPC cluster using **SSH (Secure Shell)**, which
+provides a secure command-line interface to the remote servers.
+
+### HPC Learning Materials
+
+:::info[New to HPC?]
+If you are not familiar with high-performance computing, these resources are a
+great place to start.
 <Tabs>
   <TabItem value="hpc-carpentry" label="HPC Carpentry Lessons">
-
-    <p>HPC Carpentry teaches basic skills for high-performance computing</p>
-
-    <p></p>
-
+    <p>
+      HPC Carpentry teaches foundational skills for high-performance computing.
+    </p>
     <Button
-      label="HPC Carpentry"
+      label="Visit HPC Carpentry"
       link="https://www.hpc-carpentry.org/"
       variant="primary"
     />
-
   </TabItem>
   <TabItem value="hpc-mainpage" label="Tufts HPC Home Page">
-
-    <p>Tuft's Technology Service's (TTS) home page for the Tufts University
-    HPC</p>
-
-    <p></p>
-
+    <p>
+      Tufts Technology Service's (TTS) home page for the Tufts University HPC
+      cluster.
+    </p>
     <Button
-      label="HPC Home Page"
+      label="Go to HPC Home Page"
       link="https://it.tufts.edu/high-performance-computing"
       variant="primary"
     />
-
   </TabItem>
-  <TabItem value="hpc-docs" label="Tufts HPC User Guide and Documentation">
-
-    <p>Tufts University HPC user guide and technical documentation provided
-    by TTS Research Technology</p>
-
-    <p></p>
-
+  <TabItem value="hpc-docs" label="Tufts HPC User Guide">
+    <p>
+      Technical documentation for the Tufts HPC cluster, provided by TTS
+      Research Technology.
+    </p>
     <Button
-      label="HPC User Guide and Documentation"
+      label="Read the HPC User Guide"
       link="https://rtguides.it.tufts.edu/hpc/"
       variant="primary"
     />
-
   </TabItem>
 </Tabs>
-
 :::
 
-:::tip
+## Recommended Tool: Visual Studio Code (VSCode)
 
-For using this workflow, we highly recommend using an integrated development
-environment (IDE), such as **VSCode**.
+We highly recommend using an integrated development environment (IDE) like
+**VSCode** to interact with this workflow, especially when working on an HPC
+cluster.
 
-**Visual Studio Code (VSCode)** is a free, open-source code editor
-developed by Microsoft. It's widely used for software development due to
-its versatility, rich feature set, and extensive extension ecosystem. In
-the context of interacting with the Tufts High-Performance Computing (HPC)
-resources, VSCode offers several advantages:
-
-- **Remote Development**: VSCode can seamlessly connect to remote servers,
-  allowing you to edit files, run code, and manage projects directly on the
-  HPC without leaving your local environment.
-  
-- **Integrated Terminal**: Access the HPC terminal within VSCode, enabling
-  efficient command-line operations alongside your coding activities.
-  
-- **Extensions and Customization**: Enhance your development experience
-  with extensions tailored for specific programming languages, debugging
-  tools, and workflow optimizations.
+**VSCode** is a free, powerful code editor that can connect to remote servers
+via SSH. This allows you to edit files, run commands, and manage your workflow
+on the HPC cluster directly from a user-friendly interface on your local
+machine.
 
 <Button
-  label="Setting Up Tufts HPC Access in VSCode"
+  label="Learn to Set Up Tufts HPC Access in VSCode"
   link="/helpful-resources/tufts-hpc-in-vscode"
   variant="primary"
   style={{ marginBottom: '20px' }}
 />
 
-:::
-
-## Learning Resources for Visual Studio Code
-
-Visual Studio Code is a powerful and versatile code editor. Here are some resources to help you get started and become more productive.
+### Learning Resources for VSCode
 
 <Columns>
   <Column>
-    <Card shadow="md">
+    <Card shadow="md" style={{ marginTop: "20px" }}>
       <CardHeader>
         <h3>Official Documentation</h3>
       </CardHeader>
       <CardBody>
         <p>
-          The official VS Code documentation is the best place to start. It
-          covers everything from basic setup to advanced features.
+          The official docs are the best place to start, covering everything
+          from basic setup to advanced features.
         </p>
         <Button
           label="VS Code Docs"
@@ -175,7 +544,7 @@ Visual Studio Code is a powerful and versatile code editor. Here are some resour
           className="button--block"
         />
         <Button
-          label="Getting Started"
+          label="Getting Started Guide"
           link="https://code.visualstudio.com/docs/getstarted/getting-started"
           variant="secondary"
           className="button--block"
@@ -192,7 +561,7 @@ Visual Studio Code is a powerful and versatile code editor. Here are some resour
     </Card>
   </Column>
   <Column>
-    <Card shadow="md">
+    <Card shadow="md" style={{ marginTop: "20px" }}>
       <CardHeader>
         <h3>VS Code in 100 Seconds</h3>
       </CardHeader>
@@ -205,12 +574,15 @@ Visual Studio Code is a powerful and versatile code editor. Here are some resour
         />
       </CardBody>
       <CardFooter>
-        <p>A quick and concise introduction to the key features of VS Code.</p>
+        <p>
+          A quick overview of VS Code's core features, including the command
+          palette, integrated terminal, and extensions.
+        </p>
       </CardFooter>
     </Card>
   </Column>
   <Column>
-    <Card shadow="md">
+    <Card shadow="md" style={{ marginTop: "20px" }}>
       <CardHeader>
         <h3>25 VS Code Productivity Tips</h3>
       </CardHeader>
@@ -224,9 +596,15 @@ Visual Studio Code is a powerful and versatile code editor. Here are some resour
       </CardBody>
       <CardFooter>
         <p>
-          Boost your productivity with these tips and speed hacks for VS Code.
+          Improve your workflow with tips on keyboard shortcuts, multi-line
+          editing, and useful extensions like GitLens and Quokka.
         </p>
       </CardFooter>
     </Card>
   </Column>
 </Columns>
+
+[1]: https://snakemake.readthedocs.io/en/stable/
+[2]: https://docs.conda.io/en/latest/
+[3]: https://snakemake.github.io/snakemake-plugin-catalog/
+[4]: https://github.com/tucca-cellag/tucca-rna-seq/blob/main/profiles/slurm/config.v8%2B.yaml
