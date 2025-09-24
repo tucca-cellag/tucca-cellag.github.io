@@ -2,14 +2,316 @@
 title: Useful R/RStudio Extensions
 ---
 
-:::warning
-**🚧 Coming Soon! 🚧**
+import Link from '@docusaurus/Link';
+import Button from "@site/src/components/Button";
+import Card from "@site/src/components/Card";
+import CardHeader from "@site/src/components/Card/CardHeader";
+import CardBody from "@site/src/components/Card/CardBody";
+import CardFooter from "@site/src/components/Card/CardFooter";
+import Columns from "@site/src/components/Columns";
+import Column from "@site/src/components/Column";
 
-Our website is currently under construction and will be launching soon.
-Stay tuned!
+# Useful R/RStudio Extensions
 
-In the meantime, feel free to [contact us](mailto:benjamin.bromberg@tufts.edu)
-with any questions.
+This guide covers essential R and RStudio extensions that will enhance your
+bioinformatics workflow and make working with the `tucca-rna-seq` results more
+efficient and enjoyable.
 
-Thank you for your patience
-:::
+---
+
+## Essential RStudio Extensions
+
+### 1. **Code Quality and Productivity**
+
+<Columns>
+  <Column>
+    <Card shadow="md">
+      <CardHeader>
+        <h4>🔍 Code Diagnostics</h4>
+      </CardHeader>
+      <CardBody>
+        <p>Improve code quality and catch errors early.</p>
+        <ul>
+          <li><strong>lintr</strong>: R code linting</li>
+          <li><strong>styler</strong>: Code formatting</li>
+          <li><strong>goodpractice</strong>: Best practices checker</li>
+        </ul>
+      </CardBody>
+    </Card>
+  </Column>
+
+  <Column>
+    <Card shadow="md">
+      <CardHeader>
+        <h4>⚡ Productivity Tools</h4>
+      </CardHeader>
+      <CardBody>
+        <p>Speed up your coding workflow.</p>
+        <ul>
+          <li><strong>usethis</strong>: Package development tools</li>
+          <li><strong>devtools</strong>: Development utilities</li>
+          <li><strong>roxygen2</strong>: Documentation generation</li>
+        </ul>
+      </CardBody>
+    </Card>
+  </Column>
+</Columns>
+
+### 2. **Data Science and Visualization**
+
+<Columns>
+  <Column>
+    <Card shadow="md">
+      <CardHeader>
+        <h4>📊 Data Manipulation</h4>
+      </CardHeader>
+      <CardBody>
+        <p>Essential packages for data analysis.</p>
+        <ul>
+          <li><strong>tidyverse</strong>: Data science ecosystem</li>
+          <li><strong>data.table</strong>: Fast data operations</li>
+          <li><strong>dplyr</strong>: Data manipulation verbs</li>
+        </ul>
+      </CardBody>
+    </Card>
+  </Column>
+
+  <Column>
+    <Card shadow="md">
+      <CardHeader>
+        <h4>🎨 Visualization</h4>
+      </CardHeader>
+      <CardBody>
+        <p>Create publication-ready plots.</p>
+        <ul>
+          <li><strong>ggplot2</strong>: Grammar of graphics</li>
+          <li><strong>plotly</strong>: Interactive plots</li>
+          <li><strong>patchwork</strong>: Plot composition</li>
+        </ul>
+      </CardBody>
+    </Card>
+  </Column>
+</Columns>
+
+---
+
+## Bioinformatics-Specific Extensions
+
+### 1. **Bioconductor Core**
+
+```r
+# Install Bioconductor
+if (!require("BiocManager", quietly = TRUE))
+    install.packages("BiocManager")
+BiocManager::install()
+
+# Core packages
+BiocManager::install(c(
+    "Biobase",
+    "BiocGenerics",
+    "S4Vectors",
+    "IRanges"
+))
+```
+
+### 2. **RNA-Seq Analysis**
+
+```r
+# Differential expression
+BiocManager::install(c(
+    "DESeq2",
+    "edgeR",
+    "limma"
+))
+
+# Quality control
+BiocManager::install(c(
+    "fastqcr",
+    "ShortRead",
+    "Biostrings"
+))
+```
+
+### 3. **Functional Enrichment**
+
+```r
+# Enrichment analysis
+BiocManager::install(c(
+    "clusterProfiler",
+    "enrichplot",
+    "DOSE"
+))
+
+# Pathway analysis
+BiocManager::install(c(
+    "pathview",
+    "SPIA",
+    "ReactomePA"
+))
+```
+
+---
+
+## RStudio IDE Extensions
+
+### 1. **Code Navigation**
+
+- **Bookmarks**: Mark important code sections
+- **Breadcrumbs**: Navigate file structure
+- **Code Outline**: View function structure
+- **Find in Files**: Search across project
+
+### 2. **Version Control**
+
+- **Git Integration**: Built-in Git support
+- **Git History**: View file changes
+- **Git Branches**: Manage branches
+- **Pull Requests**: GitHub integration
+
+### 3. **Project Management**
+
+- **Project Templates**: Standardize project structure
+- **R Markdown**: Dynamic documents
+- **Shiny Apps**: Interactive applications
+- **Package Development**: Build R packages
+
+---
+
+## Installation and Setup
+
+### 1. **Install R and RStudio**
+
+```bash
+# macOS (using Homebrew)
+brew install --cask r
+brew install --cask rstudio
+
+# Ubuntu/Debian
+sudo apt-get install r-base r-base-dev
+# Download RStudio from https://posit.co/download/rstudio-desktop/
+```
+
+### 2. **Install Essential Packages**
+
+```r
+# Core packages
+install.packages(c(
+    "tidyverse",
+    "devtools",
+    "usethis",
+    "roxygen2"
+))
+
+# Bioconductor
+if (!require("BiocManager", quietly = TRUE))
+    install.packages("BiocManager")
+BiocManager::install(c(
+    "DESeq2",
+    "clusterProfiler",
+    "pcaExplorer",
+    "GeneTonic"
+))
+```
+
+### 3. **Configure RStudio**
+
+```r
+# Set working directory
+setwd("~/path/to/your/project")
+
+# Load common libraries
+library(tidyverse)
+library(DESeq2)
+library(clusterProfiler)
+```
+
+---
+
+## Best Practices
+
+### 1. **Project Organization**
+
+```
+project/
+├── data/
+│   ├── raw/
+│   └── processed/
+├── scripts/
+│   ├── analysis.R
+│   └── functions.R
+├── results/
+│   ├── figures/
+│   └── tables/
+├── docs/
+└── .Rproj
+```
+
+### 2. **Code Style**
+
+```r
+# Use consistent naming
+gene_counts <- read.csv("data/gene_counts.csv")
+deseq_results <- run_deseq(gene_counts)
+
+# Add comments
+# Load differential expression results
+deseq_results <- readRDS("results/deseq_results.RDS")
+
+# Use pipe operator for readability
+results_summary <- deseq_results %>%
+    filter(padj < 0.05) %>%
+    arrange(desc(log2FoldChange)) %>%
+    head(100)
+```
+
+### 3. **Reproducibility**
+
+```r
+# Set random seed
+set.seed(42)
+
+# Use renv for package management
+renv::init()
+renv::snapshot()
+
+# Document session info
+sessionInfo()
+```
+
+---
+
+## Troubleshooting
+
+### Common Issues
+
+| Problem | Solution |
+|---------|----------|
+| **Package conflicts** | Use `conflicts()` to check |
+| **Memory issues** | Increase memory limit in RStudio |
+| **Version conflicts** | Use `renv` for isolation |
+| **Bioconductor errors** | Update BiocManager |
+
+### Getting Help
+
+- **R Help**: `?function_name`
+- **Package Vignettes**: `browseVignettes("package_name")`
+- **Stack Overflow**: [r] tag
+- **Bioconductor Support**: [support.bioconductor.org](https://support.bioconductor.org/)
+
+---
+
+## Next Steps
+
+After setting up your R environment:
+
+1. **Explore the workflow results** using the provided RMarkdown notebooks
+2. **Customize your analysis** with additional R packages
+3. **Create publication-ready figures** using ggplot2 and extensions
+4. **Share your code** using version control and documentation
+
+For workflow-specific analysis, see the [Interactive Analysis](../tucca-rna-seq/enrichment-analysis) guide.
+
+---
+
+*These extensions will significantly enhance your R/RStudio experience and make 
+bioinformatics analysis more efficient and enjoyable.*

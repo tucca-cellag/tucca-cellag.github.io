@@ -23,33 +23,64 @@ const sidebars: SidebarsConfig = {
   tucca_rna_seq: [
     'tucca-rna-seq/introduction',
     {
+      type: 'link',
+      label: 'GitHub Repository',
+      href: 'https://github.com/tucca-cellag/tucca-rna-seq',
+    },
+    {
       type: 'category',
-      label: 'Getting Started',
-      collapsed: false,
+      label: 'Data Collection 101 for RNA-Seq',
+      collapsed: true,
       items: [
-        'tucca-rna-seq/getting-started/deployment',
-        'tucca-rna-seq/getting-started/installation',
-        'tucca-rna-seq/getting-started/configuration',
-        'tucca-rna-seq/getting-started/running',
+        'tucca-rna-seq/data-collection/data-collection-why',
+        'tucca-rna-seq/data-collection/data-collection-how',
       ],
     },
     {
       type: 'category',
-      label: 'Deployment via Tufts HPC',
+      label: 'Installation and Configuration of tucca-rna-seq',
       collapsed: true,
       items: [
-        'tucca-rna-seq/getting-started-tufts/installation',
-        'tucca-rna-seq/getting-started-tufts/configuration',
-        'tucca-rna-seq/getting-started-tufts/running',
+        'tucca-rna-seq/install-and-config/snakemake-primer',
+        'tucca-rna-seq/install-and-config/deployment',
+        'tucca-rna-seq/install-and-config/installation',
+        'tucca-rna-seq/install-and-config/configuration',
+      ],
+    },
+    'tucca-rna-seq/running',
+    'tucca-rna-seq/enrichment-analysis',
+    {
+      type: 'category',
+      label: 'For Tufts Users',
+      collapsed: true,
+      link: {
+        type: 'doc',
+        id: 'tucca-rna-seq/tufts-specific/hpc-quick-start',
+      },
+      items: [
+        'tucca-rna-seq/tufts-specific/hpc-quick-start',
+        'tucca-rna-seq/tufts-specific/hpc-best-practices',
+        'tucca-rna-seq/tufts-specific/tufts-hpc-in-vscode',
       ],
     },
     'tucca-rna-seq/citing-the-workflow',
     'tucca-rna-seq/help',
   ],
   helpful_resources: [
+    'helpful-resources/learn-about-cell-ag',
     'helpful-resources/reproducibility',
-    'helpful-resources/tufts-hpc-in-vscode',
     'helpful-resources/r-extensions',
+  ],
+  publications: [
+    {
+      type: 'category',
+      label: 'Our Publications',
+      collapsed: false,
+      items: [
+        'publications/ast1',
+      ],
+    },
+    
   ]
 };
 

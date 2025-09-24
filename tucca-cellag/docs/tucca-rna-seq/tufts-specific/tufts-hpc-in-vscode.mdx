@@ -11,193 +11,43 @@ import CardFooter from "@site/src/components/Card/CardFooter";
 import Columns from "@site/src/components/Columns";
 import Column from "@site/src/components/Column";
 
-:::warning
-**🚧 Coming Soon! 🚧**
-
-Our website is currently under construction and will be launching soon.
-Stay tuned!
-
-In the meantime, feel free to [contact us](mailto:benjamin.bromberg@tufts.edu)
-with any questions.
-
-Thank you for your patience
+:::warning[Page in Progress]
+This documentation page is currently under active development. The information
+may be incomplete or subject to change. Thank you for your patience as we work
+to improve our guides.
 :::
 
-## **Step 0: Establish a VPN connection**
+## **Step 1: Set Up Visual Studio Code (VSCode)**
 
-Whether you are on or off of Tufts campus, you'll will need to be first
-connected to the Tufts VPN. For instructions, see https://access.tufts.edu/vpn
+We strongly recommend using Visual Studio Code (VSCode) to interact with the
+Tufts HPC. It provides a user-friendly interface for editing files, managing
+your workflow, and running commands remotely.
 
-:::warning
-**Even if you are on-campus, we always recommend that you connect to the Tufts
-VPN when interfacing with the Tufts High-Performance Computing (HPC).**
+For a complete guide on what VSCode is, why we recommend it, and how to
+download and install it, please refer to the main
+[**Workflow Deployment Guide**](./../install-and-config/deployment#recommended-tool-visual-studio-code-vscode).
 
-- Only connecting to the HPC through the `Tufts Secure` Wi-Fi network can be
-problematic due to intermittent connection drops that will make you temporarily
-lose connection to the HPC and can potentially lead to errors when running this
-workflow. This problem is especially prevalent when connecting via VSCode.
-
-- Additionally, you will not need to need to authorize your interactions with
-the HPC on Duo as frequently, if at all, after you initially connect to the VPN.
-:::
-
-## **Step 1: Download and Install Visual Studio Code (VSCode)**
-
-Visual Studio Code (VSCode) is a free, open-source code editor developed by
-Microsoft. It's widely used for software development due to its versatility,
-rich feature set, and extensive extension ecosystem. In the context of
-interacting with the Tufts High-Performance Computing (HPC) resources, VSCode
-offers several advantages:
-
-- **Remote Development**: VSCode can seamlessly connect to remote servers,
-  allowing you to edit files, run code, and manage projects directly on the
-  HPC without leaving your local environment.
-- **Integrated Terminal**: Access the HPC terminal within VSCode, enabling
-  efficient command-line operations alongside your coding activities.
-- **Extensions and Customization**: Enhance your development experience with
-  extensions tailored for specific programming languages, debugging tools, and
-  workflow optimizations.
-
-<Columns>
-  <Column>
-    <Card shadow="md" style={{ marginTop: "20px" }}>
-      <CardHeader>
-        <h3>Official Documentation</h3>
-      </CardHeader>
-      <CardBody>
-        <p>
-          The official docs are the best place to start, covering everything
-          from basic setup to advanced features.
-        </p>
-        <Button
-          label="VS Code Docs"
-          link="https://code.visualstudio.com/docs"
-          variant="primary"
-          className="button--block"
-        />
-        <Button
-          label="Getting Started Guide"
-          link="https://code.visualstudio.com/docs/getstarted/getting-started"
-          variant="secondary"
-          className="button--block"
-          style={{ marginTop: "10px" }}
-        />
-        <Button
-          label="Introductory Videos"
-          link="https://code.visualstudio.com/docs/getstarted/introvideos"
-          variant="info"
-          className="button--block"
-          style={{ marginTop: "10px" }}
-        />
-      </CardBody>
-    </Card>
-  </Column>
-  <Column>
-    <Card shadow="md" style={{ marginTop: "20px" }}>
-      <CardHeader>
-        <h3>VS Code in 100 Seconds</h3>
-      </CardHeader>
-      <CardBody>
-        <ReactPlayer
-          url="https://www.youtube.com/watch?v=KMxo3T_MTvY"
-          width="100%"
-          height="100%"
-          controls
-        />
-      </CardBody>
-      <CardFooter>
-        <p>
-          A quick overview of VS Code's core features, including the command
-          palette, integrated terminal, and extensions.
-        </p>
-      </CardFooter>
-    </Card>
-  </Column>
-  <Column>
-    <Card shadow="md" style={{ marginTop: "20px" }}>
-      <CardHeader>
-        <h3>25 VS Code Productivity Tips</h3>
-      </CardHeader>
-      <CardBody>
-        <ReactPlayer
-          url="https://www.youtube.com/watch?v=ifTF3ags0XI"
-          width="100%"
-          height="100%"
-          controls
-        />
-      </CardBody>
-      <CardFooter>
-        <p>
-          Improve your workflow with tips on keyboard shortcuts, multi-line
-          editing, and useful extensions like GitLens and Quokka.
-        </p>
-      </CardFooter>
-    </Card>
-  </Column>
-</Columns>
-
-<Columns>
-  <Column>
-    <Card shadow="md" style={{ marginTop: "20px" }}>
-      <CardHeader>
-        <h3>Download and Install VSCode</h3>
-      </CardHeader>
-      <CardBody>
-        <p>
-          Visit the official Visual Studio Code website to download the
-          installer for your operating system.
-        </p>
-        <Button
-          label="VSCode Download Page"
-          link="https://code.visualstudio.com/download"
-          variant="primary"
-          className="button--block"
-        />
-        <div style={{ marginTop: "20px", textAlign: "left" }}>
-          <h4>Installation Instructions:</h4>
-          <details>
-            <summary>Windows</summary>
-            <ul>
-              <li>Run the downloaded <code>.exe</code> installer.</li>
-              <li>Follow the installation prompts, accepting the license agreement and selecting desired installation options (e.g., adding VSCode to your PATH).</li>
-            </ul>
-          </details>
-          <details>
-            <summary>macOS</summary>
-            <ul>
-              <li>Open the downloaded <code>.dmg</code> file.</li>
-              <li>Drag and drop the VSCode application into the Applications
-              folder.</li>
-            </ul>
-          </details>
-          <details>
-            <summary>Linux</summary>
-            <p>
-              Follow the instructions for your distribution on the VSCode
-              website.
-            </p>
-            <Button
-              label="Linux Setup Instructions"
-              link="https://code.visualstudio.com/docs/setup/linux"
-              variant="secondary"
-              className="button--block"
-            />
-          </details>
-        </div>
-      </CardBody>
-      <CardFooter>
-        <p>
-          After installation, open VSCode from your application launcher or by
-          running <code>code</code> in your terminal (if added to PATH).
-        </p>
-      </CardFooter>
-    </Card>
-  </Column>
-</Columns>
+Once you have VSCode installed, you can proceed with the steps below to
+configure it for the Tufts HPC.
 
 ---
 
-## **Step 2: Configuring `SSH FS` to Remotely Connect to the Tufts HPC**
+## **Step 2: Establish a VPN connection**
+
+A VPN connection is required for accessing the Tufts HPC cluster, off campus.
+For instructions, please visit [**access.tufts.edu/vpn**](https://access.tufts.edu/vpn).
+
+:::warning[Always Use the VPN On-Campus]
+We strongly recommend connecting to the Tufts VPN even when you are on campus.
+Directly connecting through the `Tufts Secure` Wi-Fi network can lead to
+intermittent connection drops, which may interrupt your workflow and cause
+errors, particularly when using VSCode. The VPN provides a more stable
+connection and reduces the frequency of Duo authentication prompts.
+:::
+
+---
+
+## **Step 3: Configuring `SSH FS` to Remotely Connect to the Tufts HPC**
 
 ### Set-Up SSH Keyless Access to the Tufts HPC
 

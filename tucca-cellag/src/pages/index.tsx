@@ -56,51 +56,54 @@ const Home: React.FC = () => {
       </header>
 
       <main>
-        {/* Coming Soon Banner */}
-        <section className={clsx("section", styles.comingSoon)}>
-          <div className="container">
-            <div className="alert alert--warning">
-              <strong>🚧 Coming Soon! 🚧</strong>
-              <p>
-                Our website is currently under construction and will be
-                launching soon. Stay tuned! In the meantime, feel free to{" "}
-                <a href="mailto:benjamin.bromberg@tufts.edu">contact us</a> with
-                any questions. Thank you for your patience.
-              </p>
-            </div>
-          </div>
-        </section>
-
         <section
           className={clsx("section section--primary", styles.cardSection)}
         >
           <div className="container text--center">
             <h1> About Us </h1>
             <Columns>
-              <Column className="text--left">
-                <h2> What is TUCCA? </h2>
-                <p style={{ marginBottom: "20px" }}>
-                  The{" "}
-                  <strong>
-                    Tufts University Center for Cellular Agriculture (TUCCA)
-                  </strong>{" "}
-                  is dedicated to advancing cellular agriculture research and
-                  fostering industry growth. Collaborating with academic,
-                  industry, and regulatory partners, TUCCA focuses on innovative
-                  research in areas such as cell sourcing, media development,
-                  scaffolding, modeling, and scale-up processes. Our goal is to
-                  provide a strong scientific foundation, promote workforce
-                  development, and ensure the sustainability and safety of
-                  cell-based foods. Through peer-reviewed publications and
-                  interdisciplinary efforts, we aim to drive technological
-                  innovation and set quality standards within the field.
-                </p>
-                <div className="btn-group">
-                  <Button
-                    label="Learn More"
-                    link="https://cellularagriculture.tufts.edu/"
-                    variant="primary"
-                  />
+              <Column className="text--center">
+                <div>
+                  <Card shadow="tl">
+                    <CardHeader>
+                      <h2> What is TUCCA? </h2>
+                    </CardHeader>
+                    <CardBody className="text--left">
+                      <p>
+                        The{" "}
+                        <strong>
+                          Tufts University Center for Cellular Agriculture
+                          (TUCCA)
+                        </strong>{" "}
+                        is dedicated to advancing cellular agriculture research
+                        and fostering industry growth. Collaborating with
+                        academic, industry, and regulatory partners, TUCCA
+                        focuses on innovative research in areas such as cell
+                        sourcing, media development, scaffolding, modeling, and
+                        scale-up processes. Our goal is to provide a strong
+                        scientific foundation, promote workforce development,
+                        and ensure the sustainability and safety of cell-based
+                        foods. Through peer-reviewed publications and
+                        interdisciplinary efforts, we aim to drive technological
+                        innovation and set quality standards within the field.
+                      </p>
+                    </CardBody>
+                    <CardFooter>
+                      <Button
+                        className="button--block"
+                        label="Learn More"
+                        link="https://cellularagriculture.tufts.edu/"
+                        variant="primary"
+                        style={{ marginBottom: "10px" }}
+                      />
+                      <Button
+                        className="button--block"
+                        label="Check Out Our Research"
+                        link="https://cellularagriculture.tufts.edu/research"
+                        variant="primary"
+                      />
+                    </CardFooter>
+                  </Card>
                 </div>
               </Column>
               <Column className="text--center">
@@ -124,7 +127,7 @@ const Home: React.FC = () => {
                     <CardFooter>
                       <Button
                         className="button--block"
-                        label="Check Out Our Research"
+                        label="Learn More"
                         link="https://cellularagriculture.tufts.edu/research"
                         variant="primary"
                       />
@@ -152,6 +155,7 @@ const Home: React.FC = () => {
                       cardImageUrl="/img/tucca-rna-seq-logo.png"
                       alt="A green snake head and a blue elephant head"
                       title="The tucca-rna-seq logo"
+                      style={{ maxWidth: "200px", margin: "auto" }}
                     />
                     <CardBody className="text--left">
                       Discover our lightning-fast, automated RNA-Seq workflow
@@ -183,9 +187,10 @@ const Home: React.FC = () => {
                     <CardFooter>
                       <Button
                         className="button--block"
-                        label="Find Resources"
+                        label="🚧 Coming Soon! 🚧"
                         link="/category/background-learning"
                         variant="primary"
+                        disabled
                       />
                     </CardFooter>
                   </Card>
@@ -197,14 +202,18 @@ const Home: React.FC = () => {
                     <CardHeader>
                       <h2>Publications 📝</h2>
                     </CardHeader>
-                    <CardBody>🚧 Coming Soon! 🚧</CardBody>
+                    <CardBody>
+                      <p>
+                        Read about the research powered by our bioinformatics
+                        tools.
+                      </p>
+                    </CardBody>
                     <CardFooter>
                       <Button
                         className="button--block"
                         label="Explore Publications"
-                        link="https://cellularagriculture.tufts.edu/"
+                        link="/publications/ast1"
                         variant="primary"
-                        disabled
                       />
                     </CardFooter>
                   </Card>

@@ -1,0 +1,315 @@
+---
+title: Installing tucca-rna-seq
+---
+
+import Tabs from "@theme/Tabs";
+import TabItem from "@theme/TabItem";
+import Link from '@docusaurus/Link';
+import Button from "@site/src/components/Button";
+import Card from "@site/src/components/Card";
+import CardHeader from "@site/src/components/Card/CardHeader";
+import CardBody from "@site/src/components/Card/CardBody";
+import CardFooter from "@site/src/components/Card/CardFooter";
+import Columns from "@site/src/components/Columns";
+import Column from "@site/src/components/Column";
+
+# Installing tucca-rna-seq
+
+:::tip
+**Before Installation**
+
+We recommend completing the [Data Collection Template](../data-collection/data-collection-how) 
+first to ensure you have all your experimental information organized. 
+This will make the installation and configuration process much more efficient.
+:::
+
+:::danger Prerequisites
+
+Prior to installing this workflow, we highly recommend that you are familiar
+with:
+- Version Control
+- Git/GitHub
+- Best practices for reproducibility in scientific computing
+
+<Button
+  label="Click here for more details about these topics"
+  link="/helpful-resources/reproducibility"
+  variant="primary"
+/>
+
+:::
+
+---
+
+## System Requirements
+
+The `tucca-rna-seq` workflow requires the following software and resources:
+
+### Software Dependencies
+
+| Software | Version | Purpose |
+|----------|---------|---------|
+| **Snakemake** | ≥8.27.1 | Workflow management system |
+| **Conda/Mamba** | Latest | Package and environment management |
+| **Singularity/Apptainer** | Singularity ≥3.8.4 or Apptainer v1.4.1 (potentially later versions, but has not been tested) | Container runtime (recommended) |
+
+:::info[Version Compatibility]
+For the most up-to-date information on compatible software versions, please refer
+to the dependencies tested in our latest
+[GitHub Actions workflows](https://github.com/tucca-cellag/tucca-rna-seq/actions).
+:::
+
+---
+
+## Installation Methods
+
+<Tabs>
+  <TabItem value="hpc" label="HPC Cluster (Recommended)">
+    
+### HPC Cluster Installation
+
+Most HPC clusters provide pre-installed software via modules, making this
+the easiest installation method.
+
+#### 1. Check Available Modules
+
+```bash
+# Check available modules
+module avail snakemake
+module avail singularity
+module avail conda
+module avail mamba
+module avail miniforge
+```
+
+:::danger[Administrator Privileges for Singularity/Apptainer]
+Please note that installing Singularity or Apptainer is a non-trivial process
+that requires `sudo` (administrator) privileges. If a module is not available
+on your HPC cluster, you will need assistance from your system administrator.
+:::
+
+:::info[If Key Modules Are Missing]
+If your HPC cluster does not provide a module for Snakemake or a Conda
+distribution (like Miniforge or Mambaforge), you have two options:
+
+1.  **Contact your HPC administrator:** They may be able to install the required
+    software or help you create a custom module.
+2.  **Install it yourself:** You can install a minimal Conda distribution like
+    [Mambaforge](https://github.com/conda-forge/miniforge#mambaforge) in your
+    user space.
+
+If you install it yourself, it is **critical** to configure Conda to use a shared
+storage location to avoid exceeding your home directory's storage quota. See the
+tip below for details.
+:::
+
+:::tip[HPC Best Practice: Configure Conda's Storage Paths]
+By default, Conda installs all software packages and environments into your
+home directory, which typically has a strict, small storage quota on an HPC
+cluster.
+
+To avoid running out of space, you should create a `.condarc` file in your
+home directory to redirect Conda to use a larger, shared storage location
+(like a lab or project directory). This is a common best practice on most HPC
+systems.
+
+Your `.condarc` file should look something like this:
+
+```yaml title="~/.condarc"
+envs_dirs:
+  - /path/to/your/shared/storage/conda_envs/
+pkgs_dirs:
+  - /path/to/your/shared/storage/conda_pkgs/
+```
+
+For a detailed, real-world example of this process, see the
+[**Tufts HPC guide on Configuring Conda**](https://rtguides.it.tufts.edu/hpc/application/10-condaenv.html#configure-your-conda).
+The principles in this guide can be adapted for most HPC clusters.
+:::
+
+:::tip[HPC Best Practice: Create Private Modules for Custom Software]
+After configuring Conda to use a shared storage location (as described in the
+tip above), the next step for managing your custom software is to create a
+private environment module. This makes your self-installed tools much easier to
+load and use consistently. Most HPC systems that use the Lmod module system
+support this feature.
+
+This allows you to simply run `module load your-custom-snakemake` instead of
+manually activating a Conda environment or adding its location to your `PATH`
+every time.
+
+For a detailed guide on how to create your own module files, see the
+[**Tufts HPC guide on Private Modules**](https://rtguides.it.tufts.edu/hpc/examples/privatemodule.html).
+The principles in this guide can be adapted for most HPC clusters.
+:::
+
+#### 2. Load Required Modules
+
+```bash
+# Purge all currently loaded modules
+module purge
+
+# Load required modules based on what versions are available
+module load snakemake
+module load singularity
+module load miniforge
+```
+
+#### 3. Verify Installation
+
+```bash
+# Check versions
+snakemake --version
+singularity --version
+conda --version
+```
+
+:::tip[Tufts HPC Users]
+For Tufts-specific installation instructions, see our 
+[Tufts HPC Quick Start Guide](/tucca-rna-seq/tufts-specific/hpc-quick-start).
+:::
+
+  </TabItem>
+
+  <TabItem value="conda" label="Conda/Mamba (Local)">
+    
+### Local Installation with Conda/Mamba
+
+For local development and testing, you can install the workflow on your
+personal machine.
+
+#### 1. Install Conda or Mamba
+
+<Button
+  label="View Conda/Mamba Installation Guide"
+  link="https://docs.conda.io/en/latest/"
+  variant="primary"
+  className="button--block"
+  style={{ marginBottom: "10px" }}
+/>
+
+#### 2. Install Snakemake
+
+<Button
+  label="View Snakemake Installation Guide"
+  link="https://snakemake.readthedocs.io/en/stable/getting_started/installation.html"
+  variant="primary"
+  className="button--block"
+  style={{ marginBottom: "10px" }}
+/>
+
+#### 3. Install Singularity/Apptainer
+
+<Button
+  label="View Apptainer Installation Guide"
+  link="https://apptainer.org/docs/admin/main/installation.html"
+  variant="primary"
+  className="button--block"
+  style={{ marginBottom: "10px" }}
+/>
+
+<Button
+  label="View Singularity CE Admin Guides (Alternative)"
+  link="https://sylabs.io/docs/"
+  variant="secondary"
+  className="button--block"
+  style={{ marginTop: "10px", marginBottom: "10px" }}
+/>
+
+:::danger[Administrator Privileges Required]
+Please note that installing Singularity or Apptainer is a non-trivial process
+that requires `sudo` (administrator) privileges. If these tools are not
+already installed on your system or HPC cluster, you will likely need assistance
+from your system administrator.
+:::
+
+:::warning[Local Installation Limitations]
+Local execution is suitable for small genomes and limited datasets. For
+production analyses, use an HPC cluster or cloud environment.
+:::
+
+  </TabItem>
+
+  <TabItem value="cloud-ci" label="Cloud & CI/CD">
+
+### Cloud and Container Orchestration
+
+For running the workflow on cloud platforms like Google Cloud Batch, AWS Batch,
+or Kubernetes, you will need to install and configure their respective
+command-line interface (CLI) tools.
+
+<Button
+  label="Google Cloud CLI (gcloud) Docs"
+  link="https://cloud.google.com/sdk/docs/install"
+  variant="primary"
+  className="button--block"
+  style={{ marginBottom: "10px" }}
+/>
+
+<Button
+  label="AWS CLI Docs"
+  link="https://aws.amazon.com/cli/"
+  variant="primary"
+  className="button--block"
+  style={{ marginBottom: "10px" }}
+/>
+
+<Button
+  label="Kubernetes CLI (kubectl) Docs"
+  link="https://kubernetes.io/docs/tasks/tools/"
+  variant="primary"
+  className="button--block"
+  style={{ marginBottom: "10px" }}
+/>
+
+### GitHub Actions (for CI/CD)
+
+This repository includes a pre-configured GitHub Actions workflow for continuous
+integration (CI) and testing. This setup uses free, public runners and is
+intended for verifying the workflow's integrity, not for production analysis.
+
+To use it for testing, simply fork this repository and enable GitHub Actions in
+your fork's settings. You will also need to configure any required secrets
+(e.g., an NCBI API key) in your repository settings under `Settings > Secrets
+and variables > Actions`.
+
+:::info[Running Production Workflows]
+The included workflow file (`.github/workflows/main.yml`) can be repurposed to
+run full-scale analyses by using self-hosted runners with sufficient
+computational resources. This involves changing the `runs-on` key in the
+workflow file to target your self-hosted runner group.
+:::
+
+  </TabItem>
+</Tabs>
+
+---
+
+## Workflow Setup
+
+### 1. Create Project Directory
+
+```bash
+# Create and navigate to project directory
+mkdir my_rnaseq_project
+cd my_rnaseq_project
+```
+
+### 2. Clone the Repository
+
+```bash
+# Clone the workflow repository
+git clone https://github.com/tucca-cellag/tucca-rna-seq.git
+
+# Navigate into the workflow directory
+cd tucca-rna-seq
+```
+
+---
+
+## Next Steps
+
+Once installation is complete, you are ready to configure the workflow. Please
+refer to the [Configuration Guide](./configuration) for detailed instructions on
+how to set up the `config.yaml`, `samples.tsv`, and `units.tsv` files for your
+analysis.

@@ -1,0 +1,728 @@
+---
+title: Configuring tucca-rna-seq for your Analysis
+---
+
+import Tabs from "@theme/Tabs";
+import TabItem from "@theme/TabItem";
+import Link from '@docusaurus/Link';
+import Button from "@site/src/components/Button";
+import Card from "@site/src/components/Card";
+import CardHeader from "@site/src/components/Card/CardHeader";
+import CardBody from "@site/src/components/Card/CardBody";
+import CardFooter from "@site/src/components/Card/CardFooter";
+import Columns from "@site/src/components/Columns";
+import Column from "@site/src/components/Column";
+
+:::warning[Page in Progress]
+This documentation page is currently under active development. The information
+may be incomplete or subject to change. Thank you for your patience as we work
+to improve our guides.
+:::
+
+# Configuring `tucca-rna-seq` for your analysis
+
+:::tip
+**Before You Begin**
+
+Make sure you've completed the [Data Collection Template](../data-collection/data-collection-how) 
+first! Having all your experimental information organized will make the 
+configuration process much smoother.
+:::
+
+:::info[Configuration Validation]
+The workflow automatically validates your configuration files using JSON schemas
+to catch errors early and ensure your analysis will run successfully.
+:::
+
+---
+
+## Overview of Configuration Files
+
+The `tucca-rna-seq` workflow uses several configuration files to define your
+analysis:
+
+- **`config/config.yaml`** - Main configuration file with all analysis parameters
+- **`config/samples.tsv`** - Sample metadata and experimental design
+- **`config/units.tsv`** - Sequencing unit information (lanes, technical replicates)
+- **Execution Profiles (`profiles/*/`)**: YAML files that preset execution
+  options for different compute environments.
+
+---
+
+## Understanding `samples.tsv` and `units.tsv`
+
+These files define your experimental design and sequencing data organization.
+
+### `config/units.tsv` - Sequencing Unit Information
+
+This file tracks technical replicates (e.g., sequencer lanes) and their
+associated data files.
+
+**Required Columns:**
+- `sample_name`: Links to samples.tsv
+- `unit_name`: Technical replicate identifier (e.g., "lane1", "lane2")
+- `sra`: SRA (Sequence Read Archive) accession number (if using SRA data)
+- `fq1`: Path to forward read FASTQ file
+- `fq2`: Path to reverse read FASTQ file
+
+:::important[Data Source Configuration]
+You must specify either SRA accessions OR local FASTQ file paths, but not both.
+Leave the unused column empty for each unit.
+:::
+
+#### Example `units.tsv`:
+
+```tsv title="config/units.tsv" showLineNumbers
+sample_name	unit_name	sra	fq1	fq2
+etoh60_1	lane1		.test/data/snakemake_data/yeast/reads/etoh60_1_1.fq	.test/data/snakemake_data/yeast/reads/etoh60_1_2.fq
+etoh60_2	lane1		.test/data/snakemake_data/yeast/reads/etoh60_2_1.fq	.test/data/snakemake_data/yeast/reads/etoh60_2_2.fq
+etoh60_3	lane1		.test/data/snakemake_data/yeast/reads/etoh60_3_1.fq	.test/data/snakemake_data/yeast/reads/etoh60_3_2.fq
+ref1	lane1		.test/data/snakemake_data/yeast/reads/ref1_1.fq	.test/data/snakemake_data/yeast/reads/ref1_2.fq
+ref2	lane1		.test/data/snakemake_data/yeast/reads/ref2_1.fq	.test/data/snakemake_data/yeast/reads/ref2_2.fq
+ref3	lane1		.test/data/snakemake_data/yeast/reads/ref3_1.fq	.test/data/snakemake_data/yeast/reads/ref3_2.fq
+temp33_1	lane1		.test/data/snakemake_data/yeast/reads/temp33_1_1.fq	.test/data/snakemake_data/yeast/reads/temp33_1_2.fq
+temp33_2	lane1		.test/data/snakemake_data/yeast/reads/temp33_2_1.fq	.test/data/snakemake_data/yeast/reads/temp33_2_2.fq
+temp33_3	lane1		.test/data/snakemake_data/yeast/reads/temp33_3_1.fq	.test/data/snakemake_data/yeast/reads/temp33_3_2.fq
+```
+
+:::info[Example Data Source]
+This example local data, used in the official Snakemake tutorial, is a subset
+from a 2016 study on yeast stress adaptation. The full dataset is available on
+ArrayExpress (E-MTAB-4044) and was published in *Molecular Biology of the Cell*.
+You can find the full publication at
+[DOI: 10.1091/mbc.E16-03-0187](https://doi.org/10.1091/mbc.E16-03-0187).
+:::
+
+**OR for SRA files:**
+
+```tsv title="config/units.tsv" showLineNumbers
+sample_name	unit_name	sra	fq1	fq2
+M1	lane1	SRR21631081		
+M2	lane1	SRR21631080		
+M3	lane1	SRR21631089		
+M4	lane1	SRR21631088		
+F1	lane1	SRR21631085		
+F2	lane1	SRR21631084		
+F3	lane1	SRR21631083		
+F4	lane1	SRR21631082		
+C1	lane1	SRR21631091		
+C2	lane1	SRR21631090		
+C3	lane1	SRR21631087		
+C4	lane1	SRR21631086		
+```
+
+:::info[Example Data Source]
+This example SRA data is from a 2024 study in *Scientific Reports* on
+cultured meat production. The experiment investigated how different scaffold
+surfaces affect the development of a mouse muscle cell line (C2C12). You can
+find the full publication at
+[DOI: 10.1038/s41598-024-61458-9](https://doi.org/10.1038/s41598-024-61458-9).
+:::
+
+---
+
+## Configuring `config/samples.tsv`
+
+This file contains biological sample information and experimental design.
+
+**Required Columns:**
+- `sample_name`: Unique identifier (must match units.tsv)
+- Additional columns define your experimental factors
+
+#### Example `samples.tsv`:
+
+```tsv title="config/samples.tsv" showLineNumbers
+sample_name	treatment	time	replicate_num	sequencing_batch
+M1	microstructured	10	1	1
+M2	microstructured	10	2	1
+M3	microstructured	10	3	1
+M4	microstructured	10	4	1
+F1	flat	10	1	1
+F2	flat	10	2	1
+F3	flat	10	3	1
+F4	flat	10	4	1
+C1	control	10	1	1
+C2	control	10	2	1
+C3	control	10	3	1
+C4	control	10	4	1
+```
+
+:::info[Example Data Source]
+This example SRA data is from a 2024 study in *Scientific Reports* on
+cultured meat production. The experiment investigated how different scaffold
+surfaces affect the development of a mouse muscle cell line (C2C12). You can
+find the full publication at
+[DOI: 10.1038/s41598-024-61458-9](https://doi.org/10.1038/s41598-024-61458-9).
+:::
+
+---
+
+## Configuring `config/config.yaml`
+
+The main configuration file is organized into logical sections that control
+different aspects of your analysis. Each section is validated against a schema
+to ensure proper configuration.
+
+### `ref_assembly` - Reference Genome Configuration
+
+This section defines the reference genome and annotation files for your analysis.
+
+#### Parameters:
+
+| Parameter | Type | Description | Required |
+|-----------|------|-------------|----------|
+| `source` | string | One of "RefSeq", "Ensembl", or "GENCODE" | Yes |
+| `accession` | string | Genome assembly accession number | Yes |
+| `name` | string | Assembly name/build identifier | Yes |
+| `release` | string | Release version (Ensembl/GENCODE only) | Conditional |
+| `species` | string | Scientific name in "Genus_species" format | Yes |
+
+:::info[Database Definitions]
+
+- **RefSeq:** NCBI's curated, non-redundant reference sequence database
+providing stable genome, transcript and protein sequences for consistent
+annotation. As of writing, RefSeq hosts 40,314 reference genomes across
+species/breeds/strains.
+- **Ensembl:** EMBL-EBI/Sanger's genome browser and database delivering
+automated, integrative gene, transcript, variant and comparative annotations
+across a wide range of species. As of Ensembl Release 113, Ensembl supports
+343 species/breeds/strains.
+- **GENCODE:** A consortium-driven effort that produces the highest-quality
+manual and automated annotation of protein-coding genes, noncoding RNAs and
+pseudogenes on the human and mouse reference genomes, serving as the
+authoritative gene model set in Ensembl and UCSC.
+
+If you are unfamiliar with RefSeq, Ensembl, GenBank, and/or GENCODE, check out
+these references to learn more:
+
+- [About RefSeq][refseq]
+- [About Ensembl][ensembl]
+- [What is the difference between RefSeq and GenBank][refseq_vs_genbank]
+- [GENCODE Background][gencode]
+:::
+
+#### Accession Number Patterns:
+
+- **RefSeq assemblies:** `^GCF_[0-9]+.[0-9]+$` (e.g., `GCF_000001405.39`)
+- **Ensembl/GENCODE assemblies:** `^GCA_[0-9]+.[0-9]+$` (e.g., `GCA_000001405.28`)
+
+#### Example Configuration:
+
+```yaml
+ref_assembly:
+  source: "RefSeq"
+  accession: "GCF_016699485.2"
+  name: "bGalGal1.mat.broiler.GRCg7b"
+  release: ""  # Not required for RefSeq
+  species: "Gallus_gallus"
+```
+
+### `api_keys` - External API Access
+
+Configure API keys for external database access to avoid rate limiting.
+
+| Parameter | Type | Description | Required |
+|-----------|------|-------------|----------|
+| `ncbi` | string | NCBI API key for genome and SRA downloads | No (recommended) |
+
+:::tip[Getting an NCBI API Key]
+To obtain an NCBI API key, visit [NCBI Account Settings](https://account.ncbi.nlm.nih.gov/settings/)
+and generate a new API key. This will help avoid rate limiting when downloading
+genomes and SRA datasets.
+:::
+
+### `diffexp` - Differential Expression Analysis
+
+This section configures the differential gene expression analysis using DESeq2.
+
+#### `tximeta` - Transcript Quantification Import
+
+Configure how transcript quantification data is imported and processed.
+
+| Parameter | Type | Description | Required |
+|-----------|------|-------------|----------|
+| `factors` | array | Experimental factors for analysis | Yes |
+| `extra` | string | Additional parameters for tximeta | No |
+
+Each factor should have:
+- `name`: Factor name (e.g., "treatment", "time")
+- `reference_level`: Baseline level for comparisons
+
+#### `deseq2` - DESeq2 Analysis Configuration
+
+Configure multiple DESeq2 analyses with different experimental designs.
+
+| Parameter | Type | Description | Required |
+|-----------|------|-------------|----------|
+| `analyses` | array | List of analysis configurations | Yes |
+| `transform` | object | Data transformation settings | Yes |
+
+Each analysis includes:
+- `name`: Unique identifier for the analysis
+- `deseqdataset`: DESeqDataSet creation parameters
+- `wald`: Wald test configuration
+- `contrasts`: Statistical comparisons to perform
+
+#### Example DESeq2 Configuration:
+
+```yaml
+diffexp:
+  tximeta:
+    factors:
+      - name: "treatment"
+        reference_level: "control"
+      - name: "time"
+        reference_level: "0h"
+    extra: ""
+  deseq2:
+    analyses:
+      - name: "treatment_analysis"
+        deseqdataset:
+          formula: "~ treatment + time"
+          min_counts: 10
+          extra: ""
+          threads: 4
+        wald:
+          deseq_extra: ""
+          shrink_extra: "type = 'apeglm'"
+          results_extra: "alpha = 0.05"
+          threads: 4
+        contrasts:
+          - name: "treatment_vs_control"
+            elements: ["treatment", "treated", "control"]
+          - name: "time_6h_vs_0h"
+            elements: ["time", "6h", "0h"]
+    transform:
+      method: "rlog"
+      extra: ""
+```
+
+### `enrichment` - Functional Enrichment Analysis
+
+Configure comprehensive functional enrichment analysis including GO, KEGG,
+MSigDB, SPIA, and Harmonizome databases.
+
+#### Core Parameters:
+
+| Parameter | Type | Description | Required |
+|-----------|------|-------------|----------|
+| `padj_cutoff` | number | Adjusted p-value cutoff for ORA | Yes |
+| `targets` | array | Target genes for pathway analysis | No |
+
+#### `clusterprofiler` - Standard Enrichment Analysis
+
+Configure GO and KEGG enrichment analysis.
+
+| Parameter | Type | Description | Required |
+|-----------|------|-------------|----------|
+| `gsea` | object | Gene Set Enrichment Analysis settings | Yes |
+| `ora` | object | Over-Representation Analysis settings | Yes |
+| `wikipathways` | object | WikiPathways analysis settings | Yes |
+| `kegg_module` | object | KEGG module analysis settings | Yes |
+
+#### `msigdb` - Molecular Signatures Database
+
+Configure MSigDB gene set analysis with customizable collections.
+
+| Parameter | Type | Description | Required |
+|-----------|------|-------------|----------|
+| `enabled` | boolean | Enable MSigDB analysis | Yes |
+| `collections` | array | MSigDB collections to analyze | Yes |
+| `custom_gmt_files` | array | Custom GMT files for analysis | No |
+
+**Available MSigDB Collections:**
+- **H**: Hallmark gene sets (50 gene sets)
+- **C1**: Positional gene sets (299 gene sets)
+- **C2**: Curated gene sets (5,922 gene sets)
+- **C3**: Regulatory target gene sets (3,738 gene sets)
+- **C4**: Computational gene sets (858 gene sets)
+- **C5**: Ontology gene sets (10,922 gene sets)
+- **C6**: Oncogenic signatures (189 gene sets)
+- **C7**: Immunologic signatures (4,872 gene sets)
+- **C8**: Cell type signature gene sets (746 gene sets)
+
+#### `spia` - Signaling Pathway Impact Analysis
+
+Configure topology-based pathway analysis using KEGG pathway information.
+
+| Parameter | Type | Description | Required |
+|-----------|------|-------------|----------|
+| `enabled` | boolean | Enable SPIA analysis | Yes |
+| `extra` | string | Additional SPIA parameters | No |
+
+:::warning[KEGG API Usage Restrictions]
+SPIA uses the KEGG REST API (rest.kegg.jp) which is made available only for
+academic use by academic users. Non-academic users must follow the KEGG
+Non-academic use guidelines. See [KEGG Legal Information](https://www.kegg.jp/kegg/legal.html)
+for details.
+:::
+
+#### `harmonizome` - Tissue-Specific Analysis
+
+Configure tissue-specific gene set analysis using the Harmonizome database.
+
+| Parameter | Type | Description | Required |
+|-----------|------|-------------|----------|
+| `enabled` | boolean | Enable Harmonizome analysis | Yes |
+| `datasets` | array | Harmonizome datasets to analyze | Yes |
+
+**Available Datasets:**
+- GTEx Tissue Gene Expression Profiles
+- BioGPS Human Cell Type and Tissue Gene Expression Profiles
+- Human Protein Atlas
+- And many more at [Harmonizome](https://maayanlab.cloud/Harmonizome/)
+
+#### Example Enrichment Configuration:
+
+```yaml
+enrichment:
+  padj_cutoff: 0.05
+  targets: ["ACTB", "GAPDH", "PAX3", "PAX7", "MYOD1"]
+  clusterprofiler:
+    gsea:
+      gseGO:
+        extra: "pvalueCutoff = 0.05, minGSSize = 10, maxGSSize = 500"
+      gseKEGG:
+        extra: "pvalueCutoff = 0.05, minGSSize = 10, maxGSSize = 500"
+    ora:
+      enrichGO:
+        extra: "pvalueCutoff = 0.05"
+      enrichKEGG:
+        extra: "pvalueCutoff = 0.05"
+    wikipathways:
+      enabled: true
+      enrichWP:
+        extra: "pvalueCutoff = 0.05"
+      gseWP:
+        extra: "pvalueCutoff = 0.05, minGSSize = 10, maxGSSize = 500"
+    kegg_module:
+      enabled: true
+      enrichMKEGG:
+        extra: "pvalueCutoff = 0.05"
+      gseMKEGG:
+        extra: "pvalueCutoff = 0.05, minGSSize = 10, maxGSSize = 500"
+  msigdb:
+    enabled: true
+    collections: ["H", "C2"]  # Hallmark and Curated gene sets
+    custom_gmt_files: []  # Add custom GMT files here
+    ora:
+      extra: "pvalueCutoff = 0.05, minGSSize = 10, maxGSSize = 500"
+    gsea:
+      extra: "pvalueCutoff = 0.05, minGSSize = 10, maxGSSize = 500"
+  spia:
+    enabled: true
+    extra: "beta = NULL, verbose = TRUE, plots = FALSE"
+  harmonizome:
+    enabled: false
+    datasets:
+      - name: "GTEx Tissue Gene Expression Profiles"
+        gene_sets: ["Muscle", "Adipose"]
+      - name: "BioGPS Human Cell Type and Tissue Gene Expression Profiles"
+        gene_sets: ["Adipocyte", "Myocyte"]
+    ora:
+      extra: "pvalueCutoff = 0.05, minGSSize = 10, maxGSSize = 500"
+    gsea:
+      extra: "pvalueCutoff = 0.05, minGSSize = 10, maxGSSize = 500"
+  annotationforge:
+    version: "0.1.0"
+    author: "tucca-rna-seq <benjamin.bromberg@tufts.edu>"
+    extra: "useSynonyms = TRUE"
+```
+
+### `params` - Tool-Specific Parameters
+
+Configure parameters for individual analysis tools in the workflow.
+
+#### `fastqc` - Quality Control
+
+| Parameter | Type | Description | Default |
+|-----------|------|-------------|---------|
+| `memory` | integer | Memory allocation in MB | 1024 |
+| `extra` | string | Additional FastQC parameters | "" |
+
+#### `star_index` - Genome Indexing
+
+| Parameter | Type | Description | Default |
+|-----------|------|-------------|---------|
+| `sjdbOverhang` | integer | Splice junction database overhang | 149 |
+| `extra` | string | Additional STAR index parameters | "" |
+
+#### `star` - Read Alignment
+
+| Parameter | Type | Description | Default |
+|-----------|------|-------------|---------|
+| `outSAMtype` | string | Output SAM format | "BAM SortedByCoordinate" |
+| `extra` | string | Additional STAR parameters | "" |
+
+#### `qualimap_rnaseq` - RNA-Seq Quality Control
+
+| Parameter | Type | Description | Default |
+|-----------|------|-------------|---------|
+| `enabled` | boolean | Enable Qualimap analysis | true |
+| `counting_alg` | string | Counting algorithm | "proportional" |
+| `sequencing_protocol` | string | Sequencing protocol type | "non-strand-specific" |
+| `extra` | string | Additional Qualimap parameters | "" |
+
+#### `salmon_index` - Transcriptome Indexing
+
+| Parameter | Type | Description | Default |
+|-----------|------|-------------|---------|
+| `extra` | string | Additional Salmon index parameters | "-k 31" |
+
+#### `salmon_quant` - Transcript Quantification
+
+| Parameter | Type | Description | Default |
+|-----------|------|-------------|---------|
+| `libtype` | string | Library type detection | "A" (auto-detect) |
+| `extra` | string | Additional Salmon parameters | "" |
+
+#### `multiqc` - Quality Report Aggregation
+
+| Parameter | Type | Description | Default |
+|-----------|------|-------------|---------|
+| `extra` | string | Additional MultiQC parameters | "--verbose --force" |
+
+#### `sra_tools` - SRA Data Download
+
+| Parameter | Type | Description | Default |
+|-----------|------|-------------|---------|
+| `vdb_config_ra_path` | string | SRA tools configuration path | "/repository/user/main/remote_access=true" |
+| `subsample` | object | SRA subsampling configuration | See below |
+
+**SRA Subsampling Configuration:**
+| Parameter | Type | Description | Default |
+|-----------|------|-------------|---------|
+| `enabled` | boolean | Enable SRA subsampling | false |
+| `min_spot_id` | integer | Minimum spot ID for subsampling | 1 |
+| `max_spot_id` | integer | Maximum spot ID for subsampling | 100000 |
+
+:::tip[SRA Subsampling for Testing]
+Enable SRA subsampling to download only a subset of reads for testing
+purposes. This is useful for CI/CD testing or when you want to quickly
+validate your workflow configuration.
+:::
+
+#### Example Parameters Configuration:
+
+```yaml
+params:
+  fastqc:
+    memory: 1024
+    extra: ""
+  star_index:
+    sjdbOverhang: 149
+    extra: "--genomeSAindexNbases 10"  # For small genomes
+  star:
+    extra: >-
+      --outSAMtype BAM SortedByCoordinate --outSAMunmapped Within
+      --outSAMattributes Standard --outFilterMultimapNmax 1
+      --outFilterScoreMinOverLread 0 --outFilterMatchNminOverLread 0
+      --alignIntronMin 1 --alignIntronMax 2500
+  qualimap_rnaseq:
+    enabled: true
+    counting_alg: "proportional"
+    sequencing_protocol: "non-strand-specific"
+    extra: "--paired --java-mem-size=8G"
+  salmon_index:
+    extra: "-k 31"
+  salmon_quant:
+    libtype: "A"
+    extra: "--seqBias --posBias --writeUnmappedNames"
+  multiqc:
+    extra: "--verbose --force"
+  sra_tools:
+    vdb_config_ra_path: "/repository/user/main/remote_access=true"
+    subsample:
+      enabled: false
+      min_spot_id: 1
+      max_spot_id: 100000
+```
+
+---
+
+## Profile Configuration
+
+The primary role of profiles is to prevent the need to type long, complex
+commands for every analysis by presetting custom values for flags from the
+Snakemake CLI and for plugins found on the Snakemake Plugin Catalog.
+
+### How Profiles Work
+
+A profile is a directory containing a YAML configuration file, typically named
+`config.v8+.yaml`. Inside this file, you can set default values for any of
+Snakemake's command-line arguments. The syntax is straightforward: a
+command-line option like `--some-option` becomes a key in the YAML file as
+`some-option:`.
+
+This allows you to configure everything from the execution backend (e.g., a
+SLURM cluster) to software deployment (e.g., Conda and Singularity) and
+resource allocation for specific rules.
+
+Since profiles work by setting default values for command-line arguments, it is
+helpful to know all the available options. The official documentation for the
+`snakemake` executable, which is the primary way to run, debug, and visualize
+workflows, provides a comprehensive list of all possible flags and options that
+can be set in a profile.
+
+<Button
+  label="View All Snakemake CLI Options"
+  link="https://snakemake.readthedocs.io/en/stable/executing/cli.html#all-options"
+  variant="primary"
+  className='button-block'
+  style={{ marginBottom: "10px" }}
+/>
+
+<Button
+  label="Official Snakemake Docs for Profiles"
+  link="https://snakemake.readthedocs.io/en/stable/executing/cli.html#profiles"
+  variant="primary"
+  className="button-block"
+  style={{ marginBottom: "10px" }}
+/>
+
+:::danger[Warning: Outdated Snakemake Documentation]
+The official Snakemake documentation page on profiles may reference an older,
+deprecated repository of public profiles (`github.com/snakemake-profiles/doc`).
+**This repository is for Snakemake v7 and below and should not be used.**
+
+For Snakemake v8 and above, all configuration options for execution and storage
+plugins should be found in the official **Snakemake Plugin Catalog**.
+:::
+
+### Snakemake Plugin Catalog
+
+The catalog is a centralized resource that collects information and documentation
+for all official Snakemake plugins. These plugins are essential for extending
+Snakemake's core functionality, allowing it to interface with different execution
+backends (like HPC schedulers), storage systems (like cloud buckets), and more.
+This plugin-based architecture, allows for modular and independent development
+of these components.
+
+<Button
+  label="Explore the Snakemake Plugin Catalog"
+  link="https://snakemake.github.io/snakemake-plugin-catalog/"
+  variant="primary"
+  className='button-block'
+/>
+
+### Profile Examples from `tucca-rna-seq`
+
+This workflow includes several pre-configured profiles that serve as excellent
+examples of how to set up different execution environments.
+
+<Tabs>
+  <TabItem value="slurm" label="SLURM-managed HPC Cluster">
+    <p>This profile is for running the workflow on a SLURM-managed HPC cluster,
+    like the Tufts HPC. It configures the
+    <code>snakemake-executor-plugin-slurm</code>, enables Singularity and Conda
+    for reproducibility, and sets default resources for jobs.</p>
+    ```yaml title="profiles/slurm/config.v8+.yaml"
+    # profiles/slurm/config.v8+.yaml
+    # Configured for exclusive use with snakemake-executor-plugin-slurm
+
+    # Profile Settings
+    # To learn more see:
+    # https://snakemake.readthedocs.io/en/stable/executing/cli.html
+    __use_yte__: true
+    executor: slurm
+    use-singularity: true
+    use-conda: true
+    conda-cleanup-pkgs: tarballs
+    verbose: true
+    show-failed-logs: true
+    retries: 3
+    rerun-incomplete: true
+    jobs: 100 # Slurm jobscript size limit
+    latency-wait: 120
+    default-resources:
+      slurm_partition: "batch"
+      slurm_account: "default"
+      runtime: 4320
+      mem_mb: 32000
+      cpus_per_task: 12
+      # Change the following email address to your own email address if you would
+      # like this workflow to notify you via email of started/failed/completed
+      # slurm jobs
+      slurm_extra: '"--mail-type=ALL --mail-user=firstname.lastname@tufts.edu"'
+
+    set-resources:
+      star_index:
+        mem_mb: 64000
+    ```
+  </TabItem>
+  <TabItem value="ci-conda" label="CI via GitHub Actions (Conda-only)">
+    <p>This profile is for Continuous Integration (CI) testing on GitHub Actions.
+    It runs jobs locally (<code>cores: all</code>) using only Conda for software
+    management. It does not specify an executor, so Snakemake defaults to local
+    execution.</p>
+    ```yaml title="profiles/github-actions/config.v8+.yaml"
+    # profiles/github-actions/config.v8+.yaml
+    # Configured for exclusive use with GitHub Actions testing workflow
+    # Defaulting to Conda-only execution.
+    # Singularity runs will add --use-singularity explicitly.
+    # See .github/workflows/main.yml
+
+    # Profile Settings
+    # To learn more see:
+    # https://snakemake.readthedocs.io/en/stable/executing/cli.html
+    use-conda: true
+    conda-cleanup-pkgs: tarballs
+    verbose: true
+    # all-temp: true  # Commented out to allow artifact uploads for Rmd testing
+    # Note: If disk space becomes an issue, consider creating a separate profile
+    # for Singularity runs that includes all-temp: true
+    show-failed-logs: true
+    retries: 3
+    rerun-incomplete: true
+    cores: all
+    latency-wait: 120
+    default-resources:
+      mem_mb: 16000
+
+    set-resources:
+      star_index:
+        mem_mb: 16000
+    ```
+  </TabItem>
+  <TabItem value="google" label="Google Cloud Batch and Storage">
+  {/* TODO */}
+  *Coming Soon...*
+  </TabItem>
+</Tabs>
+
+### Advanced Profile Templating with YTE
+
+Snakemake profiles support the YTE templating engine (`__use_yte__: true`),
+which allows you to dynamically set profile values based on environment variables.
+This is useful for creating flexible profiles that can adapt to different users
+or systems.
+
+:::tip
+For more details on how to use templating in your profiles, refer to the
+[official Snakemake documentation](https://snakemake.readthedocs.io/en/stable/executing/cli.html#use-templating-in-profiles).
+:::
+
+---
+
+## Configuration Validation
+
+The workflow automatically validates your configuration using JSON schemas:
+
+1. **Schema Validation**: Configuration files are checked against schemas
+   in `workflow/schemas/`
+2. **Cross-Reference Validation**: Ensures consistency between files
+3. **Runtime Validation**: Catches configuration errors before analysis begins
+
+---
+
+## Next Steps
+
+Now that you have prepared your configuration files, you are ready to execute
+the workflow. For detailed instructions on how to perform a dry-run, validate
+your setup, and launch the analysis on your specific computing environment,
+please proceed to the next guide.
+
+[refseq]: https://www.ncbi.nlm.nih.gov/refseq/about/
+[ensembl]: https://ensembl.org/info/genome/genebuild/assembly.html
+[refseq_vs_genbank]: https://www.ncbi.nlm.nih.gov/books/NBK50679/#RefSeqFAQ.what_is_the_difference_between_1
+[gencode]: https://www.gencodegenes.org/pages/gencode.html

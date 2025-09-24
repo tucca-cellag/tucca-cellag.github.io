@@ -1,0 +1,152 @@
+---
+title: "Comparative Transcriptomics of Adherent and Suspension Chicken Fibroblast Cell Lines for the Optimization of Cultivated Meat Processes"
+sidebar_label: 'Comparative Transcriptomics of Adherent and Suspension Chicken Fibroblast Cell Lines for the Optimization of Cultivated Meat Processes'
+---
+
+import Button from '@site/src/components/Button';
+import Card from '@site/src/components/Card';
+import CardBody from '@site/src/components/Card/CardBody';
+import CardHeader from '@site/src/components/Card/CardHeader';
+import Column from '@site/src/components/Column';
+import Columns from '@site/src/components/Columns';
+
+This page showcases a real-world application of the `tucca-rna-seq` workflow
+in a study by members of the Tufts University Center for Cellular Agriculture
+(TUCCA).
+
+<Columns>
+  <Column>
+    <Card>
+      <CardHeader>
+        <h3>The Research Paper</h3>
+      </CardHeader>
+      <CardBody>
+        <p>
+          <strong>Authors:</strong> Elizabeth J. Contreras, Archana Nagarajan,
+          Benjamin H. Bromberg, Mason P. Villegas, David L. Kaplan
+        </p>
+        <p>
+          This study delves into the transcriptomic changes that occur when chicken
+          cells are adapted for large-scale cultivated meat production.
+        </p>
+        <div style={{ display: 'flex', gap: '10px', marginTop: '15px' }}>
+          <Button
+              label="Find on bioRxiv"
+              link="https://www.biorxiv.org/content/10.1101/2025.09.02.673824v1"
+              variant="primary"
+          />
+          <Button
+              label="Download the Pre-Print"
+              link="https://www.biorxiv.org/content/10.1101/2025.09.02.673824v1.full.pdf"
+              variant="secondary"
+          />
+        </div>
+      </CardBody>
+    </Card>
+  </Column>
+</Columns>
+
+## The Scientific Challenge: Adapting Cells for Cultivated Meat
+
+For cultivated meat to become a reality, we need to grow large quantities of
+cells efficiently. Many cells used in research naturally grow attached to a
+surface (i.e. adherent). For industrial-scale production, it's much more efficient
+to grow them floating in a nutrient-rich medium (i.e. in suspension).
+
+However, the transition from adherent to suspension growth is a complex
+biological process. To engineer this trait effectively, researchers needed to
+understand the precise transcriptomic and molecular changes that allow cells to
+survive and thrive without attachment.
+
+## The `tucca-rna-seq` Solution: An Engine for Discovery
+
+The researchers used time-series RNA sequencing to capture the
+transcriptional dynamics at five key stages of the adaptation process. For this
+study, **an early development version of `tucca-rna-seq` was used**, and the
+research was pivotal in shaping the stable, public release of the workflow
+available today.
+
+The workflow served as the analytical engine that turned the massive raw
+dataset (n = 4 for each time point) into biological insights by automating the entire pipeline:
+
+- **Core Processing & QC:** Handled initial quality control (`FastQC`), genome
+  alignment (`STAR`), and accurate transcript quantification (`Salmon`),
+  generating comprehensive reports with `MultiQC` and `Qualimap`.
+- **Differential Gene Expression:** The workflow's `DESeq2` module robustly
+  identified which genes significantly changed their expression levels over the
+  adaptation timeline.
+- **Functional Enrichment:** Using `clusterProfiler`, the workflow performed
+  Over-Representation Analysis (ORA) and Gene Set Enrichment Analysis (GSEA) to
+  reveal which biological pathways were activated or suppressed.
+- **Foundation for Custom Analysis:** The workflow produced normalized,
+  quality-controlled expression data that served as the direct input for the
+  paper's custom downstream analyses, including the time-series soft clustering
+  with `Mfuzz`.
+
+## Key Scientific Findings Uncovered by the Workflow
+
+By leveraging the multi-faceted analysis from `tucca-rna-seq`, the
+researchers uncovered a detailed timeline of cellular adaptation, revealing
+three major findings.
+
+### 1. An Acute Stress Response at the Point of Transition
+
+Gene Set Enrichment Analysis (GSEA) of the early timepoints (T2 and T3)
+revealed a dramatic, but transient, stress response. As cells lost their
+attachment, they activated pathways related to survival and crisis management,
+including **autophagy** and **MAPK signaling**, while simultaneously shutting
+down resource-intensive processes like **DNA replication**. This demonstrated
+that cells initially enter a survival mode to cope with the new, challenging
+environment.
+
+### 2. A Permanent Reprogramming of Cellular Machinery
+
+Differential Gene Expression (DGE) analysis across all timepoints identified a
+core set of genes that were permanently rewired in the suspension-adapted
+cells. This long-term strategy involved:
+
+- **Metabolic Suppression:** Pathways like **steroid biosynthesis** and
+  **ribosome biogenesis** were consistently downregulated. This finding,
+  uncovered too by GSEA, helps explain the observed smaller size and slower growth
+  rate of suspension cells, indicating they adopt a more energy-efficient state.
+
+- **Dynamic Regulation of Cell Adhesion:** The analysis revealed a fascinating
+  two-phase response. Initially, cells upregulated **focal adhesion** and
+  **ECM-receptor interaction** pathways in a desperate attempt to re-establish
+  attachment. However, in fully adapted cells, these same pathways were
+  sustainably downregulated below their original baseline, marking a true
+  commitment to an anchorage-independent phenotype.
+
+- **Enhanced Signaling:** In contrast to the downregulation of other systems,
+  pathways related to **cytokine-cytokine receptor interaction** were
+  consistently activated, suggesting that as cells lose physical contact with a
+  substrate, they increase their reliance on chemical signaling to coordinate
+  behavior.
+
+### 3. A Proposed Molecular Mechanism for Suspension Adaptation
+
+By integrating the results from DGEA and pathway analysis, the researchers
+formulated a novel hypothesis for how these cells achieve suspension
+proficiency. The data suggests a mechanism where:
+
+1. Oxidative stress activates the **MAPK p38δ** pathway.
+2. This leads to the sequestration of **TEAD** transcription factors in the
+  cytoplasm.
+3. The protein **YAP**, now unable to bind with TEAD, instead interacts with
+  **FoxO1**.
+4. This new YAP-FoxO1 complex simultaneously triggers the production of
+  protective **antioxidants** and downregulates the adhesion genes typically
+  activated by YAP-TEAD.
+
+This compelling hypothesis, derived directly from the workflow's outputs,
+provides a concrete set of targets for future research and bioengineering
+efforts.
+
+## Conclusion
+
+This study is a prime example of how `tucca-rna-seq` serves as more than just a
+data processing tool; it is a hypothesis-generating engine. By providing a
+robust, reproducible, and comprehensive analysis, the workflow enabled
+researchers to move from raw sequence reads to a novel biological mechanism,
+accelerating the scientific discovery needed to advance the field of cellular
+agriculture.

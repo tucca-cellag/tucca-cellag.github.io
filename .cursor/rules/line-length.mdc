@@ -1,0 +1,33 @@
+---
+name: "Enforce 80-character line length"
+description: "Ensures that all files adhere to a maximum line length of 80 characters, with reasonable exceptions."
+globs: ["**/*"]
+alwaysApply: true
+---
+
+# Line Length Convention
+
+All text files should adhere to a maximum line length of 80 characters. This
+improves readability and is a standard convention in many projects.
+
+## Good Practice
+
+```
+This is a line that is well within the 80-character limit and is easy
+to read.
+```
+
+## Bad Practice
+
+```
+This is a very long line that exceeds the 80-character limit, which makes it
+harder to read and requires horizontal scrolling in some editors, which is not
+ideal for code reviews or general readability.
+```
+
+## Exceptions
+
+- URLs and links are exempt from this rule as they often cannot be broken.
+- Code comments containing long URLs or paths.
+- Lines in files where breaking them would harm readability or correctness
+(e.g., long strings, specific file formats).

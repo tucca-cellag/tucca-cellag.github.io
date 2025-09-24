@@ -1,0 +1,156 @@
+---
+title: Tufts HPC Quick Start Guide
+---
+
+import Link from '@docusaurus/Link';
+import Button from "@site/src/components/Button";
+import Card from "@site/src/components/Card";
+import CardHeader from "@site/src/components/Card/CardHeader";
+import CardBody from "@site/src/components/Card/CardBody";
+import CardFooter from "@site/src/components/Card/CardFooter";
+
+# Tufts HPC Quick Start Guide
+
+Welcome to the Tufts-specific documentation for the `tucca-rna-seq` workflow!
+These guides provide essential information for using the workflow on the 
+Tufts High-Performance Computing (HPC) cluster.
+
+:::tip[Start Here]
+This guide provides **Tufts-specific** quick start information. For complete 
+installation and setup instructions, see the [main Installation Guide](./../install-and-config/installation) first.
+:::
+
+This guide covers the essential Tufts-specific steps to get you running the 
+`tucca-rna-seq` workflow on the Tufts HPC cluster quickly.
+
+---
+
+## Prerequisites
+
+### 1. Tufts HPC Account
+
+You need a **Tufts Cluster Account** to access the HPC cluster:
+
+<Button
+  label="Request an Account"
+  link="https://access.tufts.edu/research-cluster-account"
+  variant="primary"
+  style={{ marginBottom: '20px' }}
+/>
+
+**Requirements:**
+- Valid Tufts Username and Password
+- Faculty or researcher sponsorship (for guest/student accounts)
+- Approval process takes multiple business days
+
+<Button
+  label="TTS Research Technology Guides - HPC Account Request"
+  link="https://rtguides.it.tufts.edu/hpc/access/10-account-request.html"
+  variant="secondary"
+/>
+
+---
+
+## Quick Setup Steps
+
+### 1. Connect to Tufts HPC
+
+**SSH Access (Recommended):**
+```bash
+ssh your_utln@login.tufts.edu
+```
+
+**VSCode Remote Development (Highly Recommended):**
+<Button
+  label="Setting Up Tufts HPC Access in VSCode"
+  link="/tucca-rna-seq/tufts-specific/tufts-hpc-in-vscode"
+  variant="primary"
+/>
+
+### 2. Get Off Login Node
+
+```bash
+# Request interactive compute node
+srun -p interactive --pty bash
+```
+
+### 3. Load Required Modules
+
+```bash
+# Purge all currently loaded modules
+module purge
+
+# Load required modules for tucca-rna-seq
+module load snakemake/8.27.1
+module load singularity/3.8.4
+module load miniforge/24.11.2-py312
+```
+
+### 4. Navigate to Lab Workspace
+
+```bash
+# For Kaplan Lab users
+cd /cluster/tufts/kaplanlab/your_utln
+
+# For other labs
+cd /cluster/tufts/your_lab/your_utln
+
+# Create project directory
+mkdir my_rnaseq_project
+cd my_rnaseq_project
+```
+
+:::tip[Set Up a Shared Software Cache!]
+Your home directory on the cluster has a strict storage quota. To avoid errors
+and speed up future analyses, we **strongly recommend** setting up a permanent,
+shared cache for software environments in your lab's shared workspace *before*
+you run the workflow for the first time.
+
+See the [**HPC Best Practices Guide**](./hpc-best-practices#persistent-software-caching)
+for detailed instructions.
+:::
+
+### 5. Clone and Setup Workflow
+
+For detailed instructions on cloning the repository and setting up the workflow's 
+dependencies, please follow the main [Installation Guide](./../install-and-config/installation).
+
+After cloning, you will need to configure the workflow for your specific
+analysis. This includes editing the main `config.yaml` file and associated
+sample sheets, as well as customizing the `slurm` execution profile to add
+your email for job notifications.
+
+For detailed instructions, please refer to the main
+[Configuration Guide](./../install-and-config/configuration).
+
+---
+
+## Tufts-Specific Resources
+
+### Documentation
+
+- **[Tufts HPC Home Page](https://it.tufts.edu/high-performance-computing)**
+- **[Tufts HPC Cluster Documentation](https://rtguides.it.tufts.edu/hpc/index.html)**
+- **[HPC Carpentry Lessons](https://www.hpc-carpentry.org/)**
+
+### Support
+
+- **TTS Research Technology**: [rt@tufts.edu](mailto:rt@tufts.edu)
+- **Workflow Team**: [benjamin.bromberg@tufts.edu](mailto:benjamin.bromberg@tufts.edu)
+- **GitHub Issues**: [Report problems](https://github.com/tucca-cellag/tucca-rna-seq/issues)
+- **HPC User Guide**: [https://rtguides.it.tufts.edu/hpc/](https://rtguides.it.tufts.edu/hpc/)
+
+---
+
+## Next Steps
+
+After completing this quick setup:
+
+1. **Follow the main Installation Guide** for complete workflow setup
+2. **Configure your analysis** using the [Configuration Guide](./../install-and-config/configuration)
+3. **Run your workflow** following the [Running Guide](./../running)
+
+---
+
+*For complete documentation, always refer to the main guides first, then use this 
+quick start for Tufts-specific details.*

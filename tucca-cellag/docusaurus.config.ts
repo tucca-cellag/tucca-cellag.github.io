@@ -73,6 +73,12 @@ const config: Config = {
           label: 'Helpful Resources',
         },
         {
+          type: 'docSidebar',
+          sidebarId: 'publications',
+          position: 'left',
+          label: 'Publications',
+        },
+        {
           to: 'our-team',
           label: 'Our Team',
           position: 'left',

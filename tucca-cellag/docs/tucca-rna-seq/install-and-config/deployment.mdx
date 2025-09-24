@@ -1,0 +1,510 @@
+---
+title: Workflow Deployment Options
+---
+
+import Tabs from "@theme/Tabs";
+import TabItem from "@theme/TabItem";
+import Link from '@docusaurus/Link';
+import Button from "@site/src/components/Button";
+import { Group } from '@mui/icons-material';
+import ReactPlayer from "react-player";
+import Card from "@site/src/components/Card";
+import CardHeader from "@site/src/components/Card/CardHeader";
+import CardBody from "@site/src/components/Card/CardBody";
+import CardFooter from "@site/src/components/Card/CardFooter";
+import Columns from "@site/src/components/Columns";
+import Column from "@site/src/components/Column";
+
+# Workflow Deployment Options
+
+## Recommended Deployment Strategy
+
+### Layered Environments with Singularity/Apptainer + Conda
+
+The most robust and reproducible way to run this workflow is by combining
+containers and package management in a layered approach, as described in the
+**[official Snakemake documentation][ad-hoc]**. This is the method we've
+implemented and recommend.
+
+At first, it might sound redundant: "Why use a package manager *inside* a
+container?" The answer lies in achieving the ultimate balance of
+reproducibility, flexibility, and efficiency.
+
+Let's continue with our kitchen and shopping list analogy:
+
+1.  **`Singularity/Apptainer` is the Portable Kitchen:** It provides the entire
+standardized kitchen environment: the operating system, the plumbing, the
+wiring, and the core `conda` appliance. When you run the workflow with
+`--use-singularity` or `--use-apptainer`, you are ensuring every step of the
+analysis happens inside this identical, portable kitchen, no matter if you're
+on your laptop or an HPC cluster.
+
+2.  **`--use-conda` is the Automated Shopping Trip:** For every single step in
+the main recipe (a Snakemake rule), `--use-conda` performs a specialized,
+just-in-time shopping trip. It reads a very specific shopping list (the rule's
+`environment.yaml` file) that details the exact "brand" and "version" of every
+ingredient (software like `fastqc=0.11.9`) needed for *only that step*. It then
+uses the `conda` tool inside the kitchen to instantly procure these items and
+place them in a clean, isolated pantry for that specific task.
+
+This two-layer system is the gold standard for several reasons:
+
+* **Absolute Reproducibility:** You control the outer environment (the
+kitchen's OS via Singularity/Apptainer) and the inner environment (the specific
+ingredients for each step via Conda). This eliminates almost every variable
+that could cause results to differ between machines.
+* **Unmatched Flexibility:** Need one brand of flour (`samtools v1.9`) for the
+cake and a different brand (`samtools v1.15`) for the bread? No problem. Each
+recipe step gets its own shopping trip and its own isolated pantry, so
+ingredients never get mixed up.
+* **Efficiency:** The base kitchen (Apptainer container) stays small and
+simple; it only needs the basic `conda` appliance. You don't need to stock the
+kitchen with every possible ingredient from the start. The workflow performs
+these small, fast shopping trips on-the-fly, only when an ingredient is needed.
+
+### How It Works in Practice
+
+When you execute the command `snakemake all --use-singularity --use-conda`, to
+run a configured workflow, a precise sequence of events unfolds:
+
+1.  **DAG Calculation:** First, Snakemake reads the entire `Snakefile` (the
+recipe). It compares the outputs you've asked for with the files that already
+exist, and it builds a full dependency graph of all jobs that need to run. This
+is the **Directed Acyclic Graph (DAG)**, which serves as the master plan for
+the entire analysis.
+
+2.  **Environment Creation:** Next, *before a single
+computational job is run*, Snakemake identifies all the unique software
+environments (`environment.yaml` files) required for the jobs in the DAG. It
+then creates all of these Conda environments. This is like doing all the
+grocery shopping for every course of a multi-course meal before you even start
+preheating the oven.
+
+3.  **Job Execution:** With the plan (DAG) made and all the pantries stocked
+(Conda environments created), Snakemake begins executing jobs.
+    * It starts with the jobs at the beginning of the DAG, which have no
+    unfinished dependencies.
+    * For each job, it uses **Singularity/Apptainer** to enter the standardized
+    "kitchen."
+    * Inside, it activates the specific, pre-built **Conda** environment
+    ("pantry") for that job.
+    * It runs the job's script in this doubly-isolated environment.
+    * As each job finishes, Snakemake checks the DAG to see which downstream
+    jobs are now unlocked and ready to run, continuing until the final output
+    is generated.
+
+---
+
+## Helpful Resources (Docs / Guides)
+
+<Columns style={{ marginBottom: "20px" }}>
+  <Column style={{ display: 'flex' }}>
+    <Card shadow="md" style={{ marginTop: "20px", flexGrow: 1 }}>
+      <CardHeader>
+        ### Apptainer / Singularity
+      </CardHeader>
+      <CardBody>
+        <p>
+          The container runtime that allows you to run the workflow in a
+          self-contained environment. We use it to run a Docker container image.
+        </p>
+
+        <Button
+          label="Apptainer User Guide"
+          link="https://apptainer.org/docs/user/main/"
+          variant="primary"
+          className="button--block"
+        />
+        <Button
+          label="Snakemake & Containers"
+          link="https://snakemake.readthedocs.io/en/stable/snakefiles/deployment.html#running-jobs-in-containers"
+          variant="secondary"
+          className="button--block"
+          style={{ marginTop: "10px" }}
+        />
+      </CardBody>
+      <CardFooter>
+        <p style={{fontSize: '0.8em', fontStyle: 'italic'}}>
+          A quick note: Apptainer is the new name for the open-source container
+          technology formerly known as Singularity. For the purposes of this
+          workflow, the tools are functionally identical, and we may use their
+          names interchangeably.
+        </p>
+      </CardFooter>
+    </Card>
+  </Column>
+  <Column style={{ display: 'flex' }}>
+    <Card shadow="md" style={{ marginTop: "20px", flexGrow: 1 }}>
+      <CardHeader>
+        ### Conda
+      </CardHeader>
+      <CardBody>
+        <p>
+          The package manager that operates <strong>inside the container</strong>
+          to manage the specific software packages required by the Snakemake
+          rules.
+        </p>
+        <Button
+          label="Conda User Guide"
+          link="https://docs.conda.io/projects/conda/en/latest/user-guide/index.html"
+          variant="primary"
+          className="button--block"
+        />
+        <Button
+          label="Default container: continuumio/miniconda3"
+          link="https://hub.docker.com/r/continuumio/miniconda3"
+          variant="secondary"
+          className="button--block"
+          style={{ marginTop: "10px" }}
+        />
+      </CardBody>
+      <CardFooter>
+        <p style={{fontSize: '0.8em', fontStyle: 'italic'}}>
+          Note: There are several Conda distributions, such as Anaconda
+          (includes many scientific packages by default), Miniconda (a minimal
+          installer), and Miniforge/Mambaforge (uses the community-driven
+          conda-forge channel). Our workflow's container uses Miniconda.
+        </p>
+      </CardFooter>
+    </Card>
+  </Column>
+</Columns>
+
+:::warning[A Note on Installation]
+Installing Apptainer/Singularity requires administrator (root) privileges,
+which can make it difficult to set up on a personal machine. 
+
+However, because it is a standard tool in scientific computing, most HPC
+clusters already have it installed. We recommend checking your HPC's
+documentation or contacting its support team to confirm before you start.
+:::
+
+---
+
+## Choosing an Execution Platform
+
+In addition to the software deployment strategy (using Conda, Singularity,
+or both), you also need to decide on the hardware or platform where the workflow
+will run. Snakemake's plugin-based architecture allows it to adapt to a wide
+variety of execution and storage backends.
+
+### Execution Backends
+
+#### High-Performance Computing (HPC) Clusters
+A **High-Performance Compute (HPC)** cluster is a network of powerful servers
+designed for complex data analysis. Many researchers use HPC clusters to run
+bioinformatics workflows because they can process large datasets much faster
+than a personal computer. The workflow can be adapted to different HPC
+schedulers by creating custom profiles and using the appropriate executor
+plugin:
+
+- **Slurm**: `snakemake-executor-plugin-slurm` (used in this workflow's
+  pre-configured profiles)
+- **LSF**: `snakemake-executor-plugin-lsf`
+- **PBS/Torque**: `snakemake-executor-plugin-pbs`
+- **SGE**: `snakemake-executor-plugin-sge`
+- And many others, which you can explore in the
+  [Snakemake Executor Plugin Catalog](https://snakemake.github.io/snakemake-plugin-catalog/#executor-plugins).
+
+#### Local Execution
+For small datasets or testing, you can run the workflow on a local machine
+(e.g., a personal laptop or workstation). In this case, Snakemake does not
+require a special executor plugin and will run jobs directly on your computer.
+
+:::warning[Local Execution Limitations]
+Local execution is suitable for small genomes and limited datasets. For
+production analyses, an HPC cluster or cloud environment is recommended.
+:::
+
+#### Cloud and Container Orchestration
+The workflow also supports various cloud and container platforms through
+dedicated executor plugins:
+
+- **Kubernetes**: `snakemake-executor-plugin-kubernetes`
+- **Google Cloud Batch**: `snakemake-executor-plugin-googlebatch`
+- **AWS Batch**: `snakemake-executor-plugin-aws-batch`
+
+### Continuous Integration (CI) with GitHub Actions
+
+This repository comes with a pre-configured GitHub Actions workflow (`.github/workflows/main.yml`)
+that automatically tests the workflow's integrity on every push and pull
+request. This ensures that the code is always in a working state.
+
+:::danger[For Testing Only]
+The included GitHub Actions workflow runs on free, public runners, which have
+limited computational resources and disk space. **It is designed for testing
+with small datasets only and cannot be used to run a real-world analysis.**
+
+For large-scale production runs, you can repurpose the
+`.github/workflows/main.yml` file by configuring it to use **self-hosted
+runners** with sufficient resources. This typically involves changing the
+`runs-on` key in the workflow file to target your self-hosted runner group.
+:::
+
+### Storage Backends
+
+For workflows that run in the cloud or across different physical locations,
+Snakemake can use **storage plugins** to seamlessly access data from various
+remote storage backends. This means your `Snakefile` can reference remote files
+(e.g., in an S3 bucket) as if they were on your local filesystem.
+
+Some of the available storage plugins include:
+- **Amazon S3**: `snakemake-storage-plugin-s3`
+- **Google Cloud Storage**: `snakemake-storage-plugin-gcs`
+- **Microsoft Azure Blob Storage**: `snakemake-storage-plugin-azure`
+
+You can explore all available storage backends in the
+[Snakemake Storage Plugin Catalog](https://snakemake.github.io/snakemake-plugin-catalog/#storage-plugins).
+
+---
+
+## Working on a High-Performance Compute (HPC) Cluster
+
+You typically connect to an HPC cluster using **SSH (Secure Shell)**, which
+provides a secure command-line interface to the remote servers.
+
+
+
+### HPC Learning Materials
+
+:::info[New to HPC?]
+If you are not familiar with high-performance computing, these resources are a
+great place to start.
+<Tabs>
+  <TabItem value="hpc-carpentry" label="HPC Carpentry Lessons">
+    <p>
+      HPC Carpentry teaches foundational skills for high-performance computing.
+    </p>
+    <Button
+      label="Visit HPC Carpentry"
+      link="https://www.hpc-carpentry.org/community-lessons/"
+      variant="primary"
+      className="button--block"
+    />
+  </TabItem>
+  <TabItem value="hpc-mainpage" label="Tufts HPC Home Page">
+    <p>
+      Tufts Technology Service's (TTS) home page for the Tufts University HPC
+      cluster.
+    </p>
+    <Button
+      label="Go to HPC Home Page"
+      link="https://it.tufts.edu/high-performance-computing"
+      variant="primary"
+      className="button--block"
+    />
+  </TabItem>
+  <TabItem value="hpc-docs" label="Tufts HPC User Guide">
+    <p>
+      Technical documentation for the Tufts HPC cluster, provided by TTS
+      Research Technology.
+    </p>
+    <Button
+      label="Read the HPC User Guide"
+      link="https://rtguides.it.tufts.edu/hpc/"
+      variant="primary"
+      className="button--block"
+    />
+  </TabItem>
+</Tabs>
+:::
+
+:::tip[Tufts HPC Materials]
+If you are Tufts staff/student/faculty, please refer to our Tufts-specific
+guides for deployment via the Tufts HPC cluster:
+
+<Button
+  label="Tufts HPC Quick Start Guide"
+  link="/tucca-rna-seq/tufts-specific/hpc-quick-start"
+  variant="primary"
+  className="button--block"
+/>
+
+<Button
+  label="Tufts HPC Best Practices"
+  link="/tucca-rna-seq/tufts-specific/hpc-best-practices"
+  variant="secondary"
+  className="button--block"
+  style={{ marginTop: "10px" }}
+/>
+:::
+
+## Recommended Tool: Visual Studio Code (VSCode)
+
+We highly recommend using an integrated development environment (IDE) like
+**VSCode** to interact with this workflow, especially when working on an HPC
+cluster.
+
+**VSCode** is a free, powerful code editor that can connect to remote servers
+via SSH. This allows you to edit files, run commands, and manage your workflow
+on the HPC cluster directly from a user-friendly interface on your local
+machine. It offers several key advantages for scientific workflows:
+
+- **Remote Development**: VSCode can seamlessly connect to remote servers,
+  allowing you to edit files, run code, and manage projects directly on the
+  HPC without leaving your local environment.
+- **Integrated Terminal**: Access the HPC terminal within VSCode, enabling
+  efficient command-line operations alongside your coding activities.
+- **Extensions and Customization**: Enhance your development experience with
+  extensions tailored for specific programming languages, debugging tools, and
+  workflow optimizations.
+
+:::tip
+If you are Tufts staff/student/faculty, please refer our documentation for
+setting up access to the Tufts HPC cluster via VSCode:
+
+<Button
+  label="Learn to Set Up Tufts HPC Access in VSCode"
+  link="/tucca-rna-seq/tufts-specific/tufts-hpc-in-vscode"
+  variant="primary"
+/>
+
+:::
+
+### Learning Resources for VSCode
+
+<Columns>
+  <Column>
+    <Card shadow="md" style={{ marginTop: "20px" }}>
+      <CardHeader>
+        <h3>Official Documentation</h3>
+      </CardHeader>
+      <CardBody>
+        <p>
+          The official docs are the best place to start, covering everything
+          from basic setup to advanced features.
+        </p>
+        <Button
+          label="VS Code Docs"
+          link="https://code.visualstudio.com/docs"
+          variant="primary"
+          className="button--block"
+        />
+        <Button
+          label="Getting Started Guide"
+          link="https://code.visualstudio.com/docs/getstarted/getting-started"
+          variant="secondary"
+          className="button--block"
+          style={{ marginTop: "10px" }}
+        />
+        <Button
+          label="Introductory Videos"
+          link="https://code.visualstudio.com/docs/getstarted/introvideos"
+          variant="info"
+          className="button--block"
+          style={{ marginTop: "10px" }}
+        />
+      </CardBody>
+    </Card>
+  </Column>
+  <Column>
+    <Card shadow="md" style={{ marginTop: "20px" }}>
+      <CardHeader>
+        <h3>VS Code in 100 Seconds</h3>
+      </CardHeader>
+      <CardBody>
+        <ReactPlayer
+          url="https://www.youtube.com/watch?v=KMxo3T_MTvY"
+          width="100%"
+          height="100%"
+          controls
+        />
+      </CardBody>
+      <CardFooter>
+        <p>
+          A quick overview of VS Code's core features, including the command
+          palette, integrated terminal, and extensions.
+        </p>
+      </CardFooter>
+    </Card>
+  </Column>
+  <Column>
+    <Card shadow="md" style={{ marginTop: "20px" }}>
+      <CardHeader>
+        <h3>25 VS Code Productivity Tips</h3>
+      </CardHeader>
+      <CardBody>
+        <ReactPlayer
+          url="https://www.youtube.com/watch?v=ifTF3ags0XI"
+          width="100%"
+          height="100%"
+          controls
+        />
+      </CardBody>
+      <CardFooter>
+        <p>
+          Improve your workflow with tips on keyboard shortcuts, multi-line
+          editing, and useful extensions like GitLens and Quokka.
+        </p>
+      </CardFooter>
+    </Card>
+  </Column>
+</Columns>
+
+<Columns>
+  <Column>
+    <Card shadow="md" style={{ marginTop: "20px" }}>
+      <CardHeader>
+        ### Download and Install VSCode
+      </CardHeader>
+      <CardBody>
+        <p>
+          Visit the official Visual Studio Code website to download the
+          installer for your operating system.
+        </p>
+        <Button
+          label="VSCode Download Page"
+          link="https://code.visualstudio.com/download"
+          variant="primary"
+          className="button--block"
+        />
+        <div style={{ marginTop: "20px", textAlign: "left" }}>
+          <h4>Installation Instructions:</h4>
+          <details>
+            <summary>Windows</summary>
+            <ul>
+              <li>Run the downloaded <code>.exe</code> installer.</li>
+              <li>Follow the installation prompts, accepting the license agreement and selecting desired installation options (e.g., adding VSCode to your PATH).</li>
+            </ul>
+          </details>
+          <details>
+            <summary>macOS</summary>
+            <ul>
+              <li>Open the downloaded <code>.dmg</code> file.</li>
+              <li>Drag and drop the VSCode application into the Applications
+              folder.</li>
+            </ul>
+          </details>
+          <details>
+            <summary>Linux</summary>
+            <p>
+              Follow the instructions for your distribution on the VSCode
+              website.
+            </p>
+            <Button
+              label="Linux Setup Instructions"
+              link="https://code.visualstudio.com/docs/setup/linux"
+              variant="secondary"
+              className="button--block"
+            />
+          </details>
+        </div>
+      </CardBody>
+      <CardFooter>
+        <p>
+          After installation, open VSCode from your application launcher or by
+          running <code>code</code> in your terminal (if added to PATH).
+        </p>
+      </CardFooter>
+    </Card>
+  </Column>
+</Columns>
+
+[1]: https://snakemake.readthedocs.io/en/stable/
+[2]: https://github.com/tucca-cellag/tucca-rna-seq/blob/main/profiles/slurm/config.v8%2B.yaml
+[3]: https://snakemake.readthedocs.io/en/stable/executing/cli.html#profiles
+[4]: https://github.com/Snakemake-Profiles/slurm
+[5]: https://snakemake.github.io/snakemake-plugin-catalog/
+[6]: https://github.com/snakemake/snakemake-executor-plugin-slurm
+[conda]: https://docs.conda.io/en/latest/
+[ad-hoc]: https://snakemake.readthedocs.io/en/stable/snakefiles/deployment.html#ad-hoc-combination-of-conda-package-management-with-containers

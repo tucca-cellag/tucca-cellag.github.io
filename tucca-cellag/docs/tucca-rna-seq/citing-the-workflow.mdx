@@ -2,14 +2,185 @@
 title: Citing the Workflow
 ---
 
-:::warning
-**🚧 Coming Soon! 🚧**
+import Link from '@docusaurus/Link';
+import Button from "@site/src/components/Button";
 
-Our website is currently under construction and will be launching soon.
-Stay tuned!
-
-In the meantime, feel free to [contact us](mailto:benjamin.bromberg@tufts.edu)
-with any questions.
-
-Thank you for your patience
+:::warning[Page in Progress]
+This documentation page is currently under active development. The information
+may be incomplete or subject to change. Thank you for your patience as we work
+to improve our guides.
 :::
+
+# Citing the tucca-rna-seq Workflow
+
+When using this workflow in your research, please cite both the workflow itself
+and the individual tools and methods used in the analysis.
+
+---
+
+## Citing the Workflow
+
+### Primary Citation
+
+**Workflow Repository:**
+```
+tucca-cellag/tucca-rna-seq: A modular RNA-Seq workflow for cellular agriculture research
+https://github.com/tucca-cellag/tucca-rna-seq
+```
+
+**DOI (Zenodo):**
+```
+10.5281/zenodo.15605826
+```
+
+### Citation Format
+
+**BibTeX:**
+```bibtex
+@software{tucca_rna_seq_2025,
+  title={tucca-rna-seq: A modular RNA-Seq workflow for cellular agriculture research},
+  author={Bromberg, Benjamin and Kaplan, David},
+  year={2025},
+  url={https://github.com/tucca-cellag/tucca-rna-seq},
+  doi={10.5281/zenodo.15605826}
+}
+```
+
+**APA:**
+```
+Bromberg, B., & Kaplan, D. (2025). tucca-rna-seq: A modular RNA-Seq workflow 
+for cellular agriculture research [Computer software]. 
+https://github.com/tucca-cellag/tucca-rna-seq
+```
+
+---
+
+## Citing Individual Tools
+
+### Core Workflow Management
+
+- **Snakemake**: Köster, J., & Rahmann, S. (2012). Snakemake—a scalable 
+  bioinformatics workflow engine. Bioinformatics, 28(19), 2520-2522.
+
+### Quality Control and Alignment
+
+- **FastQC**: Andrews, S. (2010). FastQC: a quality control tool for high 
+  throughput sequence data.
+- **STAR**: Dobin, A., et al. (2013). STAR: ultrafast universal RNA-seq 
+  aligner. Bioinformatics, 29(1), 15-21.
+- **Qualimap**: Okonechnikov, K., et al. (2016). Qualimap 2: advanced 
+  multi-sample quality control for high-throughput sequencing data. 
+  Bioinformatics, 32(2), 292-294.
+- **Salmon**: Patro, R., et al. (2017). Salmon provides fast and bias-aware 
+  quantification of transcript expression. Nature Methods, 14(4), 417-419.
+
+### Differential Expression Analysis
+
+- **DESeq2**: Love, M. I., et al. (2014). Moderated estimation of fold 
+  change and dispersion for RNA-seq data with DESeq2. Genome Biology, 15(12), 550.
+- **tximeta**: Love, M. I., et al. (2019). Tximeta: reference sequence 
+  checksums for provenance identification in RNA-seq analyses. F1000Research, 8.
+
+### Functional Enrichment Analysis
+
+- **clusterProfiler**: Yu, G., et al. (2012). clusterProfiler: an R package 
+  for comparing biological themes among gene clusters. OMICS, 16(5), 284-287.
+- **SPIA**: Tarca, A. L., et al. (2009). A novel signaling pathway impact 
+  analysis. Bioinformatics, 25(1), 75-82.
+- **MSigDB**: Liberzon, A., et al. (2011). Molecular signatures database 
+  (MSigDB) 3.0. Bioinformatics, 27(12), 1739-1740.
+
+### Visualization and Reporting
+
+- **MultiQC**: Ewels, P., et al. (2016). MultiQC: summarize analysis results 
+  for multiple tools and samples in a single report. Bioinformatics, 32(19), 3047-3048.
+- **GeneTonic**: Marini, F., & Binder, H. (2019). GeneTonic: an R/Bioconductor 
+  package for streamlining the interpretation of RNA-seq data. BMC Bioinformatics, 20(1), 1-8.
+- **pcaExplorer**: Marini, F., et al. (2019). pcaExplorer: an R/Bioconductor 
+  package for interactive exploration of RNA-seq principal components. Bioinformatics, 35(19), 3832-3834.
+- **ideal**: Marini, F., et al. (2018). ideal: an R/Bioconductor package for 
+  interactive differential expression analysis. BMC Bioinformatics, 19(1), 1-8.
+
+---
+
+## Citing the Research
+
+### Publications Using tucca-rna-seq
+
+If you publish research using this workflow, please:
+
+1. **Cite the workflow** using the information above
+2. **Include the workflow version** used in your methods
+3. **Reference the GitHub repository** for reproducibility
+4. **Share your configuration files** when possible
+
+### Example Methods Section
+
+```
+RNA-seq data analysis was performed using the tucca-rna-seq workflow 
+(Bromberg & Kaplan, 2025; https://github.com/tucca-cellag/tucca-rna-seq). 
+Raw reads were quality-controlled using FastQC and aligned to the reference 
+genome using STAR. Transcript quantification was performed with Salmon, and 
+differential expression analysis was conducted using DESeq2. Functional 
+enrichment analysis was performed using clusterProfiler and SPIA.
+```
+
+---
+
+## Acknowledgments
+
+### Funding and Support
+
+This workflow was developed with support from:
+
+- **Tufts University Center for Cellular Agriculture (TUCCA)**
+- **Kaplan Lab** at Tufts University
+- **Open Source Community** contributions and feedback
+
+### Contributors
+
+We thank all contributors to the workflow and documentation:
+
+<Button
+  label="View Contributors"
+  link="https://github.com/tucca-cellag/tucca-rna-seq/graphs/contributors"
+  variant="secondary"
+/>
+
+---
+
+## License and Terms
+
+The workflow is released under the MIT License, which allows for:
+
+- Commercial use
+- Modification
+- Distribution
+- Private use
+
+**Requirement**: Attribution must be given to the original authors.
+
+<Button
+  label="View Full License"
+  link="https://github.com/tucca-cellag/tucca-rna-seq/blob/main/LICENSE"
+  variant="info"
+/>
+
+---
+
+## Contact for Citation Questions
+
+If you have questions about citing the workflow or need assistance with
+attribution:
+
+<Button
+  label="Contact the Team"
+  link="mailto:benjamin.bromberg@tufts.edu"
+  variant="primary"
+/>
+
+---
+
+*Proper citation helps support continued development and ensures scientific 
+reproducibility. Thank you for your attention to this important aspect of 
+scientific communication.*

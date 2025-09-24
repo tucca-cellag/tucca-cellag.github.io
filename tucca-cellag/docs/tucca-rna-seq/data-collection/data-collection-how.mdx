@@ -1,0 +1,271 @@
+---
+title: What Should I Collect?
+---
+
+# RNA-Seq Analysis Data Collection Template
+
+## 1. Raw Sequencing Data
+
+### File Information
+- **FASTQ Files**: Location and format of raw sequencing reads 
+  (`.fastq`, `.fastq.gz`, etc.)
+- **File Naming Convention**: How are your files named? 
+  (e.g., `sample_condition_replicate_R1.fastq.gz`)
+- **File Organization**: Are files organized in folders by sample, 
+  condition, or other structure?
+
+### Sequencing Strategy
+- **Read Type**: Single-end (SE) or paired-end (PE) sequencing
+- **Number of Files**: Total count of FASTQ files
+- **File Sizes**: Approximate sizes of your largest files 
+  (for storage planning)
+
+---
+
+## 2. Sequencing Method Details
+
+### Technical Specifications
+- **Sequencing Platform**: Illumina, PacBio, Oxford Nanopore, or other
+- **Sequencing Instrument**: Specific model 
+  (e.g., Illumina NovaSeq 6000, HiSeq 4000)
+- **Read Length**: Average read length and length distribution
+- **Sequencing Depth**: Expected coverage per sample 
+  (e.g., 30M reads per sample)
+- **Library Preparation Method**: 
+  - Stranded or unstranded RNA-seq
+  - Library preparation kit used
+  - Any modifications to standard protocols
+
+### Quality Information
+- **RNA Integrity Number (RIN)**: Available RIN scores for samples
+- **Quality Metrics**: Any existing quality control data
+- **Known Issues**: Any batch effects, contamination concerns, 
+  or technical problems
+- **Adapter Sequences**: If known, specify adapter sequences for trimming
+
+---
+
+## 3. Species and Reference Genome Information
+
+### Organism Details
+- **Species Name**: Scientific name and common name
+- **Taxonomic ID**: NCBI taxonomy ID (if known)
+- **Strain/Subspecies**: If applicable, specify strain information
+
+### Reference Genome Preferences
+- **Genome Assembly Version**: Specific version you want to use
+- **Reference Database Preference**: 
+  - **RefSeq** (NCBI's reference sequence database)
+  - **Ensembl** (EMBL-EBI's genome database)
+  - **Other** (specify)
+- **Assembly Accession**: Specific genome assembly ID 
+  (e.g., GCF_000001405.39 for human GRCh38.p13)
+- **Annotation Version**: GTF/GFF file version that matches the genome 
+  assembly
+- **Annotation Source**: Same database as genome 
+  (e.g., both from Ensembl) or different
+
+### Alternative References
+- **Custom Genome**: If you have a custom reference genome
+- **Transcriptome**: If you prefer transcriptome-based quantification
+- **Organism Database**: Any specific organism annotation database 
+  (e.g., org.Hs.eg.db for human)
+
+---
+
+## 4. Sample Information
+
+### Experimental Design
+- **Sample IDs**: Unique identifiers for each sample
+- **Sample Descriptions**: Brief descriptions of what each sample 
+  represents
+- **Experimental Conditions/Groups**: 
+  - Treatment groups (e.g., control vs treated)
+  - Time points (e.g., 0h, 6h, 24h)
+  - Tissue types or cell lines
+  - Any other experimental variables
+
+### Replicates and Statistics
+- **Replicate Information**: 
+  - Number of biological replicates per condition
+  - Number of technical replicates (if any)
+  - Replicate type (biological vs technical)
+- **Sample Relationships**: How samples are related 
+  (e.g., same individual, different time points)
+
+### Metadata
+- **Batch Information**: Any batch effects or technical variables
+- **Sample Collection Details**: Date, location, processing method
+- **RNA Extraction Method**: Kit used, storage conditions
+- **Additional Variables**: Age, sex, genotype, or other relevant 
+  metadata
+
+### Sample Sheet Format
+Please provide a tab-separated values (TSV) file with columns:
+
+```tsv
+sample_id	condition	replicate	time_point	tissue	batch	other_metadata
+sample_1	control	1	0h	liver	batch1	age_30
+sample_2	treatment	1	6h	liver	batch1	age_30
+```
+
+---
+
+## 5. Reference Files (if providing your own)
+
+### Genome Files
+- **Reference Genome FASTA**: Complete genome sequence file
+- **Gene Annotation GTF/GFF**: File containing gene models and 
+  transcript information
+- **Transcriptome FASTA**: If using transcriptome-based quantification
+- **Index Files**: Pre-built index files (if available)
+
+### Custom Annotations
+- **Custom Gene Sets**: Any specific gene sets relevant to your study
+- **Pathway Databases**: Custom pathway annotations
+- **Regulatory Elements**: Promoter regions, enhancers, etc.
+- **Custom Annotation Databases**: Any organism-specific databases
+
+---
+
+## 6. Analysis Parameters
+
+### Differential Expression Analysis
+- **Comparison Groups**: Define the groups to be compared
+  - Primary comparisons (e.g., treatment vs control)
+  - Secondary comparisons (e.g., time course analysis)
+- **Statistical Thresholds**: 
+  - False discovery rate (FDR) cutoff (default: 0.05)
+  - P-value cutoff (default: 0.05)
+  - Log2 fold change threshold (default: 1.0)
+- **Expression Thresholds**: 
+  - Minimum read count per gene (default: 10)
+  - Minimum expression level for inclusion
+
+### Quality Control Parameters
+- **Quality Score Thresholds**: Minimum quality scores for base calling
+- **Adapter Trimming**: Preferences for adapter removal (not currently
+supported natively by the workflow)
+- **Read Filtering**: Minimum read length after trimming (not currently
+supported natively by the workflow)
+- **Mapping Quality**: Minimum mapping quality scores
+
+### Enrichment Analysis Preferences
+- **Gene Set Databases**: 
+  - Gene Ontology (GO): Biological Process, Molecular Function, 
+    Cellular Component
+  - KEGG pathways
+  - Reactome pathways
+  - Custom gene sets
+- **Enrichment Methods**: 
+  - Over-Representation Analysis (ORA)
+  - Gene Set Enrichment Analysis (GSEA)
+  - Other methods (specify)
+- **Statistical Corrections**: Multiple testing correction method 
+  (BH, Bonferroni, etc.)
+
+---
+
+## 7. Quality Control and Visualization Preferences
+
+### Quality Control
+- **QC Thresholds**: Acceptable quality scores and filtering criteria
+- **Coverage Requirements**: Minimum coverage for gene detection
+- **Contamination Checks**: Any specific contamination screening needed
+- **Batch Effect Correction**: Methods for handling batch effects
+
+### Visualization and Reporting
+- **QC Plots**: Types of quality control plots desired
+- **Expression Plots**: Volcano plots, MA plots, heatmaps
+- **Enrichment Visualizations**: Network plots, pathway diagrams
+- **Report Format**: HTML reports, PDF summaries, interactive dashboards
+- **Data Export**: RDS files, TSV tables, and HTML reports for further analysis
+
+:::info[Interactive Visualization Capabilities]
+The workflow provides interactive Shiny applications (GeneTonic, pcaExplorer)
+that enable:
+- **Dynamic data exploration** through interactive plots and tables
+- **Plot customization** with interactive controls
+- **Direct download** of visualizations in multiple formats (PNG, PDF, SVG)
+- **Publication-ready figure creation** from the interactive interfaces
+:::
+
+:::note[Workflow Outputs]
+The workflow generates data files (RDS, TSV, HTML reports) but does not 
+automatically create static plots or visualizations. However, the workflow
+provides interactive Shiny applications (GeneTonic, pcaExplorer) that allow you to:
+- **Explore data interactively** through dynamic visualizations
+- **Download plots and figures** in multiple formats (PNG, PDF, SVG)
+- **Create publication-ready images** directly from the interactive interfaces
+- **Customize visualizations** before downloading
+
+You can also use the generated R data objects with R plotting libraries to
+create custom visualizations.
+:::
+
+---
+
+## 8. Analysis Goals and Expectations
+
+### Research Questions
+- **Primary Objectives**: Main research questions to be addressed
+- **Secondary Analyses**: Additional analyses of interest
+- **Validation Plans**: How results will be validated 
+  (qPCR, Western blot, etc.)
+
+### Output Requirements
+- **File Formats**: Preferred output formats (CSV, TSV, Excel, R objects)
+- **Data Sharing**: Requirements for sharing results with collaborators
+- **Reproducibility**: Level of detail needed for methods section
+- **Integration**: Plans to integrate with other datasets or analyses
+
+---
+
+## 9. Additional Information
+
+### Previous Analyses
+- **Previous RNA-seq**: Any previous RNA-seq analyses on similar samples
+- **Expected Results**: Any known or expected gene expression changes
+- **Control Genes**: Housekeeping genes for normalization validation
+
+### Special Requirements
+- **Custom Scripts**: Any custom analysis scripts to be incorporated
+- **External Tools**: Any specific tools or databases to be used
+- **Publication Standards**: Any journal-specific requirements for analysis
+- **Data Privacy**: Any restrictions on data handling or storage
+
+---
+
+## Submission Checklist
+
+Please ensure you have provided:
+- [ ] Raw FASTQ files or access instructions
+- [ ] Sample metadata table (TSV format)
+- [ ] Species and genome assembly information
+- [ ] Experimental design details
+- [ ] Analysis parameters and thresholds
+- [ ] Quality control preferences
+- [ ] Output format requirements
+- [ ] Timeline and deadline information
+
+---
+
+## Next Steps
+
+Once you've completed this template:
+
+1. **Review with collaborators** to ensure all information is accurate 
+   and complete
+2. **Proceed to [Configuration](../install-and-config/configuration)** to set up your analysis 
+   parameters
+3. **Follow the [Installation](../install-and-config/installation) guide** to set up the workflow
+4. **Use the [Running](../running) guide** to execute your analysis
+
+:::tip
+**Need Help?**
+
+If you have questions about filling out this template or need assistance 
+with any section, please [contact us](mailto:benjamin.bromberg@tufts.edu) 
+or [open an issue](https://github.com/tucca-cellag/tucca-rna-seq/issues) 
+on our GitHub repository.
+:::

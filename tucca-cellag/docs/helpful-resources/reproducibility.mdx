@@ -6,26 +6,32 @@ import Tabs from "@theme/Tabs";
 import TabItem from "@theme/TabItem";
 import Link from '@docusaurus/Link';
 import Button from "@site/src/components/Button";
-import { Group } from '@mui/icons-material';
-import ReactPlayer from 'react-player/youtube'
-
-:::warning
-**🚧 Coming Soon! 🚧**
-
-Our website is currently under construction and will be launching soon.
-Stay tuned!
-
-In the meantime, feel free to [contact us](mailto:benjamin.bromberg@tufts.edu)
-with any questions.
-
-Thank you for your patience
-:::
+import Card from "@site/src/components/Card";
+import CardHeader from "@site/src/components/Card/CardHeader";
+import CardBody from "@site/src/components/Card/CardBody";
+import CardFooter from "@site/src/components/Card/CardFooter";
+import Columns from "@site/src/components/Columns";
+import Column from "@site/src/components/Column";
+import ReactPlayer from 'react-player/youtube';
 
 # Reproducibility in Scientific Computing
 
+Reproducibility is the cornerstone of scientific research. This guide covers
+essential practices for ensuring your computational analyses can be reproduced
+by others, including yourself in the future.
+
 ---
 
-## Good enough practices in scientific computing
+## Why Reproducibility Matters
+
+- **Scientific integrity**: Results can be verified and validated
+- **Collaboration**: Others can build on your work
+- **Career advancement**: Reproducible research is highly valued
+- **Self-preservation**: You can reproduce your own results months later
+
+---
+
+## Good Enough Practices in Scientific Computing
 
 We highly recommend reading **Good enough practices in scientific computing**
 by Wilson *et al*. The first author, Greg Wilson, was a co-founder of Software
@@ -42,8 +48,8 @@ domain-specific training covering all aspects of research software engineering."
   style={{ marginBottom: '20px' }}
 />
 
-Alternatively, there is a **self-lead lesson** inspired by and based on the
-paper available on [The Carpentries Lab](carpentries-lab) (a collection of
+Alternatively, there is a **self-led lesson** inspired by and based on the
+paper available on [The Carpentries Lab][carpentries-lab] (a collection of
 peer-reviewed lessons from the carpentries community). The lesson does not need
 any specific software installed beyond a web browser. It is mostly
 discussion-based, with examples of data organization given and used for the
@@ -54,6 +60,124 @@ discussion.
   link="https://carpentries-lab.github.io/good-enough-practices/"
   variant="primary"
 />
+
+---
+
+## Core Principles
+
+### 1. **Document Everything**
+
+<Columns>
+  <Column>
+    <Card shadow="md">
+      <CardHeader>
+        <h4>📝 Code Documentation</h4>
+      </CardHeader>
+      <CardBody>
+        <p>Document your code with clear comments and README files.</p>
+        <ul>
+          <li>Function descriptions</li>
+          <li>Parameter explanations</li>
+          <li>Usage examples</li>
+          <li>Dependencies list</li>
+        </ul>
+      </CardBody>
+    </Card>
+  </Column>
+
+  <Column>
+    <Card shadow="md">
+      <CardHeader>
+        <h4>🔬 Experimental Design</h4>
+      </CardHeader>
+      <CardBody>
+        <p>Document your experimental setup and methodology.</p>
+        <ul>
+          <li>Sample information</li>
+          <li>Data collection methods</li>
+          <li>Analysis parameters</li>
+          <li>Quality control steps</li>
+        </ul>
+      </CardBody>
+    </Card>
+  </Column>
+</Columns>
+
+### 2. **Version Control Everything**
+
+<Columns>
+  <Column>
+    <Card shadow="md">
+      <CardHeader>
+        <h4>📚 Code Versioning</h4>
+      </CardHeader>
+      <CardBody>
+        <p>Use Git to track changes in your code and analysis scripts.</p>
+        <ul>
+          <li>Track all changes</li>
+          <li>Create meaningful commits</li>
+          <li>Use branches for experiments</li>
+          <li>Tag important versions</li>
+        </ul>
+      </CardBody>
+    </Card>
+  </Column>
+
+  <Column>
+    <Card shadow="md">
+      <CardHeader>
+        <h4>📊 Data Versioning</h4>
+      </CardHeader>
+      <CardBody>
+        <p>Version your data and results alongside your code.</p>
+        <ul>
+          <li>Data processing pipelines</li>
+          <li>Intermediate results</li>
+          <li>Final outputs</li>
+          <li>Configuration files</li>
+        </ul>
+      </CardBody>
+    </Card>
+  </Column>
+</Columns>
+
+### 3. **Environment Management**
+
+<Columns>
+  <Column>
+    <Card shadow="md">
+      <CardHeader>
+        <h4>🐍 Python Environments</h4>
+      </CardHeader>
+      <CardBody>
+        <p>Use conda or virtual environments to isolate dependencies.</p>
+        <ul>
+          <li>Create environment.yml</li>
+          <li>Pin package versions</li>
+          <li>Export environment</li>
+          <li>Use containers</li>
+        </ul>
+      </CardBody>
+    </Card>
+  </Column>
+
+  <Column>
+    <Card shadow="md">
+      <CardHeader>
+        <h4>📦 R Environments</h4>
+      </CardHeader>
+      <CardBody>
+        <p>Use renv to manage R package versions.</p>
+        <ul>
+          <li>Initialize renv</li>
+          <li>Snapshot dependencies</li>
+          <li>Restore environments</li>
+          <li>Lock file versions</li>
+        </ul>
+      </CardBody>
+    </Card>
+  </Column>
+</Columns>
 
 ---
 
@@ -84,8 +208,340 @@ The thumbnail for this video is wrong. The video is only 3 minutes long.
   variant="primary"
 />
 
+---
+
+## Practical Implementation
+
+### 1. **Project Structure**
+
+```
+project_name/
+├── README.md              # Project description and setup
+├── requirements.txt       # Python dependencies
+├── renv.lock             # R package versions
+├── data/                 # Raw and processed data
+│   ├── raw/             # Original data files
+│   ├── processed/       # Cleaned/processed data
+│   └── README.md        # Data documentation
+├── scripts/              # Analysis scripts
+│   ├── 01_data_cleaning.R
+│   ├── 02_analysis.R
+│   └── 03_visualization.R
+├── results/              # Output files
+│   ├── figures/         # Plots and graphs
+│   ├── tables/          # Data tables
+│   └── README.md        # Results documentation
+├── docs/                 # Documentation
+│   ├── methods.md       # Methodology
+│   └── results.md       # Results summary
+└── .gitignore           # Files to exclude from version control
+```
+
+### 2. **Git Workflow**
+
+```bash
+# Initialize repository
+git init
+git add .
+git commit -m "Initial commit: project setup"
+
+# Make changes and commit
+git add scripts/analysis.R
+git commit -m "Add differential expression analysis"
+
+# Create branch for experiment
+git checkout -b experiment/new_method
+# ... make changes ...
+git add .
+git commit -m "Implement new analysis method"
+git checkout main
+git merge experiment/new_method
+
+# Tag important versions
+git tag -a v1.0.0 -m "First stable release"
+```
+
+### 3. **Environment Management**
+
+#### Python (conda)
+```bash
+# Create environment
+conda env create -f environment.yml
+
+# Activate environment
+conda activate myproject
+
+# Export environment
+conda env export > environment.yml
+```
+
+#### R (renv)
+```r
+# Initialize renv
+renv::init()
+
+# Install packages
+renv::install(c("tidyverse", "DESeq2"))
+
+# Snapshot current state
+renv::snapshot()
+
+# Restore environment
+renv::restore()
+```
+
+---
+
+## Best Practices Checklist
+
+### Before Starting Analysis
+
+- [ ] **Project setup**: Create organized directory structure
+- [ ] **Version control**: Initialize Git repository
+- [ ] **Environment**: Set up isolated computing environment
+- [ ] **Documentation**: Create README and project description
+
+### During Analysis
+
+- [ ] **Code comments**: Add clear comments explaining logic
+- [ ] **Regular commits**: Commit changes frequently with descriptive messages
+- [ ] **Data tracking**: Document data sources and processing steps
+- [ ] **Parameter logging**: Record all analysis parameters
+
+### After Analysis
+
+- [ ] **Results documentation**: Document all outputs and interpretations
+- [ ] **Environment export**: Export environment specifications
+- [ ] **Code review**: Review and clean up code
+- [ ] **Archive data**: Store raw data and results securely
+
+---
+
+## Tools and Resources
+
+<Columns style={{ marginBottom: "20px" }}>
+  <Column style={{ display: 'flex' }}>
+    <Card shadow="md" style={{ marginTop: "20px", flexGrow: 1 }}>
+      <CardHeader>
+        <h3>Apptainer / Singularity</h3>
+      </CardHeader>
+      <CardBody>
+        <p>
+          The container runtime that allows you to run the workflow in a
+          self-contained environment. We use it to run a Docker container image.
+        </p>
+
+        <Button
+          label="Apptainer User Guide"
+          link="https://apptainer.org/docs/user/main/"
+          variant="primary"
+          className="button--block"
+        />
+        <Button
+          label="Snakemake & Containers"
+          link="https://snakemake.readthedocs.io/en/stable/snakefiles/deployment.html#running-jobs-in-containers"
+          variant="secondary"
+          className="button--block"
+          style={{ marginTop: "10px" }}
+        />
+      </CardBody>
+      <CardFooter>
+        <p style={{fontSize: '0.8em', fontStyle: 'italic'}}>
+          A quick note: Apptainer is the new name for the open-source container
+          technology formerly known as Singularity. For the purposes of this
+          workflow, the tools are functionally identical, and we may use their
+          names interchangeably.
+        </p>
+      </CardFooter>
+    </Card>
+  </Column>
+  <Column style={{ display: 'flex' }}>
+    <Card shadow="md" style={{ marginTop: "20px", flexGrow: 1 }}>
+      <CardHeader>
+        <h3>Conda</h3>
+      </CardHeader>
+      <CardBody>
+        <p>
+          The package manager that operates <strong>inside the container</strong>
+          to manage the specific software packages required by the Snakemake
+          rules.
+        </p>
+        <Button
+          label="Conda User Guide"
+          link="https://docs.conda.io/projects/conda/en/latest/user-guide/index.html"
+          variant="primary"
+          className="button--block"
+        />
+        <Button
+          label="Default container: continuumio/miniconda3"
+          link="https://hub.docker.com/r/continuumio/miniconda3"
+          variant="secondary"
+          className="button--block"
+          style={{ marginTop: "10px" }}
+        />
+      </CardBody>
+      <CardFooter>
+        <p style={{fontSize: '0.8em', fontStyle: 'italic'}}>
+          Note: There are several Conda distributions, such as Anaconda
+          (includes many scientific packages by default), Miniconda (a minimal
+          installer), and Miniforge/Mambaforge (uses the community-driven
+          conda-forge channel). Our workflow's container uses Miniconda.
+        </p>
+      </CardFooter>
+    </Card>
+  </Column>
+  <Column style={{ display: 'flex' }}>
+    <Card shadow="md" style={{ marginTop: "20px", flexGrow: 1 }}>
+      <CardHeader>
+        <h3>Snakemake</h3>
+      </CardHeader>
+      <CardBody>
+        <p>
+          The workflow management system that orchestrates the analysis, using
+          Conda to create reproducible environments for each step.
+        </p>
+        <p style={{ marginTop: "10px", marginBottom: "4px", fontSize: "0.9em",
+        fontStyle: "italic" }}>
+          This is the most important page to visit when learning how to execute,
+          debug, and configure your workflow.
+        </p>
+        <Button
+          label="Command Line Interface (CLI) Docs"
+          link="https://snakemake.readthedocs.io/en/stable/executing/cli.html"
+          variant="primary"
+          className="button--block"
+        />
+        <Button
+          label="Official Documentation Home"
+          link="https://snakemake.readthedocs.io/en/stable/"
+          variant="secondary"
+          className="button--block"
+          style={{ marginTop: "10px" }}
+        />
+        <p style={{ marginTop: "10px", marginBottom: "4px", fontSize: "0.9em", fontStyle: "italic" }}>
+          While the official tutorial is a great start, we recommend the one
+          from The Carpentries for its detailed, bioinformatics-focused
+          approach.
+        </p>
+        <Button
+          label="Offical Beginner's Tutorial"
+          link="https://snakemake.readthedocs.io/en/stable/tutorial/tutorial.html"
+          variant="secondary"
+          className="button--block"
+          style={{ marginTop: "10px" }}
+        />
+        <Button
+          label="Snakemake Bioinformatics Tutorial (The Carpentries)"
+          link="https://carpentries-incubator.github.io/snakemake-novice-bioinformatics/"
+          variant="info"
+          className="button--block"
+          style={{ marginTop: "10px" }}
+        />
+        <p style={{ marginTop: "10px", marginBottom: "4px", fontSize: "0.9em",
+        fontStyle: "italic" }}>
+          For more advanced needs, or when information isn't in the main docs,
+          the API reference is useful.
+        </p>
+        <Button
+          label="API Reference"
+          link="https://snakemake-api.readthedocs.io/en/stable/"
+          variant="secondary"
+          className="button--block"
+        />
+      </CardBody>
+    </Card>
+  </Column>
+</Columns>
+
+### Version Control
+
+- **Git**: [git-scm.com](https://git-scm.com/)
+- **GitHub**: [github.com](https://github.com/)
+- **GitLab**: [gitlab.com](https://gitlab.com/)
+
+### Environment Management
+
+- **Conda**: [docs.conda.io](https://docs.conda.io/)
+- **Docker**: [docker.com](https://docker.com/)
+- **Singularity**: [sylabs.io](https://sylabs.io/)
+
+### Documentation
+
+- **R Markdown**: [rmarkdown.rstudio.com](https://rmarkdown.rstudio.com/)
+- **Jupyter Notebooks**: [jupyter.org](https://jupyter.org/)
+- **Quarto**: [quarto.org](https://quarto.org/)
+
+### Learning Resources
+
+- **Software Carpentry**: [software-carpentry.org](https://software-carpentry.org/)
+- **Data Carpentry**: [datacarpentry.org](https://datacarpentry.org/)
+- **The Carpentries**: [carpentries.org](https://carpentries.org/)
+
+---
+
+## Common Pitfalls
+
+### 1. **Hard-coded Paths**
+
+❌ **Bad:**
+```r
+data <- read.csv("C:/Users/me/Documents/project/data.csv")
+```
+
+✅ **Good:**
+```r
+data <- read.csv(file.path("data", "raw", "data.csv"))
+```
+
+### 2. **Missing Dependencies**
+
+❌ **Bad:**
+```r
+# Install packages manually without recording versions
+install.packages("tidyverse")
+```
+
+✅ **Good:**
+```r
+# Use renv to manage package versions
+renv::install("tidyverse")
+renv::snapshot()
+```
+
+### 3. **Incomplete Documentation**
+
+❌ **Bad:**
+```r
+# No explanation of what this does
+results <- deseq(dat)
+```
+
+✅ **Good:**
+```r
+# Run DESeq2 differential expression analysis
+# Parameters: design = ~condition, alpha = 0.05
+results <- deseq(dat, design = ~condition, alpha = 0.05)
+```
+
+---
+
+## Next Steps
+
+After implementing these practices:
+
+1. **Start small**: Begin with one project and expand gradually
+2. **Use templates**: Create templates for common project types
+3. **Automate**: Use scripts to automate repetitive tasks
+4. **Share**: Share your reproducible workflows with others
+
+For workflow-specific reproducibility, see the [Configuration Guide](/tucca-rna-seq/install-and-config/configuration).
+
+---
+
 ## References
 
 1. About us. Software Carpentry https://software-carpentry.org/about-us/.
+2. Wilson, G., et al. (2017). Good enough practices in scientific computing. PLoS Comput Biol, 13(6), e1005510.
+3. Sandve, G. K., et al. (2013). Ten simple rules for reproducible computational research. PLoS Comput Biol, 9(10), e1003505.
 
-[carpentries-lab]: https://carpentries-lab.org/
+[carpentries-lab]: https://carpentries.org/
