@@ -85,7 +85,7 @@ const config: Config = {
         },
         {
           href: 'https://github.com/tucca-cellag',
-          label: 'GitHub',
+          label: 'Our GitHub Organization',
           position: 'right',
         },
       ],
