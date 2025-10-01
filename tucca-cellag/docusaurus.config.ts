@@ -32,6 +32,16 @@ const config: Config = {
     locales: ['en'],
   },
 
+  headTags: [
+    {
+      tagName: 'meta',
+      attributes: {
+        'http-equiv': 'X-Clacks-Overhead',
+        content: 'GNU Terry Pratchett',
+      },
+    },
+  ],
+
   presets: [
     [
       'classic',
