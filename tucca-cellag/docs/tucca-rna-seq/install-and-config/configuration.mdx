@@ -221,6 +221,28 @@ ref_assembly:
 
 Configure API keys for external database access to avoid rate limiting.
 
+:::warning[Recommended: Use .env File]
+**We strongly recommend using a `.env` file instead of setting API keys in
+`config.yaml`.** The `.env` file is git-ignored and prevents accidental commits
+of sensitive credentials.
+
+To set up your `.env` file:
+
+1. Copy the template: `cp .env.template .env`
+2. Edit `.env` and replace the placeholder with your actual API key:
+   ```bash
+   NCBI_API_KEY=your_actual_api_key_here
+   ```
+
+The workflow automatically loads API keys in this priority order:
+1. **Environment variable** `NCBI_API_KEY` (highest priority)
+2. **`.env` file** (if `NCBI_API_KEY` is set in the file)
+3. **Config file** `config["api_keys"]["ncbi"]` (fallback, deprecated)
+
+This ensures your API keys remain secure and are never committed to version
+control.
+:::
+
 | Parameter | Type | Description | Required |
 |-----------|------|-------------|----------|
 | `ncbi` | string | NCBI API key for genome and SRA downloads | No (recommended) |
@@ -229,6 +251,9 @@ Configure API keys for external database access to avoid rate limiting.
 To obtain an NCBI API key, visit [NCBI Account Settings](https://account.ncbi.nlm.nih.gov/settings/)
 and generate a new API key. This will help avoid rate limiting when downloading
 genomes and SRA datasets.
+
+**After obtaining your key, add it to your `.env` file** (not in `config.yaml`)
+to keep it secure.
 :::
 
 ### `diffexp` - Differential Expression Analysis
