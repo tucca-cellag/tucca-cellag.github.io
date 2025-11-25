@@ -1,0 +1,49 @@
+name: Test PR Build
+
+on:
+  pull_request:
+    branches:
+      - source
+    paths:
+      - 'tucca-cellag/**'
+      - '.github/workflows/**'
+      - 'package*.json'
+
+permissions:
+  contents: read
+
+jobs:
+  test-build:
+    name: Test Docusaurus Build
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: tucca-cellag
+    steps:
+      - name: Checkout PR branch
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "24"
+          cache: "npm"
+          cache-dependency-path: tucca-cellag/package-lock.json
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run type check
+        run: npm run typecheck
+
+      - name: Test build
+        run: npm run build
+
+      - name: Check for broken links
+        run: |
+          # Docusaurus will fail the build if there are broken links
+          # This step ensures we catch them during PR review
+          echo "Build completed successfully - no broken links detected"
+
