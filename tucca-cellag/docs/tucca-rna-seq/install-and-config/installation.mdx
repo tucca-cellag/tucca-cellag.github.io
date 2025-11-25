@@ -305,6 +305,31 @@ git clone https://github.com/tucca-cellag/tucca-rna-seq.git
 cd tucca-rna-seq
 ```
 
+### 3. Set Up Environment Variables (Optional but Recommended)
+
+If you plan to download genomes or SRA datasets from NCBI, we recommend setting
+up a `.env` file to store your API key securely. This prevents accidental commits
+of sensitive credentials.
+
+```bash
+# Copy the template file
+cp .env.template .env
+
+# Edit .env and add your NCBI API key
+# Replace 'your_ncbi_api_key_here' with your actual API key
+```
+
+:::tip[Getting an NCBI API Key]
+To obtain an NCBI API key, visit [NCBI Account Settings](https://account.ncbi.nlm.nih.gov/settings/)
+and generate a new API key. This will help avoid rate limiting when downloading
+genomes and SRA datasets.
+:::
+
+:::info[Security Note]
+The `.env` file is automatically git-ignored and will never be committed to
+version control. This ensures your API keys remain secure.
+:::
+
 ---
 
 ## Next Steps
