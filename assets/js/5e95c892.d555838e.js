@@ -1,0 +1,1 @@
+"use strict";(globalThis.webpackChunktucca_cellag=globalThis.webpackChunktucca_cellag||[]).push([[9647],{7121:(e,a,c)=>{c.r(a),c.d(a,{default:()=>n});c(6540);var l=c(4164),s=c(7559),r=c(5500),u=c(2831),t=c(1656),h=c(4848);function n(e){return(0,h.jsx)(r.e3,{className:(0,l.A)(s.G.wrapper.docsPages),children:(0,h.jsx)(t.A,{children:(0,u.v)(e.route.routes)})})}}}]);
