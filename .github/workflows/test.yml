@@ -1,13 +1,16 @@
-name: Test PR Build
+name: Test Build
 
 on:
+  push:
+    branches:
+      - "**"
   pull_request:
     branches:
-      - source
+      - main
     paths:
-      - 'tucca-cellag/**'
-      - '.github/workflows/**'
-      - 'package*.json'
+      - "tucca-cellag/**"
+      - ".github/workflows/**"
+      - "package*.json"
 
 permissions:
   contents: read
@@ -20,7 +23,7 @@ jobs:
       run:
         working-directory: tucca-cellag
     steps:
-      - name: Checkout PR branch
+      - name: Checkout
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
@@ -46,4 +49,3 @@ jobs:
           # Docusaurus will fail the build if there are broken links
           # This step ensures we catch them during PR review
           echo "Build completed successfully - no broken links detected"
-

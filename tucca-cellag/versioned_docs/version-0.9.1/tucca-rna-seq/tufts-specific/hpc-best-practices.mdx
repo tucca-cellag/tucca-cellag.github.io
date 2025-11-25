@@ -1,0 +1,400 @@
+---
+title: Tufts HPC Best Practices
+---
+
+import Link from '@docusaurus/Link';
+import Button from "@site/src/components/Button";
+import Card from "@site/src/components/Card";
+import CardHeader from "@site/src/components/Card/CardHeader";
+import CardBody from "@site/src/components/Card/CardBody";
+import CardFooter from "@site/src/components/Card/CardFooter";
+
+# Tufts HPC Best Practices
+
+This guide provides advanced tips and best practices for using the `tucca-rna-seq` 
+workflow on the Tufts HPC cluster efficiently and effectively.
+
+---
+
+## Storage Management
+
+### Directory Structure
+
+**Recommended organization:**
+```
+/cluster/tufts/your_lab/your_utln/
+├── projects/
+│   ├── project_1/
+│   │   ├── tucca-rna-seq/
+│   │   ├── data/
+│   │   └── results/
+│   └── project_2/
+└── shared_resources/
+    ├── reference_genomes/
+    └── software_cache/
+```
+
+### Storage Quotas
+
+- **Home directory** (`/cluster/home/your_utln`): 10GB limit
+- **Lab workspace** (`/cluster/tufts/your_lab/your_utln`): 1TB+ available
+- **Monitor usage**: `quota` command
+- **Archive old projects** to free up space
+
+<Button
+  label="TTS Research Technology Lab Research Project Storage Guide"
+  link="https://rtguides.it.tufts.edu/hpc/access/30-storage.html"
+  variant="primary"
+/>
+
+### Persistent Software Caching
+
+To avoid filling your home directory and to save time by reusing software
+environments across multiple projects, it is highly recommended to set up a
+permanent, shared cache. You can do this by defining environment variables in
+your shell's startup file (e.g., `~/.bashrc`).
+
+This is also a good place to add the `module load` commands you use frequently.
+
+```bash
+# Add to your ~/.bashrc
+
+# Load required software
+module load snakemake/8.27.1
+module load singularity/3.8.4
+module load miniforge/24.11.2-py312
+
+# Set permanent cache directories for Snakemake
+export SNAKEMAKE_CONDA_PREFIX="/cluster/tufts/your_lab/shared/conda_envs"
+export SNAKEMAKE_APPTAINER_PREFIX="/cluster/tufts/your_lab/shared/apptainer_images"
+```
+
+<Button
+  label="Tufts HPC Guide: Conda Environments"
+  link="https://rtguides.it.tufts.edu/hpc/application/10-condaenv.html#configure-your-conda"
+  variant="primary"
+/>
+
+### Creating Private Modules for Custom Software
+
+For any software you install manually (like a specific version of Snakemake via
+Mambaforge), creating a private environment module is an excellent way to
+integrate it seamlessly into your HPC workflow. This makes loading your custom
+tools as easy as loading system-wide modules (e.g., `module load my-snakemake`).
+
+The process involves creating a simple text file that defines the necessary
+environment variables (like `PATH`) for your software and placing it in a
+specific directory (`~/privatemodules` on the Tufts cluster).
+
+<Button
+  label="Tufts HPC Guide: Creating Private Modules"
+  link="https://rtguides.it.tufts.edu/hpc/examples/privatemodule.html"
+  variant="primary"
+/>
+
+### Global Conda Configuration (`.condarc`)
+
+The Snakemake-specific environment variables described in the previous section
+are an excellent way to control software caching *per-workflow*.
+
+As a more general **alternative**, you can configure Conda's default settings
+globally using a `.condarc` file in your home directory. This tells Conda where
+to store package caches and environments for **all** uses, not just for this
+Snakemake workflow. This is a powerful, "set-it-and-forget-it" solution that
+is a common best practice on many HPC systems.
+
+To configure this, you add the desired paths to a `.condarc` file:
+
+```yaml title="~/.condarc"
+envs_dirs:
+  - /path/to/your/shared/storage/conda_envs/
+pkgs_dirs:
+  - /path/to/your/shared/storage/conda_pkgs/
+```
+
+:::info[Tufts-Specific Example]
+For a detailed, Tufts-specific walkthrough of this process, please refer to the
+official TTS Research Technology guide on [Configuring Conda Environments](https://rtguides.it.tufts.edu/hpc/application/10-condaenv.html#configure-your-conda).
+The principles in this guide can be adapted for most HPC clusters.
+:::
+
+### Data Management
+
+**Use symbolic links for large data:**
+```bash
+# Link reference genomes to avoid duplication
+ln -s /cluster/tufts/kaplanlab/shared/reference_genomes/human_GRCh38/ \\
+  resources/reference_genomes/human_GRCh38
+```
+
+**Compress old results:**
+```bash
+# Archive completed projects
+tar -czf project_archive_$(date +%Y%m%d).tar.gz project_directory/
+```
+
+---
+
+## Resource Allocation
+
+### Interactive Sessions
+
+**Basic interactive session:**
+```bash
+srun -p interactive --pty bash
+```
+
+**Customized interactive session:**
+```bash
+srun -p interactive -n 4 --mem=8G --time=2:00:00 --pty bash
+```
+
+**Parameters:**
+- `-n`: Number of CPU cores
+- `--mem`: Memory allocation
+- `--time`: Maximum runtime
+- `-p`: Partition (interactive, batch, gpu)
+
+## Workflow Execution Strategy
+
+For running Snakemake on the Tufts HPC, we recommend launching the workflow
+from within a long-running **interactive session**, rather than submitting the
+entire workflow as a single batch job.
+
+The main Snakemake process is not computationally intensive; its primary role is
+to manage and submit the actual resource-intensive tasks to the cluster
+scheduler. Running it interactively makes it much easier to monitor progress,
+view logs in real-time, and debug any issues that arise.
+
+For detailed instructions on how to execute the workflow, please refer to the
+main [Running Guide](./../running). The sections below provide
+supplementary, Tufts-specific best practices.
+
+### Recommended: Interactive Session
+
+1.  **Start a long-running `screen` or `tmux` session.**
+    A terminal multiplexer is essential for preventing your workflow from being
+    terminated if your local connection to the HPC is interrupted.
+    ```bash
+    # Start a screen session
+    screen -S snakemake_session
+
+    # To detach: Ctrl+A, then D
+    # To reattach later: screen -r snakemake_session
+    ```
+
+2.  **Request an interactive node.**
+    From within your `screen` session, request an interactive node with
+    enough time for your workflow to complete. A 1 to 3-day allocation is a
+    safe starting point.
+    ```bash
+    # Request a 3-day interactive session
+    srun -p interactive --time=3-00:00:00 --pty bash
+    ```
+
+3.  **Prepare your environment and run the workflow.**
+    Once in the interactive session, navigate to your project directory, load
+    the necessary modules, and launch Snakemake.
+    ```bash
+    # Navigate to your project
+    cd /cluster/tufts/your_lab/your_utln/my_rnaseq_project/tucca-rna-seq
+
+    # Load modules
+    module purge
+    module load snakemake/8.27.1 singularity/3.8.4 miniforge/24.11.2-py312
+
+    # Launch the workflow
+    snakemake all --workflow-profile profiles/slurm
+    ```
+
+:::danger[CRITICAL] Your Session Must Not Be Interrupted
+If you run a workflow without a terminal multiplexer like `screen` or `tmux`,
+your SSH session must remain active. If your computer sleeps or loses its
+internet connection, the session will terminate, and your Snakemake workflow
+will be killed.
+
+If you cannot use a multiplexer, you must ensure your local machine does not
+go to sleep. For macOS, we recommend the free utility
+[**Amphetamine**](https://apps.apple.com/us/app/amphetamine/id937984704?mt=12)
+to keep your Mac awake for a specified duration.
+:::
+
+### Alternative: Batch Submission
+
+If you cannot maintain a persistent interactive session, you can submit the
+workflow as a "fire-and-forget" batch job. You will be notified by email when
+the job completes or fails, but you lose the ability to monitor the workflow
+in real-time easily.
+
+**Example submission script:**
+```bash
+# Create submission script
+cat > submit_workflow.sh << 'EOF'
+#!/bin/bash
+#SBATCH -p batch
+#SBATCH --time=7-00:00:00
+#SBATCH --mem=32G
+#SBATCH --cpus-per-task=12
+#SBATCH --mail-type=ALL
+#SBATCH --mail-user=your.email@tufts.edu
+
+module purge
+module load snakemake/8.27.1 singularity/3.8.4 miniforge/24.11.2-py312
+
+snakemake all --workflow-profile profiles/slurm
+EOF
+
+# Submit the job
+sbatch submit_workflow.sh
+```
+
+---
+
+## Performance Optimization
+
+### Module Management
+
+**Always purge modules first:**
+```bash
+module purge
+module load snakemake/8.27.1
+module load singularity/3.8.4
+module load miniforge/24.11.2-py312
+```
+
+**Check module conflicts:**
+```bash
+module list
+module show snakemake/8.27.1
+```
+
+### Workflow Optimization
+
+**Tune workflow resources:**
+
+The `slurm` profile allows you to specify default and rule-specific resources. 
+For a complete guide on how this works, see the main 
+[Configuration Guide](./../install-and-config/configuration). Below is a 
+Tufts-specific example.
+```yaml
+# profiles/slurm/config.v8+.yaml
+default-resources:
+  slurm_partition: "batch"
+  slurm_account: "default"
+  runtime: 4320        # 3 days
+  mem_mb: 32000        # 32GB RAM
+  cpus_per_task: 12    # 12 CPU cores
+
+# Override for specific rules
+set-resources:
+  star_index:
+    mem_mb: 64000      # 64GB RAM for genome indexing
+    runtime: 8640      # 6 days
+  salmon_quant:
+    cpus_per_task: 8   # 8 cores for quantification
+```
+
+**Parallel execution:**
+```bash
+# Limit concurrent jobs
+snakemake all --workflow-profile profiles/slurm --jobs 50
+
+# Use all available cores locally
+snakemake all --use-conda --cores all
+```
+
+---
+
+## Monitoring and Debugging
+
+### Job Monitoring
+
+**Check job status:**
+```bash
+# Your jobs
+squeue -u $USER
+
+# All jobs in partition
+squeue -p batch
+
+# Detailed job information
+squeue -j <job_id> -o "%.18i %.9P %.20j %.8u %.2t %.10M %.6D %R"
+```
+
+**Monitor workflow progress:**
+```bash
+# View Snakemake logs
+tail -f .snakemake/log/$(date +%Y-%m-%d)/snakemake.log
+
+# Check specific job logs
+snakemake --show-failed-logs
+```
+
+### Resource Monitoring
+
+**Check cluster status:**
+```bash
+# Cluster load
+sinfo
+
+# Partition usage
+sinfo -p batch
+
+# Node information
+sinfo -N -l
+```
+
+**Monitor your usage:**
+```bash
+# Check quotas
+quota
+
+# Check disk usage
+du -sh /cluster/tufts/your_lab/your_utln/*
+
+# Check recent jobs
+sacct -u $USER --starttime=$(date -d '7 days ago' +%Y-%m-%d)
+```
+
+---
+
+## Troubleshooting
+
+### Common Issues
+
+| Issue | Cause | Solution |
+|-------|-------|----------|
+| **Jobs stuck in queue** | Resource limits too high | Reduce memory/CPU requirements |
+| **Module not found** | Module not available | Check `module avail` |
+| **Permission denied** | Wrong directory | Use lab workspace, not home |
+| **Quota exceeded** | Storage limit reached | Archive old projects |
+| **Job killed** | Time limit exceeded | Increase `--time` parameter |
+
+### Getting Help
+
+**TTS Research Technology:**
+- **Email**: [rt@tufts.edu](mailto:rt@tufts.edu)
+- **HPC Guides**: [https://rtguides.it.tufts.edu/hpc/](https://rtguides.it.tufts.edu/hpc/)
+
+**Workflow-specific issues:**
+- **GitHub Issues**: [Report problems](https://github.com/tucca-cellag/tucca-rna-seq/issues)
+- **Team Contact**: [benjamin.bromberg@tufts.edu](mailto:benjamin.bromberg@tufts.edu)
+
+---
+
+## Next Steps
+
+After mastering these best practices:
+
+1. **Optimize your workflow** for your specific analysis needs
+2. **Share resources** with lab members when possible
+3. **Contribute** to the workflow development
+4. **Help others** in your lab get started
+
+---
+
+*These best practices will help you use the Tufts HPC cluster efficiently and 
+avoid common pitfalls. Remember to always check the main documentation first!*
+
+For complete workflow documentation, see the [main guides](./../introduction).
+

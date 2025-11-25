@@ -1,0 +1,440 @@
+---
+title: Running tucca-rna-seq
+---
+
+import Tabs from "@theme/Tabs";
+import TabItem from "@theme/TabItem";
+import Link from '@docusaurus/Link';
+import Button from "@site/src/components/Button";
+import { Group } from '@mui/icons-material';
+import Card from "@site/src/components/Card";
+import CardHeader from "@site/src/components/Card/CardHeader";
+import CardBody from "@site/src/components/Card/CardBody";
+import CardFooter from "@site/src/components/Card/CardFooter";
+import Columns from "@site/src/components/Columns";
+import Column from "@site/src/components/Column";
+
+# Running the tucca-rna-seq Workflow
+
+This guide covers how to execute the `tucca-rna-seq` workflow using different
+execution environments and profiles.
+
+---
+
+## Quick Start
+
+:::tip[Important: Prepare Environments Before a Dry-Run]
+A dry-run (`-np`) will fail on the first run if the required software
+environments do not yet exist. This is a known issue in Snakemake where it
+attempts to inspect Conda environments inside containers *before* pulling the
+container image ([#1901](https://github.com/snakemake/snakemake/issues/1901),
+[#3038](https://github.com/snakemake/snakemake/issues/3038)).
+
+To prevent this, you must first build all Conda environments and pull all
+container images. The `--conda-create-envs-only` flag conveniently handles
+both of these tasks at once.
+:::
+
+Once you've configured your analysis, follow these steps to run the workflow:
+
+```bash
+# 1. Validate your configuration
+snakemake --lint --workflow-profile profiles/slurm
+
+# 2. Create all required Conda environments
+snakemake all --conda-create-envs-only --workflow-profile profiles/slurm
+
+# 3. Test the workflow (dry-run)
+snakemake all -np --workflow-profile profiles/slurm
+
+# 4. Execute the workflow
+snakemake all --workflow-profile profiles/slurm
+```
+
+:::danger[Critical: Maintain a Stable Connection]
+When you run Snakemake interactively on a remote machine (like an HPC compute
+node), the main `snakemake` process acts as the workflow's orchestrator. If your
+SSH connection is interrupted (e.g., your computer sleeps or your Wi-Fi
+disconnects), this main process will be terminated, and your workflow will fail.
+
+To prevent this, it is **highly recommended** to run the main execution command
+inside a terminal multiplexer like `tmux` or `screen`. These tools create a
+persistent session on the remote machine that will keep your workflow running
+even if your local connection is lost.
+
+If you cannot use a multiplexer, you must ensure your local machine does not
+go to sleep. For macOS, we recommend the free utility
+[**Amphetamine**](https://apps.apple.com/us/app/amphetamine/id937984704?mt=12)
+to keep your Mac awake for a specified duration.
+:::
+
+---
+
+## Using Execution Profiles
+
+Snakemake **profiles** are a powerful feature that allows you to pre-configure
+the command-line options for a specific computing environment, such as a local
+workstation or an HPC cluster. This saves you from typing long, complex
+commands for every analysis.
+
+:::tip[Profile Versatility]
+It's important to note that any command-line option available in Snakemake can
+be set within a profile, making them incredibly versatile. For a full list of
+available options, see the official [Snakemake CLI documentation](https://snakemake.readthedocs.io/en/stable/executing/cli.html#all-options).
+:::
+
+To use a profile, you simply activate it with the `--workflow-profile` flag:
+
+```bash
+# Use the Slurm profile
+snakemake all --workflow-profile profiles/slurm
+
+# Use the development profile
+snakemake all --workflow-profile profiles/slurm-dev
+```
+
+For a comprehensive guide on what profiles are, which ones are available in this
+workflow, and how to customize them for your specific needs, please see the
+[**Configuration Guide**](./install-and-config/configuration#profile-configuration).
+
+---
+
+## Workflow Execution Steps
+
+### 1. Configuration Validation
+
+Before running, validate your configuration:
+
+```bash
+# Check for configuration errors
+snakemake --lint --workflow-profile profiles/slurm
+```
+
+This step:
+- Validates your `config.yaml` against the JSON schema
+- Checks consistency between `samples.tsv` and `units.tsv`
+- Identifies potential issues before execution
+
+### 2. Create Software Environments
+
+Before performing a dry-run, it's essential to create the necessary software
+environments. This step prevents errors during the dry-run, which needs to
+inspect tools inside containers that may not have been downloaded yet.
+
+```bash
+# Create all Conda environments and pull container images
+snakemake all --conda-create-envs-only --workflow-profile profiles/slurm
+```
+
+This command will:
+- Download the main Singularity/Apptainer container image.
+- Create all the isolated Conda environments required by the workflow's rules.
+- **Not** run any computational jobs.
+
+### 3. Dry Run
+
+Test the workflow without executing jobs:
+
+```bash
+# Generate execution plan
+snakemake all -np --workflow-profile profiles/slurm
+```
+
+This step:
+- Shows which jobs will be executed
+- Displays the dependency graph
+- Estimates resource requirements
+- Identifies any missing inputs or configuration issues
+
+### 4. Execution
+
+Run the complete workflow:
+
+```bash
+# Execute all jobs
+snakemake all --workflow-profile profiles/slurm
+```
+
+The workflow will:
+- Use the pre-built software environments for each tool
+- Download reference genomes and annotations
+- Process your sequencing data through the pipeline
+- Generate comprehensive analysis results
+
+---
+
+## Monitoring and Debugging
+
+### Job Monitoring
+
+When running Snakemake interactively, the main log output will stream directly
+to your terminal.
+
+For workflows running on an HPC cluster, you can use the scheduler's native
+commands in a separate terminal to check the status of submitted jobs. The
+command below is an example for a SLURM-managed cluster.
+
+```bash
+# Check job status (example for a SLURM cluster)
+squeue -u $USER
+```
+
+### Understanding Log Files
+
+When troubleshooting, it's important to know where to look for information.
+The workflow generates logs in three primary locations, each serving a
+different purpose:
+
+- **Main Snakemake Log (`.snakemake/log/`)**: This directory contains the main
+  log file from the Snakemake process itself. It's useful for debugging
+  high-level workflow errors related to DAG construction, configuration, or
+  job submission.
+
+- **Cluster Executor Logs (e.g., `.snakemake/slurm_logs/`)**: When running on a
+  cluster, the executor plugin (like the one for SLURM) generates its own
+  logs for each submitted job. These files capture the raw `stdout` and
+  `stderr` from the cluster's perspective and are invaluable for debugging
+  job submission issues or resource-related failures.
+
+- **Rule-Specific Logs (`logs/`)**: The workflow is designed to capture the
+  `stdout` and `stderr` from each specific rule into this directory. These are
+  the most important logs for debugging tool-specific errors, such as a problem
+  with a bioinformatics tool's parameters or input files.
+
+### Failed Jobs
+
+When jobs fail, Snakemake provides commands to help you investigate and recover.
+While these can be run manually, it is often more convenient to set them as
+defaults in your execution profile.
+
+:::info[Enabled by Default in the Slurm Profile]
+The pre-configured `slurm` profile for this workflow already includes the
+options `show-failed-logs: true` and `rerun-incomplete: true`, automating
+these recovery steps for you. See the
+[Configuration Guide](./install-and-config/configuration#profile-examples-from-tucca-rna-seq)
+for details.
+:::
+
+### Common Issues
+
+| Issue | Solution |
+|-------|----------|
+| **Missing dependencies** | Check conda environment creation |
+| **Resource limits** | Adjust memory/CPU allocation in profile |
+| **File permissions** | Ensure write access to output directories |
+| **Network issues** | Check internet connectivity for downloads |
+
+---
+
+## Resource Management
+
+### Memory and CPU Allocation
+
+Configure resource allocation in your profile:
+
+```yaml
+# profiles/slurm/config.v8+.yaml
+default-resources:
+  mem_mb: 32000      # 32GB RAM per job
+  cpus_per_task: 12  # 12 CPU cores per job
+  runtime: 4320      # 4 hours runtime
+
+# Override for specific rules
+set-resources:
+  star_index:
+    mem_mb: 64000    # 64GB RAM for genome indexing
+```
+
+### Software Environment Caching
+
+Creating the workflow's software environments with Conda and downloading the
+Singularity/Apptainer container image can be time-consuming, but this initial
+setup only needs to be done once. By default, Snakemake caches these
+environments in a hidden `.snakemake` directory within each project folder.
+
+To avoid rebuilding these environments for every new analysis, you can create a
+centralized cache that all your projects can share. This has two major benefits:
+
+1.  **Saves Time**: Subsequent workflow runs will start much faster by reusing
+    the pre-existing environments.
+2.  **Saves Space**: It prevents duplicating many gigabytes of software, which
+    is especially important on HPC clusters with home/lab directory storage
+    quotas.
+
+To set up a central cache, use the `--conda-prefix` and `--singularity-prefix`
+flags to point to a shared location, such as a project or scratch directory.
+
+```bash
+# Example of redirecting caches to a shared location
+snakemake all \\
+  --workflow-profile profiles/slurm \\
+  --conda-prefix /path/to/shared/conda_envs \\
+  --singularity-prefix /path/to/shared/singularity_images
+```
+
+:::tip[Set Prefixes in a Profile]
+For convenience, it is best practice to set these paths as default options
+within your execution profile.
+
+Alternatively, you can set the `SNAKEMAKE_CONDA_PREFIX` and
+`SNAKEMAKE_APPTAINER_PREFIX` environment variables in your shell's startup
+file (e.g., `~/.bashrc`) for a more permanent solution.
+:::
+
+### Storage Requirements
+
+{/* TODO */}
+
+### Runtime Estimation
+
+{/* TODO */}
+
+---
+
+## Advanced Execution Options
+
+### Parallel Execution
+
+Control job parallelism:
+
+```bash
+# Limit concurrent jobs
+snakemake all --workflow-profile profiles/slurm --jobs 50
+
+# Use all available cores locally
+snakemake all --use-conda --cores all
+```
+
+### Selective Execution
+
+Run specific parts of the workflow:
+
+```bash
+# Run only quality control
+snakemake fastqc --workflow-profile profiles/slurm
+
+# Run only differential expression
+snakemake deseq2_wald_per_analysis --workflow-profile profiles/slurm
+
+# Run only enrichment analysis
+snakemake all_enrichment_analyses --workflow-profile profiles/slurm
+```
+
+### Resume and Restart
+
+Handle interrupted workflows:
+
+```bash
+# Resume from where you left off
+snakemake all --workflow-profile profiles/slurm
+
+# Force rerun of specific outputs
+snakemake all --workflow-profile profiles/slurm --forceall
+
+# Remove all protected and temporary output files
+snakemake all --delete-all-output --workflow-profile profiles/slurm
+```
+
+:::tip[Preview Before Deleting]
+It is highly recommended to perform a dry-run (`-np`) before deleting all
+outputs to see which files will be removed.
+
+`snakemake all --delete-all-output -np --workflow-profile profiles/slurm`
+:::
+
+---
+
+## Output and Results
+
+### Main Outputs
+
+The workflow generates comprehensive results:
+
+- **Quality Control**: FastQC reports, Qualimap analysis
+- **Alignment**: STAR BAM files, alignment statistics
+- **Quantification**: Salmon transcript counts
+- **Differential Expression**: DESeq2 results, normalized counts
+- **Enrichment Analysis**: GO, KEGG, MSigDB, SPIA results
+- **Reports**: MultiQC summary, FastQC, Qualimap HTML reports
+
+### Output Organization
+
+Results are organized in a logical structure:
+
+```
+results/
+├── fastqc/           # Quality control reports
+├── qualimap/         # RNA-seq quality metrics  
+├── salmon/           # Transcript quantification
+└── multiqc/          # Summary reports
+
+resources/
+├── star/             # STAR alignment results (BAM files)
+├── deseq2/           # Differential expression results
+├── enrichment/       # Functional enrichment analysis
+└── tximeta/          # Transcript quantification metadata
+```
+
+### Post-Analysis Interactive Tools
+
+After workflow completion, you can use the provided RMarkdown notebooks for additional analysis:
+
+- **`analysis/pcaExplorer_playground.Rmd`**: Principal component analysis
+- **`analysis/GeneTonic_playground.Rmd`**: Enrichment analysis visualization
+
+**Note**: These are separate analysis tools, not part of the Snakemake workflow execution.
+
+---
+
+## Troubleshooting
+
+### Profile Issues
+
+If profiles don't work as expected:
+
+1. **Check Snakemake version**: Ensure you're using v8.27.1 or later
+2. **Verify profile syntax**: Check YAML formatting and indentation
+3. **Install executor plugins**: Ensure required plugins are installed
+4. **Check permissions**: Verify file and directory permissions
+
+### Execution Problems
+
+Common execution issues and solutions:
+
+| Problem | Cause | Solution |
+|---------|-------|----------|
+| **Jobs stuck in queue** | Resource limits too high | Reduce memory/CPU requirements |
+| **"Lost" SLURM jobs** | `sacct` accounting issues. You may see messages like:<br/><br/>`status_of_jobs after sacct is: {}`<br/>`active_jobs_ids_with_current_sacct_status are: {}`<br/>`active_jobs_seen_by_sacct are: {}`<br/>`missing_sacct_status are: set()` | Stop and restart the workflow; Snakemake will re-evaluate job status and resume. |
+| **Environment creation fails** | Conda/Mamba issues | Check conda installation and channels |
+| **Container errors** | Singularity/Apptainer issues | Verify container runtime installation |
+| **File system errors** | Storage or permission issues | Check disk space and file permissions |
+
+### Getting Help
+
+If you encounter issues:
+
+1. **Check the logs**: Review Snakemake and job-specific logs
+2. **Validate configuration**: Run `snakemake --lint`
+3. **Review documentation**: Check this guide and workflow documentation
+4. **Open an issue**: Report problems on the [GitHub repository](https://github.com/tucca-cellag/tucca-rna-seq/issues)
+
+<Button
+  label="View the Official Snakemake FAQ"
+  link="https://snakemake.readthedocs.io/en/stable/project_info/faq.html"
+  variant="primary"
+  className="button--block"
+  style={{ marginTop: "10px" }}
+/>
+
+---
+
+## Next Steps
+
+After successfully running your workflow:
+
+1. **Review Results**: Examine quality control reports and analysis outputs
+2. **Post-Analysis Tools**: Use the provided RMarkdown notebooks
+3. **Custom Analysis**: Extend the workflow with your own scripts
+4. **Share Results**: Export data files and create custom visualizations
+
+For more advanced usage and customization, see the [Advanced Configuration](./install-and-config/configuration) guide.

@@ -1,0 +1,394 @@
+---
+title: Snakemake Primer
+---
+
+import Link from '@docusaurus/Link';
+import Button from "@site/src/components/Button";
+import Card from "@site/src/components/Card";
+import CardHeader from "@site/src/components/Card/CardHeader";
+import CardBody from "@site/src/components/Card/CardBody";
+import CardFooter from "@site/src/components/Card/CardFooter";
+import Columns from "@site/src/components/Columns";
+import Column from "@site/src/components/Column";
+import ReactPlayer from "react-player";
+
+# Snakemake Primer
+
+Scientific results need to be reproducible, but this can be challenging in
+computational biology where software versions and system configurations vary.
+Our workflow is built using a combination of tools that solve this problem.
+
+## Snakemake: A Cookbook for Bioinformatics Workflows
+
+<Card shadow="md" style={{ marginBottom: '10px'}}>
+  <CardBody>
+    <CardImage
+      cardImageUrl="/img/snakemake_logo_dark.png"
+      alt="The Snakemake Logo"
+      title="The Snakemake Logo"
+    />
+  </CardBody>
+  <CardFooter>
+    <p style={{fontSize: '0.8em', fontStyle: 'italic'}}>Image Credit: https://commons.wikimedia.org/wiki/File:Snakemake_logo_dark.png</p>
+  </CardFooter>
+</Card>
+
+At its core, our workflow is managed by **[Snakemake][1]**. Think of a
+**Snakemake workflow** (defined in a file called a `Snakefile`) as a
+detailed recipe for a complex scientific analysis. Each step in the analysis,
+like aligning reads or counting genes, is a **"rule"** in the recipe. Each rule
+clearly defines its **inputs** (the ingredients) and the **outputs** it will
+produce (a prepared component of the final dish).
+
+ <Card shadow="md" style={{ marginBottom: '10px'}}>
+  <CardBody>
+    <CardImage
+      cardImageUrl="/img/snakemake_dag_uv.png"
+      alt="TODO"
+      title="TODO"
+    />
+  </CardBody>
+  <CardFooter>
+    <p style={{fontSize: '0.8em', fontStyle: 'italic'}}>Image Credit: https://www.rc.virginia.edu/userinfo/hpc/software/snakemake/</p>
+  </CardFooter>
+</Card>
+
+Snakemake is the master chef that reads this recipe. It understands the
+dependencies between all the steps and uses the `Snakefile` to intelligently
+automate the entire analysis, providing several key advantages:
+
+* **Automation:** It automatically determines the correct order to run each
+rule. This prevents human error and saves you from manually executing dozens of
+commands.
+* **Efficiency:** It can run multiple independent rules in parallel,
+dramatically speeding up the analysis, especially on multi-core computers or
+HPC clusters.
+* **Reproducibility:** If an input file or a parameter is changed, Snakemake
+knows exactly which steps need to be re-run, ensuring the results are always
+up-to-date.
+
+Before executing anything, Snakemake first examines the entire workflow, noting
+all the inputs and outputs of every rule. It uses this information to build a
+map of job dependencies called a **Directed Acyclic Graph (DAG)**. This DAG is
+the master plan that determines exactly what steps need to be run and in what
+order.
+
+<Columns>
+  <Column style={{ marginBottom: '20px'}}>
+    <Card shadow="md">
+      <CardHeader>
+        ### Chicken Tikka Masala as a DAG
+      </CardHeader>
+      <CardBody>
+        <p>A recipe has a list of ingredients (inputs) and steps that must be
+        followed in order to produce a dish (output). This is an example of
+        a directed acyclic graph (DAG) for a chicken tikka masala recipe.</p>
+        <CardImage
+          cardImageUrl="/img/fcr_cr1.png"
+          alt="A flowchart for a chicken tikka masala recipe."
+          title="A recipe is a human-readable DAG."
+        />
+      </CardBody>
+      <CardFooter>
+        <p style={{fontSize: '0.8em', fontStyle: 'italic'}}>Image Credit: https://fluidvisual.com/flowchartrecipes/</p>
+      </CardFooter>
+    </Card>
+  </Column>
+
+  <Column style={{ alignSelf: 'center' }}>
+    <Card shadow="md">
+      <CardHeader>
+        ### The tucca-rna-seq Workflow DAG
+      </CardHeader>
+      <CardBody>
+        <p>
+          Snakemake defines each step as a "rule" with defined inputs and
+          outputs, creating a directed acyclic graph (DAG) from your initial
+          raw reads to the workflow's various outputs.
+        </p>
+        <CardImage
+          cardImageUrl="/img/rulegraph.png"
+          alt="The Directed Acyclic Graph for the tucca-rna-seq workflow."
+          title="The tucca-rna-seq workflow DAG."
+        />
+      </CardBody>
+       <CardFooter>
+        <p style={{fontSize: '0.8em', fontStyle: 'italic'}}>
+          This image shows the workflow's <strong>rulegraph</strong>, which
+          illustrates the dependencies between rules, providing a high-level
+          blueprint of the analysis. A full <strong>DAG of jobs</strong>, by
+          contrast, would be much larger, showing a specific job for each
+          individual input file.
+        </p>
+      </CardFooter>
+    </Card>
+  </Column>
+</Columns>
+
+<Columns> 
+  <Column style={{ display: 'flex' }}>
+    <Card shadow="md" style={{ marginTop: "20px", flexGrow: 1 }}>
+      <CardHeader>
+        ### Snakemake Links Docs and API
+      </CardHeader>
+      <CardBody>
+        <p>
+          The workflow management system that orchestrates the analysis, using
+          Conda to create reproducible environments for each step.
+        </p>
+        <p style={{ marginTop: "10px", marginBottom: "4px", fontSize: "0.9em",
+        fontStyle: "italic" }}>
+          This is the most important page to visit when learning how to execute,
+          debug, and configure your workflow.
+        </p>
+        <Button
+          label="Command Line Interface (CLI) Docs"
+          link="https://snakemake.readthedocs.io/en/stable/executing/cli.html"
+          variant="primary"
+          className="button--block"
+        />
+        <Button
+          label="Official Documentation Home"
+          link="https://snakemake.readthedocs.io/en/stable/"
+          variant="secondary"
+          className="button--block"
+          style={{ marginTop: "10px" }}
+        />
+        <p style={{ marginTop: "10px", marginBottom: "4px", fontSize: "0.9em",
+        fontStyle: "italic" }}>
+          For more advanced needs, or when information isn't in the main docs,
+          the API reference is useful.
+        </p>
+        <Button
+          label="API Reference"
+          link="https://snakemake-api.readthedocs.io/en/stable/"
+          variant="secondary"
+          className="button--block"
+        />
+      </CardBody>
+    </Card>
+  </Column>
+</Columns>
+
+<Columns> 
+  <Column style={{ display: 'flex' }}>
+    <Card shadow="md" style={{ marginTop: "20px", flexGrow: 1 }}>
+      <CardHeader>
+        ### Learn Snakemake (Recommended Tutorials)
+      </CardHeader>
+      <CardBody>
+        <p style={{ marginTop: "10px", marginBottom: "4px", fontSize: "0.9em", fontStyle: "italic" }}>
+          While the official tutorial is a great start, we recommend the one
+          from The Carpentries for its detailed, bioinformatics-focused
+          approach.
+        </p>
+        <Button
+          label="Offical Beginner's Tutorial"
+          link="https://snakemake.readthedocs.io/en/stable/tutorial/tutorial.html"
+          variant="secondary"
+          className="button--block"
+          style={{ marginTop: "10px" }}
+        />
+        <Button
+          label="Snakemake Bioinformatics Tutorial (The Carpentries)"
+          link="https://carpentries-incubator.github.io/snakemake-novice-bioinformatics/"
+          variant="info"
+          className="button--block"
+          style={{ marginTop: "10px" }}
+        />
+      </CardBody>
+    </Card>
+  </Column>
+</Columns>
+
+## The Reproducibility Problem: Why Your "Oven" Matters in Bioinformatics
+
+Imagine two people trying to bake the exact same cake using the same recipe.
+One person uses a modern convection oven, while the other uses an older gas
+oven. Even with the same ingredients, the different ovens (their "environment")
+can produce slightly different cakes.
+
+This is a common problem in bioinformatics. A script that works perfectly on
+one computer might fail or produce different results on another. This is
+because the "environment"—including the operating system and the specific
+versions of software tools—is different.
+
+<Card shadow="md" style={{ marginTop: "20px" }}>
+  <CardHeader>
+    <h2>The "It Worked on My Machine" Problem</h2>
+  </CardHeader>
+  <CardBody>
+    <p>
+      In this example, Person #1 can run the analysis successfully. When Person
+      #2 tries to run the same analysis on their computer, it fails because of
+      different software versions. This is a classic reproducibility issue.
+    </p>
+    <CardImage
+      cardImageUrl="https://nbisweden.github.io/excelerate-scRNAseq/logos/conda_illustration.png"
+      alt="A diagram showing how different computer environments can lead to errors."
+      title="Inconsistent environments lead to failed analyses."
+    />
+  </CardBody>
+</Card>
+
+## Conda: The Universal Shopping List
+
+To begin to solve this, we can use a **package manager** like
+**[Conda][conda]**.
+
+If the `Snakefile` is our recipe, think of **Conda** as a universal, automated
+shopping list. For each step in our recipe, Conda reads a list of required
+software "ingredients" (e.g., a specific version of a read aligner or a quality
+control tool) from a dedicated `environment.yaml` file.
+
+It then automatically:
+1.  **Finds** the exact versions of the software specified.
+2.  **Installs** them into an isolated, self-contained **"environment"**.
+3.  **Ensures** that the software for one step doesn't conflict with the
+software for another.
+
+This way, when Person #1 shares their `Snakefile` and their Conda environment
+files, Person #2 can recreate the *exact* same software setup, making the
+analysis much more likely to run successfully.
+
+However, Conda only manages the software *inside* a given operating system.
+What if the two computers have fundamentally different operating systems (e.g.,
+Windows vs. macOS vs. Linux)? Tiny differences in system-level libraries can
+still cause problems. This brings us to the ultimate solution: containers.
+
+## Containers: The Perfect Kitchen
+
+To solve the environment problem, we use **containers**.
+
+A container is like a standardized kitchen. It doesn't just
+contain the ingredients (the code and data), but also the *exact*
+kitchen appliances (specific software versions) and the recipe book (the
+operating system) needed to make the meal perfectly every time.
+
+When you run the workflow using a container, you're running it in a consistent,
+pre-configured environment. This ensures that the analysis will produce the
+exact same results, regardless of what machine it's run on. This is the gold
+standard for reproducible science.
+
+<Card shadow="md" style={{ marginTop: "20px" }}>
+  <CardHeader>
+    <h2>How Containers Create Consistency</h2>
+  </CardHeader>
+  <CardBody>
+    <p>
+      On the left, traditional applications rely on the host operating system's
+      libraries, which can vary. On the right, containers bundle their own
+      libraries, ensuring the application always runs in the exact same
+      environment.
+    </p>
+    <CardImage
+      cardImageUrl="https://www.googleapis.com/download/storage/v1/b/kaggle-forum-message-attachments/o/inbox%2F22172158%2F06eee71eaf3a645680e4c0e37d842d15%2Fconta.png?generation=1725997503681420&alt=media"
+      alt="A diagram comparing a traditional OS to a containerized system."
+      title="Containers bundle dependencies, ensuring consistency across systems."
+    />
+  </CardBody>
+</Card>
+
+## Helpful Video Resources
+
+<Columns>
+  <Column>
+    <Card shadow="md" style={{ marginTop: "20px" }}>
+      <CardHeader>
+        ### Reproducible Data Analysis with Snakemake
+      </CardHeader>
+      <CardBody>
+        <ReactPlayer
+          url="https://www.youtube.com/watch?v=hPrXcUUp70Y"
+          width="100%"
+          height="auto"
+          style={{ aspectRatio: "16 / 9" }}
+          controls
+        />
+      </CardBody>
+      <CardFooter>
+        <p>In this video, Johannes Köster, the creator of Snakemake, provides a
+        comprehensive tutorial on how to use the workflow management system for
+        reproducible data analysis. He demonstrates how to define rules, manage
+        dependencies, and use Conda environments to ensure that a workflow is
+        portable and scalable.</p>
+      </CardFooter>
+    </Card>
+  </Column>
+</Columns>
+
+<Columns>
+  <Column>
+    <Card shadow="md" style={{ marginTop: "20px" }}>
+      <CardHeader>
+        ### An introduction to snakemake: a tool for automating and streamlining your analyses
+      </CardHeader>
+      <CardBody>
+        <ReactPlayer
+            url="https://www.youtube.com/watch?v=tUTcfoMQl98"
+            width="100%"
+            height="auto"
+            style={{ aspectRatio: "16 / 9" }}
+            controls
+          />
+      </CardBody>
+      <CardFooter>
+        <p>This video and GitHub repository provide a beginner-friendly
+        introduction to Snakemake, a powerful tool for automating and
+        streamlining data analyses. The content is designed to be accessible,
+        offering a sample workflow and clear instructions to help users learn
+        how to manage their computational biology projects more efficiently.</p>
+        <Button
+          label='Git Repo'
+          link="https://github.com/ccbskillssem/snakemake_fa23"
+          variant="primary"
+          className="button--block"
+        />
+      </CardFooter>
+    </Card>
+  </Column>
+</Columns>
+
+<Columns> 
+  <Column>
+    <Card shadow="md" style={{ marginTop: "20px" }}>
+      <CardHeader>
+        ### Snakemake Tips & Tricks (Playlist)
+      </CardHeader>
+      <CardBody>
+          <ReactPlayer 
+            url="https://www.youtube.com/watch?v=Gg0SsEs16Jc"
+            width="100%"
+            height="auto"
+            style={{ aspectRatio: "16 / 9" }}
+            controls
+          />
+      </CardBody>
+      <CardFooter>
+        <p>This playlist, "Snakemake Tips & Tricks," created by "actually
+        scientist," offers a series of tutorials on using Snakemake for
+        computational workflows. The videos cover fundamental concepts like
+        writing Snakefiles, understanding how Snakemake locates them, and using
+        configuration files, as well as advanced topics such as incorporating
+        external Snakefiles for modularization, employing wildcards for
+        generalized workflows, utilizing multiple threads, managing resource
+        usage, and submitting jobs to Slurm HPC clusters.</p>
+        <Button
+          label='Full "Snakemake Tips & Tricks" Playlist'
+          link="https://www.youtube.com/playlist?list=PLWhvkMKn3k1zefj7ELcxlukO6AbuP8YCL"
+          variant="primary"
+          className="button--block"
+        />
+      </CardFooter>
+    </Card>
+  </Column>
+</Columns>
+
+[1]: https://snakemake.readthedocs.io/en/stable/
+[2]: https://github.com/tucca-cellag/tucca-rna-seq/blob/main/profiles/slurm/config.v8%2B.yaml
+[3]: https://snakemake.readthedocs.io/en/stable/executing/cli.html#profiles
+[4]: https://github.com/Snakemake-Profiles/slurm
+[5]: https://snakemake.github.io/snakemake-plugin-catalog/
+[6]: https://github.com/snakemake/snakemake-executor-plugin-slurm
+[conda]: https://docs.conda.io/en/latest/
+[ad-hoc]: https://snakemake.readthedocs.io/en/stable/snakefiles/deployment.html#ad-hoc-combination-of-conda-package-management-with-containers

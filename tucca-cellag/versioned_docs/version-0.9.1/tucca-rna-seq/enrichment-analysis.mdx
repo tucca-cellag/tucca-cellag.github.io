@@ -1,0 +1,660 @@
+---
+title: Functional Enrichment Analysis
+---
+
+import Link from '@docusaurus/Link';
+import Button from "@site/src/components/Button";
+import Card from "@site/src/components/Card";
+import CardHeader from "@site/src/components/Card/CardHeader";
+import CardBody from "@site/src/components/Card/CardBody";
+import CardFooter from "@site/src/components/Card/CardFooter";
+import Columns from "@site/src/components/Columns";
+import Column from "@site/src/components/Column";
+
+:::warning[Page in Progress]
+This documentation page is currently under active development. The information
+may be incomplete or subject to change. Thank you for your patience as we work
+to improve our guides.
+:::
+
+# Functional Enrichment Analysis
+
+The `tucca-rna-seq` workflow provides comprehensive functional enrichment
+analysis to help interpret the biological meaning of differentially expressed
+genes. This guide covers all enrichment analysis capabilities and how to
+configure and interpret results.
+
+---
+
+## Overview
+
+Functional enrichment analysis identifies biological processes, pathways, and
+gene sets that are over-represented in your differentially expressed genes
+compared to a background set. This helps you understand:
+
+- **Biological significance** of your gene expression changes
+- **Pathway involvement** in your experimental conditions
+- **Gene set associations** with specific biological functions
+- **Tissue-specific patterns** in gene expression
+
+---
+
+## Analysis Types
+
+### 1. Standard Enrichment Analysis (clusterProfiler)
+
+The workflow uses `clusterProfiler` for comprehensive enrichment analysis:
+
+:::tip[See it in Action]
+The Over-Representation Analysis (ORA) and Gene Set Enrichment Analysis (GSEA)
+features of this workflow were critical in uncovering the molecular mechanisms
+of cellular adaptation in a recent study. See the [publication case study](/publications/ast1)
+for details on how these tools led to novel biological insights.
+:::
+
+#### Gene Ontology (GO) Analysis
+- **Biological Process (BP)**: Cellular processes and biological functions
+- **Molecular Function (MF)**: Biochemical activities and molecular interactions
+- **Cellular Component (CC)**: Subcellular locations and cellular structures
+
+#### KEGG Pathway Analysis
+- **Metabolic pathways**: Energy metabolism, biosynthesis
+- **Signaling pathways**: Cell communication, signal transduction
+- **Disease pathways**: Disease-associated gene sets
+
+#### WikiPathways Analysis
+- **Community-curated pathways**: Expert-validated pathway databases
+- **Species-specific pathways**: Tailored to your organism of interest
+- **Dynamic pathway updates**: Regular community updates
+
+#### KEGG Module Analysis
+- **Functional modules**: Subsets of KEGG pathways
+- **Metabolic networks**: Interconnected metabolic reactions
+- **Regulatory modules**: Gene regulatory networks
+
+### 2. MSigDB (Molecular Signatures Database)
+
+Access to 8 major gene set collections with over 25,000 gene sets:
+
+<Columns>
+  <Column>
+    <Card shadow="md">
+      <CardHeader>
+        <h4>H: Hallmark Gene Sets</h4>
+      </CardHeader>
+      <CardBody>
+        <p>50 well-defined gene sets representing specific biological states and processes.</p>
+        <ul>
+          <li>Apoptosis</li>
+          <li>DNA Repair</li>
+          <li>Inflammatory Response</li>
+          <li>Oxidative Phosphorylation</li>
+        </ul>
+      </CardBody>
+    </Card>
+  </Column>
+
+  <Column>
+    <Card shadow="md">
+      <CardHeader>
+        <h4>C2: Curated Gene Sets</h4>
+      </CardHeader>
+      <CardBody>
+        <p>5,922 gene sets from various sources including pathway databases, literature, and expert knowledge.</p>
+        <ul>
+          <li>KEGG pathways</li>
+          <li>Reactome pathways</li>
+          <li>Biocarta pathways</li>
+          <li>Literature-derived sets</li>
+        </ul>
+      </CardBody>
+    </Card>
+  </Column>
+
+  <Column>
+    <Card shadow="md">
+      <CardHeader>
+        <h4>C5: Ontology Gene Sets</h4>
+      </CardHeader>
+      <CardBody>
+        <p>10,922 gene sets derived from Gene Ontology terms.</p>
+        <ul>
+          <li>Biological processes</li>
+          <li>Molecular functions</li>
+          <li>Cellular components</li>
+          <li>Hierarchical organization</li>
+        </ul>
+      </CardBody>
+    </Card>
+  </Column>
+</Columns>
+
+**Additional Collections:**
+- **C1**: Positional gene sets (299 sets)
+- **C3**: Regulatory target gene sets (3,738 sets)
+- **C4**: Computational gene sets (858 sets)
+- **C6**: Oncogenic signatures (189 sets)
+- **C7**: Immunologic signatures (4,872 sets)
+- **C8**: Cell type signature gene sets (746 sets)
+
+#### Custom GMT Files
+Add your own gene sets in GMT format:
+```gmt
+SET_NAME    DESCRIPTION    GENE1    GENE2    GENE3
+MyPathway   Custom pathway ACTB     GAPDH    PAX3
+```
+
+### 3. SPIA (Signaling Pathway Impact Analysis)
+
+Topology-based pathway analysis that considers:
+
+- **Gene interactions** within pathways
+- **Pathway structure** and connectivity
+- **Impact scores** based on topology
+- **Statistical significance** of pathway involvement
+
+:::warning[KEGG API Usage Restrictions]
+SPIA uses the KEGG REST API (rest.kegg.jp) which is made available only for
+academic use by academic users. Non-academic users must follow the KEGG
+Non-academic use guidelines. See [KEGG Legal Information](https://www.kegg.jp/kegg/legal.html)
+for details.
+:::
+
+:::info[SPIA Two-Step Process]
+The workflow implements SPIA in two steps:
+1. **Data Preparation** (`make_spia_data.R`): Downloads KEGG pathway XML files
+and generates SPIA data files
+2. **Analysis** (`run_spia.R`): Performs SPIA analysis using the pre-generated
+data files
+:::
+
+### 4. Harmonizome Database
+
+Tissue-specific gene sets from various expression datasets:
+
+- **GTEx Tissue Gene Expression Profiles**: Human tissue-specific expression
+- **BioGPS Human Cell Type Profiles**: Cell type-specific gene sets
+- **Human Protein Atlas**: Protein expression across tissues
+- **Expression Atlas**: Multi-species expression data
+
+---
+
+## Configuration
+
+### Basic Configuration
+
+Configure enrichment analysis in your `config.yaml`:
+
+```yaml
+enrichment:
+  padj_cutoff: 0.05       # Adjusted p-value cutoff for significant genes
+  
+  clusterprofiler:
+    gsea:
+      gseGO:
+        extra: "pvalueCutoff = 0.05, minGSSize = 10, maxGSSize = 500"
+      gseKEGG:
+        extra: "pvalueCutoff = 0.05, minGSSize = 10, maxGSSize = 500"
+    
+    ora:
+      enrichGO:
+        extra: "pvalueCutoff = 0.05"
+      enrichKEGG:
+        extra: "pvalueCutoff = 0.05"
+    
+    wikipathways:
+      enabled: true
+      enrichWP:
+        extra: "pvalueCutoff = 0.05"
+      gseWP:
+        extra: "pvalueCutoff = 0.05, minGSSize = 10, maxGSSize = 500"
+    
+    kegg_module:
+      enabled: true
+      enrichMKEGG:
+        extra: "pvalueCutoff = 0.05"
+      gseMKEGG:
+        extra: "pvalueCutoff = 0.05, minGSSize = 10, maxGSSize = 500"
+  
+  msigdb:
+    enabled: true
+    collections: ["H", "C2", "C5"]     # Hallmark, Curated, Ontology
+    custom_gmt_files: []                # Add custom GMT files here
+    ora:
+      extra: "pvalueCutoff = 0.05, minGSSize = 10, maxGSSize = 500"
+    gsea:
+      extra: "pvalueCutoff = 0.05, minGSSize = 10, maxGSSize = 500"
+  
+  spia:
+    enabled: true
+    extra: "beta = NULL, verbose = TRUE, plots = FALSE"
+    
+    # When enabled, the workflow automatically:
+    # 1. Downloads KEGG pathway data for your organism
+    # 2. Generates SPIA data files using makeSPIAdata()
+    # 3. Performs SPIA analysis using the generated data
+  
+  harmonizome:
+    enabled: false
+    datasets:
+      - name: "GTEx Tissue Gene Expression Profiles"
+        gene_sets: ["Muscle", "Adipose"]
+      - name: "BioGPS Human Cell Type and Tissue Gene Expression Profiles"
+        gene_sets: ["Adipocyte", "Myocyte"]
+    ora:
+      extra: "pvalueCutoff = 0.05, minGSSize = 10, maxGSSize = 500"
+    gsea:
+      extra: "pvalueCutoff = 0.05, minGSSize = 10, maxGSSize = 500"
+  
+  annotationforge:
+    version: "0.1.0"
+    author: "tucca-rna-seq <benjamin.bromberg@tufts.edu>"
+    extra: "useSynonyms = TRUE"
+    
+    # This section configures local OrgDb package building for organisms
+    # not available in Bioconductor. The workflow automatically detects
+    # if your species needs a local build and creates the package using
+    # AnnotationForge::makeOrgPackage().
+```
+
+### Advanced Configuration Options
+
+#### OrgDb Package Management
+The workflow automatically handles organism-specific annotation packages:
+
+- **Bioconductor packages**: Automatically installed for supported organisms
+  (e.g., `org.Hs.eg.db` for human)
+- **Local builds**: For unsupported organisms, automatically builds OrgDb
+  packages using AnnotationForge
+- **Species detection**: Automatically determines the correct package based on
+  your `config.yaml` species setting
+
+#### GSEA Parameters
+```yaml
+gsea:
+  gseGO:
+    extra: >-
+      pvalueCutoff = 0.05, 
+      minGSSize = 10, 
+      maxGSSize = 500,
+      eps = 1e-10,
+      seed = 42
+```
+
+#### ORA Parameters
+```yaml
+ora:
+  enrichGO:
+    extra: >-
+      pvalueCutoff = 0.05,
+      minGSSize = 10,
+      maxGSSize = 500,
+      qvalueCutoff = 0.2
+```
+
+#### SPIA Parameters
+```yaml
+spia:
+  extra: >-
+    beta = NULL,
+    verbose = TRUE,
+    plots = FALSE,
+    nB = 2000,
+    nPerm = 1000
+```
+
+---
+
+## Output Files and Organization
+
+### Directory Structure
+
+The workflow generates **RDS files only** - no plots, visualizations, or
+interactive tools are automatically created:
+
+```
+resources/enrichment/
+├── {analysis_name}/
+│   └── {contrast_name}/
+│       ├── gsea_results.RDS          # Gene Set Enrichment Analysis results
+│       ├── ora_results.RDS           # Over-Representation Analysis results
+│       ├── spia_results.RDS          # SPIA results (raw)
+│       └── spia_results_readable.RDS # SPIA results (with gene symbols)
+├── spia_data/                        # SPIA data directory (if enabled)
+├── local_orgdb_build/                # Local OrgDb packages (if built)
+└── enrichment_params.RDS             # Enrichment parameters
+```
+
+### File Formats
+
+- **RDS files**: R objects containing complete analysis results
+- **No automatic plots**: The workflow generates data objects, not
+  visualizations
+- **No PDF/PNG files**: These must be created manually using the R objects
+- **No HTML reports**: Results are stored as R data structures
+
+---
+
+## What the Workflow Provides
+
+### 1. **Data Objects for Analysis**
+
+The workflow generates RDS files containing:
+
+- **GSEA results**: `gseaResult` objects from clusterProfiler
+- **ORA results**: `enrichResult` objects from clusterProfiler  
+- **SPIA results**: Data frames with pathway impact analysis
+- **MSigDB results**: Gene set enrichment for specified collections
+- **Harmonizome results**: Tissue-specific gene set analysis
+
+### 2. **Integrated Interactive Analysis Tools**
+
+The workflow includes RMarkdown playgrounds that integrate directly with the
+outputs:
+
+- **GeneTonic Playground**: Interactive enrichment analysis and visualization
+- **PCA Explorer Playground**: Interactive principal component analysis
+- **Custom Analysis Playground**: Framework for extending analysis
+
+These tools automatically load workflow outputs and provide interactive
+interfaces through Shiny applications, enabling you to:
+- **Create interactive plots** that can be customized and downloaded
+- **Generate publication-ready figures** directly from the apps
+- **Export visualizations** in multiple formats (PNG, PDF, SVG)
+- **Explore data dynamically** before creating final figures
+
+### 3. **No Automatic Static Visualizations**
+
+The workflow **does not** automatically create:
+- ❌ Static plots or bar charts
+- ❌ PDF figures or publication-ready images
+- ❌ Batch-generated visualizations
+
+:::info[Interactive Visualization Through Shiny Apps]
+While the workflow doesn't generate static image files, it creates
+comprehensive data files (RDS/TSV) that power interactive Shiny applications.
+These apps allow you to:
+- **Explore data interactively** through dynamic plots and tables
+- **Download visualizations** as PNG, PDF, or other image formats
+- **Create publication-ready figures** directly from the interactive interfaces
+- **Customize plots** with interactive controls before downloading
+:::
+
+### 4. **Analysis Workflow**
+
+The complete analysis process:
+1. **Workflow execution**: Generates data objects and HTML reports
+2. **Interactive analysis**: Use integrated RMarkdown playgrounds
+3. **Custom visualization**: Create publication-ready figures manually
+4. **Export results**: Share data files and custom visualizations
+
+### 5. **Automatic OrgDb Management**
+
+The workflow automatically handles organism-specific annotation packages:
+- **Detection**: Identifies whether your species has a Bioconductor package
+- **Installation**: Installs Bioconductor packages automatically
+- **Local building**: Creates custom OrgDb packages for unsupported organisms
+- **Integration**: Seamlessly provides the correct annotation data for
+  enrichment analysis
+
+---
+
+## Interpreting Results
+
+### GSEA Results
+
+**Key Metrics:**
+- **Enrichment Score (ES)**: Measure of gene set enrichment
+- **Normalized Enrichment Score (NES)**: Normalized ES for comparison
+- **P-value**: Statistical significance
+- **FDR q-value**: False discovery rate adjusted p-value
+
+**Interpretation:**
+- **Positive ES**: Genes upregulated in the gene set
+- **Negative ES**: Genes downregulated in the gene set
+- **|NES| > 1.5**: Strong enrichment
+- **FDR < 0.25**: Statistically significant
+
+### ORA Results
+
+**Key Metrics:**
+- **Gene Ratio**: Proportion of genes in the gene set
+- **P-value**: Statistical significance
+- **Adjusted P-value**: Multiple testing correction
+- **Count**: Number of genes in the intersection
+
+**Interpretation:**
+- **Gene Ratio > 0.1**: High proportion of genes
+- **Adjusted P-value < 0.05**: Statistically significant
+- **Count > 5**: Sufficient genes for reliable results
+
+### SPIA Results
+
+**Key Metrics:**
+- **PERT**: Perturbation statistic
+- **PGFdr**: False discovery rate adjusted p-value
+- **Status**: Pathway activation/inhibition
+- **tA**: Total perturbation accumulation
+
+**Interpretation:**
+- **Status = "Activated"**: Pathway is upregulated
+- **Status = "Inhibited"**: Pathway is downregulated
+- **PGFdr < 0.05**: Statistically significant pathway
+
+---
+
+## Working with Results
+
+### Loading Results in R
+
+```r
+# Load enrichment results
+library(tidyverse)
+
+# GSEA results
+gsea_results <- readRDS("resources/enrichment/analysis_name/contrast_name/gsea_results.RDS")
+
+# ORA results
+ora_results <- readRDS("resources/enrichment/analysis_name/contrast_name/ora_results.RDS")
+
+# SPIA results
+spia_results <- readRDS("resources/enrichment/analysis_name/contrast_name/spia_results_readable.RDS")
+```
+
+### Interactive Analysis with Integrated Tools
+
+The workflow includes RMarkdown playgrounds that integrate directly with the
+generated outputs:
+
+#### GeneTonic Playground
+The `analysis/GeneTonic_playground.Rmd` provides interactive enrichment
+analysis:
+
+```r
+# Load workflow outputs
+dds_wald <- readRDS("resources/deseq2/analysis_name/dds.RDS")
+res_de <- readRDS("resources/deseq2/analysis_name/contrast_name/wald.RDS")
+res_enrich <- readRDS("resources/enrichment/analysis_name/contrast_name/ora_results.RDS")
+
+# Launch interactive GeneTonic app
+gtl <- GeneTonic::GeneTonicList(
+  dds = dds_wald,
+  res_de = res_de,
+  res_enrich = res_enrich_shaken,
+  annotation_obj = annotation_obj
+)
+
+GeneTonic::GeneTonic(gtl = gtl, project_id = "My Project")
+```
+
+#### PCA Explorer Playground
+The `analysis/pcaExplorer_playground.Rmd` provides interactive PCA analysis:
+
+```r
+# Load workflow outputs
+dds <- readRDS("resources/deseq2/analysis_name/dds.RDS")
+dst <- readRDS("resources/deseq2/analysis_name/dst.RDS")
+
+# Launch interactive pcaExplorer app
+pcaExplorer::pcaExplorer(
+  dds = dds,
+  dst = dst,
+  countmatrix = countmatrix,
+  coldata = coldata,
+  annotation = annotation_obj
+)
+```
+
+#### Ideal Integration
+The workflow outputs are also compatible with the `ideal` package for
+interactive differential expression analysis:
+
+```r
+# Load workflow outputs
+dds <- readRDS("resources/deseq2/analysis_name/dds.RDS")
+res <- readRDS("resources/deseq2/analysis_name/contrast_name/wald.RDS")
+
+# Launch interactive ideal app
+ideal::ideal(dds = dds, res = res)
+```
+
+:::info[Planned Feature]
+A dedicated `ideal` playground RMarkdown file is planned for future releases to
+provide the same integrated experience as the existing GeneTonic and
+pcaExplorer playgrounds.
+:::
+
+### Manual Visualization Creation
+
+You can also create custom visualizations manually using the data objects:
+
+```r
+# Load required libraries
+library(clusterProfiler)
+library(enrichplot)
+
+# Create dot plot for GO results
+if (!is.null(ora_results$GO)) {
+  dotplot(ora_results$GO, showCategory = 20)
+}
+
+# Create enrichment map for GSEA results
+if (!is.null(gsea_results$GO)) {
+  emapplot(pairwise_termsim(gsea_results$GO))
+}
+
+# Create network plot
+if (!is.null(ora_results$KEGG)) {
+  cnetplot(ora_results$KEGG, showCategory = 10)
+}
+```
+
+:::tip[Interactive vs. Manual Visualization]
+**Interactive Tools (Recommended)**: Use GeneTonic and pcaExplorer for
+exploration and downloading publication-ready figures directly from the apps.
+
+**Manual Creation**: Use the code examples above when you need custom plots
+or want to integrate visualizations into R scripts or reports.
+:::
+
+---
+
+## Best Practices
+
+### 1. **Parameter Selection**
+- **P-value cutoff**: 0.05 for discovery, 0.01 for validation
+- **Gene set size**: 10-500 genes for reliable results
+- **Multiple testing**: Use FDR correction for multiple comparisons
+
+### 2. **Quality Control**
+- **Background genes**: Use all expressed genes as background
+- **Gene set overlap**: Avoid highly overlapping gene sets
+- **Statistical power**: Ensure sufficient sample size
+
+### 3. **Interpretation**
+- **Biological relevance**: Focus on biologically meaningful results
+- **Pathway consistency**: Look for consistent patterns across analyses
+- **Validation**: Confirm key findings with independent methods
+
+### 4. **Visualization**
+- **Interactive exploration**: Start with GeneTonic and pcaExplorer for data
+  exploration
+- **Download from apps**: Export publication-ready figures directly from the
+  Shiny interfaces
+- **Manual creation**: Use clusterProfiler functions for custom plots when
+  needed
+
+---
+
+## Troubleshooting
+
+### Common Issues
+
+| Problem | Cause | Solution |
+|---------|-------|----------|
+| **No significant results** | P-value too strict | Increase p-value cutoff |
+| **Too many results** | P-value too lenient | Decrease p-value cutoff |
+| **Empty gene sets** | Background too small | Use all expressed genes |
+| **SPIA errors** | KEGG API issues | Check internet connection |
+
+### Getting Help
+
+If you encounter issues:
+
+1. **Check configuration**: Verify YAML syntax and parameters
+2. **Review logs**: Check Snakemake and R logs
+3. **Validate input**: Ensure differential expression results exist
+4. **Open issue**: Report problems on [GitHub](https://github.com/tucca-cellag/tucca-rna-seq/issues)
+
+---
+
+## Next Steps
+
+After completing enrichment analysis:
+
+1. **Load Results**: Use `readRDS()` to load the generated data objects
+2. **Interactive Exploration**: Use GeneTonic and pcaExplorer for data
+  exploration
+3. **Download Visualizations**: Export publication-ready figures from the
+  Shiny apps
+4. **Custom Analysis**: Perform additional statistical analyses or create
+  custom plots
+5. **Biological Interpretation**: Relate findings to your research question
+
+For detailed workflow execution, see the
+[Running Guide](./running).
+
+---
+
+## Summary
+
+### What the Workflow Provides
+✅ **Comprehensive data objects** for all enrichment analyses  
+✅ **Statistical results** ready for interpretation  
+✅ **Gene ID mappings** and annotations  
+✅ **Flexible configuration** for different analysis types  
+✅ **Integrated RMarkdown playgrounds** for interactive analysis  
+✅ **HTML reports** (FastQC, Qualimap, MultiQC)  
+
+### What the Workflow Does NOT Provide
+❌ **Automatic static plots or visualizations**  
+❌ **Batch-generated figures**  
+❌ **Publication-ready images**
+
+:::info[But You Can Create Them!]
+The workflow generates the data needed to create visualizations through:
+- **Interactive Shiny apps** (GeneTonic, pcaExplorer) that allow plot download
+- **R data objects** that can be used with plotting libraries
+- **Integrated playgrounds** that provide visualization capabilities
+:::
+
+**The workflow provides both data generation AND integrated interactive
+analysis tools.**
+
+---
+
+*Functional enrichment analysis provides biological context for your gene
+expression changes. The workflow generates comprehensive data objects and
+integrates with interactive analysis tools like GeneTonic, pcaExplorer, and
+ideal, allowing you to explore your results interactively and create custom
+visualizations for publication.*

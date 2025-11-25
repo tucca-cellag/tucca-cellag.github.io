@@ -94,6 +94,10 @@ const config: Config = {
           position: 'left',
         },
         {
+          type: 'docsVersionDropdown',
+          position: 'right',
+        },
+        {
           href: 'https://github.com/tucca-cellag',
           label: 'Our GitHub Organization',
           position: 'right',

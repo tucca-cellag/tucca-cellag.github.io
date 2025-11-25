@@ -3,7 +3,7 @@ name: Deploy Docusaurus Site
 on:
   push:
     branches:
-      - source
+      - main
     # Allow manual workflow dispatch
   workflow_dispatch:
 
@@ -38,7 +38,7 @@ jobs:
 
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v3
-        if: github.ref == 'refs/heads/source'
+        if: github.ref == 'refs/heads/main'
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: ./tucca-cellag/build
