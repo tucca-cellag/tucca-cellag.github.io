@@ -65,7 +65,7 @@ export default defineConfig({
           label: 'Projects',
           items: [
             { label: 'Computational blue-melanin design', slug: 'projects/blue-melanin' },
-            { label: 'Comparative transcriptomics', slug: 'projects/comparative-transcriptomics' },
+            { label: 'AST: Adherent-to-Suspension Transcriptomics', slug: 'projects/comparative-transcriptomics' },
             {
               label: 'tucca-rna-seq',
               items: [
