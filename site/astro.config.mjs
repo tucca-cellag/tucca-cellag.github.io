@@ -113,6 +113,7 @@ export default defineConfig({
             { label: 'Computational blue-melanin design', slug: 'publications/blue-melanin' },
             { label: 'Chicken fibroblast transcriptomics', slug: 'publications/ast1' },
             { label: 'AI for Food Innovation', slug: 'publications/ai-for-food-innovation' },
+            { label: 'Biomaterials in cellular agriculture', slug: 'publications/biomaterials-cell-ag' },
           ],
         },
         {
