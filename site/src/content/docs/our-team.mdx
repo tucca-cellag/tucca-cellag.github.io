@@ -1,0 +1,74 @@
+---
+title: Our Team
+description: The people behind TUCCA's computational and cellular agriculture research at Tufts University.
+---
+
+import Card from "@components/docs/Card.astro";
+import CardImage from "@components/docs/CardImage.astro";
+import CardHeader from "@components/docs/CardHeader.astro";
+import CardBody from "@components/docs/CardBody.astro";
+import CardFooter from "@components/docs/CardFooter.astro";
+import Columns from "@components/docs/Columns.astro";
+import Column from "@components/docs/Column.astro";
+
+<Columns>
+  <Column>
+    <Card shadow="tl">
+      <CardHeader>
+        <h2>David Kaplan</h2>
+      </CardHeader>
+      <CardImage cardImageUrl="/img/dkaplan.png" alt="David Kaplan" title="David Kaplan" />
+      <CardBody>
+        David Kaplan is the Stern Family Endowed Professor of Engineering at Tufts
+        University, a Distinguished University Professor, and Professor and Chair of
+        the Department of Biomedical Engineering. His research focus is on biopolymer
+        engineering, tissue engineering, regenerative medicine and cellular
+        agriculture. He has published over 1,000 peer-reviewed papers, he is
+        editor-in-chief of ACS Biomaterials Science and Engineering and he serves on
+        many editorial boards and programs for journals and universities. He has
+        received awards for his research and teaching and is an elected Fellow of the
+        American Institute of Medical and Biological Engineering and the National
+        Academy of Engineering.
+      </CardBody>
+      <CardFooter>
+        <p class="t-team-links">
+          <a href="https://sites.tufts.edu/kaplanlab/about-david/">About</a>
+          <a href="mailto:david.kaplan@tufts.edu">Email</a>
+          <a href="https://orcid.org/0000-0002-9245-7774">ORCID</a>
+        </p>
+      </CardFooter>
+    </Card>
+  </Column>
+  <Column>
+    <Card shadow="tl">
+      <CardHeader>
+        <h2>Benji Bromberg</h2>
+      </CardHeader>
+      <CardImage cardImageUrl="/img/bbromberg.png" alt="Benji Bromberg" title="Benji Bromberg" />
+      <CardBody>
+        Benji Bromberg is a Research Technician at TUCCA, where he has been working
+        since 2022. Alongside his TUCCA duties, he is a part-time Master's student in
+        Computer Science at Tufts University. Benji's research at TUCCA is concentrated
+        on the development of new cell lines and the bioinformatics analysis of cell-ag
+        cell lines. He is skilled in bioinformatics, RNA sequencing, stem cell research,
+        and cell line development. Benji earned his B.A. in Biochemistry and Molecular
+        Biology from Lewis &amp; Clark College in 2022. Originally from Brookline, MA, he
+        enjoys a range of sports, including soccer, climbing, and tennis. He also likes
+        hiking, playing board games, and reading fantasy and sci-fi.
+      </CardBody>
+      <CardFooter>
+        <p class="t-team-links">
+          <a href="mailto:benjamin.bromberg@tufts.edu">Email</a>
+          <a href="https://orcid.org/0009-0001-3166-6329">ORCID</a>
+          <a href="https://github.com/benjibromberg">GitHub</a>
+          <a href="https://www.linkedin.com/in/benjamin-bromberg-a636891b1/">LinkedIn</a>
+        </p>
+      </CardFooter>
+    </Card>
+  </Column>
+</Columns>
+
+<style>{`
+  .t-team-links { display: flex; flex-wrap: wrap; gap: 0.9rem; margin: 0; }
+  .t-team-links a { font-weight: 600; font-size: 0.9rem; }
+`}</style>

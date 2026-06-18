@@ -1,0 +1,122 @@
+---
+title: TUCCA — Open Computational Research
+description: Open computational research from the Tufts University Center for Cellular Agriculture — AI, computational biology, and open-source tools for cultivated meat and cellular agriculture.
+template: splash
+hero: {}
+---
+
+import { Card, CardGrid, LinkCard } from '@astrojs/starlight/components';
+import TuccaLockup from '@components/TuccaLockup.astro';
+
+<div class="tucca-hero">
+  <TuccaLockup width={320} />
+  <h1>Open computational research for cellular agriculture</h1>
+  <p class="tucca-hero__lead">
+    The Tufts University Center for Cellular Agriculture builds open-source
+    software, AI &amp; computational-biology methods, and curated resources for
+    cultivated meat and cellular agriculture. This is the home for our code,
+    documentation, and projects.
+  </p>
+  <div class="tucca-hero__cta">
+    <a class="tucca-btn tucca-btn--primary" href="https://tucca-cellag.github.io/caail/">Explore the CAAIL library ↗</a>
+    <a class="tucca-btn tucca-btn--ghost" href="/tucca-rna-seq/introduction/">Browse our projects</a>
+  </div>
+</div>
+
+## Our projects
+
+<CardGrid>
+  <Card title="tucca-rna-seq" icon="seti:python">
+    A fast, automated, reproducible RNA-Seq workflow built on Snakemake v8+ —
+    from quality control through differential expression and functional
+    enrichment, with Tufts HPC guidance.
+
+    [Read the docs →](/tucca-rna-seq/introduction/)
+  </Card>
+  <Card title="Computational blue-melanin design" icon="seti:pipeline">
+    De novo design of stable blue (and purple/green) melanin pigments via
+    RFdiffusion motif scaffolding of Y-containing pentapeptides — deep-learning
+    protein design applied to sustainable colorants.
+
+    [About the project →](/projects/blue-melanin/)
+  </Card>
+  <Card title="CAAIL — Cellular Agriculture AI Library" icon="open-book">
+    A curated, openly-licensed library at the intersection of cellular
+    agriculture and AI: peer-reviewed papers, software, databases, and
+    per-species datasets.
+
+    [Open the library ↗](https://tucca-cellag.github.io/caail/)
+  </Card>
+</CardGrid>
+
+## Recent publications
+
+<CardGrid>
+  <LinkCard
+    title="Comparative transcriptomics of adherent and suspension chicken fibroblast cell lines"
+    description="Contreras, Nagarajan, Bromberg, Villegas & Kaplan (2026), Food Research International."
+    href="/publications/ast1/"
+  />
+  <LinkCard
+    title="Computational design of blue melanin with peptide motif scaffolding"
+    description="Lee, Park, Salgado, Dolgin & Kaplan (2026), bioRxiv preprint."
+    href="/publications/blue-melanin/"
+  />
+</CardGrid>
+
+## Start here
+
+<CardGrid>
+  <LinkCard title="What is cellular agriculture?" href="/helpful-resources/learn-about-cell-ag/" />
+  <LinkCard title="Reproducibility in scientific computing" href="/helpful-resources/reproducibility/" />
+  <LinkCard title="Our team" href="/our-team/" />
+  <LinkCard title="TUCCA on the web ↗" href="https://cellularagriculture.tufts.edu/" />
+</CardGrid>
+
+<style>
+  {`
+  .tucca-hero {
+    text-align: center;
+    max-width: 52rem;
+    margin: 1rem auto 2.5rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+  }
+  .tucca-hero h1 {
+    font-family: var(--tucca-font-display);
+    font-size: clamp(1.9rem, 4.5vw, 3rem);
+    line-height: 1.1;
+    letter-spacing: -0.02em;
+    margin: 0.5rem 0 0;
+  }
+  .tucca-hero__lead {
+    font-size: 1.1rem;
+    color: var(--tucca-muted);
+    max-width: 42rem;
+    margin: 0;
+  }
+  .tucca-hero__cta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    justify-content: center;
+    margin-top: 0.5rem;
+  }
+  .tucca-btn {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.6rem 1.2rem;
+    border-radius: 9px;
+    font-weight: 600;
+    text-decoration: none;
+    border: 1px solid transparent;
+  }
+  .tucca-btn--primary { background: var(--tucca-primary); color: #fff; }
+  .tucca-btn--primary:hover { background: var(--tucca-primary-hover); }
+  .tucca-btn--ghost { background: transparent; color: var(--tucca-primary); border-color: var(--tucca-border); }
+  .tucca-btn--ghost:hover { border-color: var(--tucca-link); }
+  :root[data-theme='dark'] .tucca-btn--ghost { color: var(--tucca-link); }
+  `}
+</style>

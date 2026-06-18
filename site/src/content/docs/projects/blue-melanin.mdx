@@ -1,0 +1,41 @@
+---
+title: Computational Blue-Melanin Design
+description: De novo design of stable blue, purple, and green melanin pigments via RFdiffusion motif scaffolding of Y-containing pentapeptides.
+---
+
+import { LinkCard } from '@astrojs/starlight/components';
+
+A TUCCA project applying deep-learning protein design to **sustainable colorants** —
+designing melanin pigments in colors that do not exist in nature.
+
+## The challenge
+
+Natural melanin, polymerized from tyrosine (Y), is a robust pigment but exists only
+in a narrow range of colors (yellow to brown) because controlling melanin size
+(length) is difficult. Extending melanin to new, stable colors — blue, purple,
+green — with sequence-to-color tunability is an open design problem.
+
+## The computational approach
+
+This project uses **RFdiffusion** to motif-scaffold a pentapeptide-repeat protein
+(PRP), narrowing roughly 160,000 possible combinations down to a library of 905
+Y-containing pentapeptides selected for two properties: tight packing during peptide
+assembly and high solubility in aqueous environments.
+
+Two of the most soluble designs formed stable **blue melanin** with λmax absorbing at
+615–620 nm — driven by homogeneous melanin length around 60 Y units. Other designs
+produced purple and green (and the more familiar red, yellow, and brown). The blue
+melanin showed thermal stability at autoclave temperature (121 °C) and photostability
+over weeks under illumination, and was demonstrated as an electrophoretic ink.
+
+De novo color design from simple peptides could change how colorants are sourced and
+produced, and points toward deep-learning tools that predict color directly from amino
+acid sequence.
+
+## Read the preprint
+
+<LinkCard
+  title="Computational design of blue melanin with peptide motif scaffolding"
+  description="Lee, Park, Salgado, Dolgin & Kaplan (2026), bioRxiv. Full citation, abstract, and links."
+  href="/publications/blue-melanin/"
+/>
