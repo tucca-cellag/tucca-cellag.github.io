@@ -1,0 +1,35 @@
+---
+/**
+ * Footer — appends a TUCCA attribution band beneath Starlight's default footer.
+ * The lockup links to the institutional site; the line carries the canonical
+ * GitHub org + license. Keeps the org hub visually consistent with CAAIL's
+ * footer treatment without its catalog-specific islands.
+ */
+import Default from '@astrojs/starlight/components/Footer.astro';
+import TuccaLockup from './TuccaLockup.astro';
+---
+<div class="tucca-footer">
+  <span class="tucca-foot-brand"><TuccaLockup width={150} /></span>
+  <span>
+    A project hub of the <a href="https://cellularagriculture.tufts.edu/">Tufts University Center for Cellular Agriculture</a>
+    · Content licensed MIT · <a href="https://github.com/tucca-cellag">GitHub organization</a>
+  </span>
+</div>
+<Default><slot /></Default>
+
+<style>
+  .tucca-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 0.6rem;
+    font-size: 0.72rem;
+    color: var(--tucca-muted);
+    border-top: 1px solid var(--tucca-border);
+    padding-top: 0.8rem;
+    margin-top: 1rem;
+  }
+  .tucca-foot-brand { display: inline-flex; align-items: center; }
+  .tucca-footer a { color: var(--tucca-link); }
+</style>

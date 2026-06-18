@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" role="img" aria-label="TUCCA">
+  <rect width="32" height="32" rx="7" fill="#002E6D"/>
+  <!-- stylised bioreactor / cell mark -->
+  <circle cx="16" cy="16" r="9" fill="none" stroke="#7E9BC9" stroke-width="2"/>
+  <circle cx="16" cy="16" r="3.4" fill="#C9D7EC"/>
+</svg>

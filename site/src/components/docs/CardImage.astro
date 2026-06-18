@@ -1,0 +1,27 @@
+---
+/**
+ * CardImage — Astro shim for the former Docusaurus <CardImage>.
+ * `cardImageUrl` is a string path (e.g. "/img/foo.png"); images live in
+ * public/img so the path resolves verbatim (site base is '/'). Relative paths
+ * are normalised to root-absolute, matching the old useBaseUrl behaviour.
+ */
+interface Props {
+  class?: string;
+  style?: string;
+  cardImageUrl: string;
+  alt: string;
+  title?: string;
+}
+const { class: className, style, cardImageUrl, alt, title } = Astro.props;
+const src = /^(https?:)?\//.test(cardImageUrl) ? cardImageUrl : `/${cardImageUrl}`;
+---
+<img class:list={['t-card__image', className]} style={style} src={src} alt={alt} title={title} />
+
+<style>
+  .t-card__image {
+    display: block;
+    width: 100%;
+    height: auto;
+    object-fit: cover;
+  }
+</style>

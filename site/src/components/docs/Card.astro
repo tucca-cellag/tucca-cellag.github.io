@@ -1,0 +1,31 @@
+---
+/**
+ * Card — Astro shim for the former Docusaurus <Card>. Self-contained scoped
+ * styling (no Infima dependency). Pairs with CardHeader/CardBody/CardFooter.
+ * Props mirror the old API: `shadow` ('lw'|'md'|'tl'), plus class/style.
+ */
+interface Props {
+  class?: string;
+  style?: string;
+  shadow?: 'lw' | 'md' | 'tl';
+}
+const { class: className, style, shadow } = Astro.props;
+---
+<div class:list={['t-card', shadow && `t-card--shadow-${shadow}`, className]} style={style}>
+  <slot />
+</div>
+
+<style>
+  .t-card {
+    display: flex;
+    flex-direction: column;
+    background: var(--tucca-bg);
+    border: 1px solid var(--tucca-border);
+    border-radius: 12px;
+    overflow: hidden;
+    height: 100%;
+  }
+  .t-card--shadow-lw { box-shadow: 0 1px 3px -1px color-mix(in oklab, var(--tucca-primary) 18%, transparent); }
+  .t-card--shadow-md { box-shadow: 0 6px 18px -10px color-mix(in oklab, var(--tucca-primary) 35%, transparent); }
+  .t-card--shadow-tl { box-shadow: 0 14px 34px -16px color-mix(in oklab, var(--tucca-primary) 50%, transparent); }
+</style>

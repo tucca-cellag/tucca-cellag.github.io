@@ -1,0 +1,33 @@
+/* Starlight theme bridge — point Starlight's design tokens at the TUCCA palette
+   and self-hosted fonts so the org hub is visually cohesive with the CAAIL site. */
+:root {
+  --sl-font: var(--tucca-font-ui);
+  --sl-font-mono: var(--tucca-font-mono);
+
+  /* Tufts Dark Blue accent ramp (light theme) */
+  --sl-color-accent-low: oklch(86% 0.04 256);
+  --sl-color-accent: var(--tucca-primary);
+  --sl-color-accent-high: oklch(24% 0.10 264);
+  --sl-color-text-accent: var(--tucca-link);
+}
+
+:root[data-theme='dark'] {
+  --sl-color-accent-low: oklch(30% 0.06 260);
+  --sl-color-accent: oklch(62% 0.11 258);
+  --sl-color-accent-high: oklch(86% 0.06 256);
+  --sl-color-text-accent: var(--tucca-link);
+}
+
+/* Display font for headings + the site wordmark. */
+.sl-markdown-content h1,
+.sl-markdown-content h2,
+.sl-markdown-content h3,
+.sl-markdown-content h4,
+h1#_top,
+.site-title {
+  font-family: var(--tucca-font-display);
+  letter-spacing: -0.01em;
+}
+
+/* Slightly tighter, larger hero type on splash pages. */
+.hero h1 { font-family: var(--tucca-font-display); }

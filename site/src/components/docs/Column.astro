@@ -1,0 +1,22 @@
+---
+/**
+ * Column — Astro shim for the former Docusaurus <Column> (Infima col).
+ * Flex child; defaults to an equal share, min-width keeps it readable so
+ * columns stack on narrow viewports.
+ */
+interface Props {
+  class?: string;
+  style?: string;
+}
+const { class: className, style } = Astro.props;
+---
+<div class:list={['t-column', className]} style={style}>
+  <slot />
+</div>
+
+<style>
+  .t-column {
+    flex: 1 1 16rem;
+    min-width: 0;
+  }
+</style>
