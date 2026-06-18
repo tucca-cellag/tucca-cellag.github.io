@@ -60,9 +60,12 @@ export default defineConfig({
       ],
       sidebar: [
         { label: 'Home', link: '/' },
+        { label: 'CAAIL Library ↗', link: 'https://tucca-cellag.github.io/caail/' },
         {
           label: 'Projects',
           items: [
+            { label: 'Computational blue-melanin design', slug: 'projects/blue-melanin' },
+            { label: 'Comparative transcriptomics', slug: 'projects/comparative-transcriptomics' },
             {
               label: 'tucca-rna-seq',
               items: [
@@ -101,7 +104,15 @@ export default defineConfig({
                 { label: 'Getting Help', slug: 'tucca-rna-seq/help' },
               ],
             },
-            { label: 'Blue Melanin (computational design)', slug: 'projects/blue-melanin' },
+          ],
+        },
+        {
+          label: 'Publications',
+          items: [
+            { label: 'Overview', slug: 'publications' },
+            { label: 'Computational blue-melanin design', slug: 'publications/blue-melanin' },
+            { label: 'Chicken fibroblast transcriptomics', slug: 'publications/ast1' },
+            { label: 'AI for Food Innovation', slug: 'publications/ai-for-food-innovation' },
           ],
         },
         {
@@ -112,16 +123,7 @@ export default defineConfig({
             { label: 'R / RStudio Extensions', slug: 'helpful-resources/r-extensions' },
           ],
         },
-        {
-          label: 'Publications',
-          items: [
-            { label: 'Overview', slug: 'publications' },
-            { label: 'Chicken fibroblast transcriptomics', slug: 'publications/ast1' },
-            { label: 'Computational blue-melanin design', slug: 'publications/blue-melanin' },
-          ],
-        },
         { label: 'Our Team', slug: 'our-team' },
-        { label: 'CAAIL Library ↗', link: 'https://tucca-cellag.github.io/caail/' },
       ],
       customCss: [
         './src/styles/fonts.css',

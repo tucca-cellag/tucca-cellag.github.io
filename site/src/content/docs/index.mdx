@@ -19,19 +19,19 @@ import TuccaLockup from '@components/TuccaLockup.astro';
   </p>
   <div class="tucca-hero__cta">
     <a class="tucca-btn tucca-btn--primary" href="https://tucca-cellag.github.io/caail/">Explore the CAAIL library ↗</a>
-    <a class="tucca-btn tucca-btn--ghost" href="/tucca-rna-seq/introduction/">Browse our projects</a>
+    <a class="tucca-btn tucca-btn--ghost" href="#our-projects">Browse our projects</a>
   </div>
 </div>
 
 ## Our projects
 
 <CardGrid>
-  <Card title="tucca-rna-seq" icon="seti:python">
-    A fast, automated, reproducible RNA-Seq workflow built on Snakemake v8+ —
-    from quality control through differential expression and functional
-    enrichment, with Tufts HPC guidance.
+  <Card title="CAAIL — Cellular Agriculture AI Library" icon="open-book">
+    A curated, openly-licensed library at the intersection of cellular
+    agriculture and AI: peer-reviewed papers, software, databases, and
+    per-species datasets.
 
-    [Read the docs →](/tucca-rna-seq/introduction/)
+    [Open the library ↗](https://tucca-cellag.github.io/caail/)
   </Card>
   <Card title="Computational blue-melanin design" icon="seti:pipeline">
     De novo design of stable blue (and purple/green) melanin pigments via
@@ -40,12 +40,19 @@ import TuccaLockup from '@components/TuccaLockup.astro';
 
     [About the project →](/projects/blue-melanin/)
   </Card>
-  <Card title="CAAIL — Cellular Agriculture AI Library" icon="open-book">
-    A curated, openly-licensed library at the intersection of cellular
-    agriculture and AI: peer-reviewed papers, software, databases, and
-    per-species datasets.
+  <Card title="Comparative transcriptomics for cultivated meat" icon="seti:r">
+    Time-series RNA-seq dissecting how chicken fibroblasts adapt from adherent to
+    suspension growth — uncovering a YAP–FoxO1 mechanism for anchorage-independent
+    proliferation.
 
-    [Open the library ↗](https://tucca-cellag.github.io/caail/)
+    [About the project →](/projects/comparative-transcriptomics/)
+  </Card>
+  <Card title="tucca-rna-seq" icon="seti:python">
+    A reproducible RNA-Seq workflow on Snakemake v8+ — QC through differential
+    expression and functional enrichment, with Tufts HPC guidance. Being reworked
+    into a downstream toolkit for `nf-core/rna-seq`.
+
+    [Read the docs →](/tucca-rna-seq/introduction/)
   </Card>
 </CardGrid>
 
@@ -53,14 +60,19 @@ import TuccaLockup from '@components/TuccaLockup.astro';
 
 <CardGrid>
   <LinkCard
+    title="Computational design of blue melanin with peptide motif scaffolding"
+    description="Lee, Park, Salgado, Dolgin & Kaplan (2026), bioRxiv preprint."
+    href="/publications/blue-melanin/"
+  />
+  <LinkCard
     title="Comparative transcriptomics of adherent and suspension chicken fibroblast cell lines"
     description="Contreras, Nagarajan, Bromberg, Villegas & Kaplan (2026), Food Research International."
     href="/publications/ast1/"
   />
   <LinkCard
-    title="Computational design of blue melanin with peptide motif scaffolding"
-    description="Lee, Park, Salgado, Dolgin & Kaplan (2026), bioRxiv preprint."
-    href="/publications/blue-melanin/"
+    title="Artificial Intelligence for Food Innovation"
+    description="Datta, … Kaplan, … Kuhl (2025), arXiv. A multi-author perspective on AI for food."
+    href="/publications/ai-for-food-innovation/"
   />
 </CardGrid>
 
