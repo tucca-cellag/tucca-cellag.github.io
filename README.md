@@ -1,30 +1,49 @@
-# TUCCA Bioinformatics Docs
+# TUCCA — Open Computational Research
 
-This repository contains the source code for the **Tufts University Center for Cellular Agriculture (TUCCA) Bioinformatics** documentation site.
+Source for the **Tufts University Center for Cellular Agriculture (TUCCA)** open
+computational-research hub, served at **<https://tucca-cellag.github.io/>**.
 
-It hosts:
-- Documentation for the `tucca-rna-seq` workflow
-- Case studies
-- Learning materials and resources
+It is the landing point for TUCCA's open-source code, documentation, and AI /
+computational-biology projects, including:
 
-## Access the Site
+- **`tucca-rna-seq`** — a reproducible RNA-Seq workflow (Snakemake v8+), with full docs.
+- **Computational blue-melanin design** — RFdiffusion-based de novo pigment design.
+- **Publications** powered by these tools.
+- **Helpful resources** on cellular agriculture, reproducibility, and R/RStudio.
 
-The live site is available at: **[https://tucca-cellag.github.io/](https://tucca-cellag.github.io/)**
+The curated **CAAIL** library (papers, software, databases, datasets at the
+intersection of cellular agriculture and AI) is a separate site at
+**<https://tucca-cellag.github.io/caail/>** ([`tucca-cellag/caail`](https://github.com/tucca-cellag/caail)).
 
-## Repository Structure
+## Stack
 
-The Docusaurus website source code is located in the [`tucca-cellag`](./tucca-cellag) directory.
+[Astro](https://astro.build/) + [Starlight](https://starlight.astro.build/), matching
+the CAAIL site's stack for cross-site cohesion. The site source lives in [`site/`](./site).
 
-- [`tucca-cellag/docs`](./tucca-cellag/docs): Markdown documentation files.
-- [`tucca-cellag/docusaurus.config.ts`](./tucca-cellag/docusaurus.config.ts): Site configuration.
-- [`tucca-cellag/src`](./tucca-cellag/src): React components and pages.
+## Develop
 
-## Development
-
-To run the website locally, navigate to the `tucca-cellag` directory:
+Requires Node ≥ 22.12 (see [`site/.nvmrc`](./site/.nvmrc)) and `pnpm`.
 
 ```bash
-cd tucca-cellag
-npm install
-npm start
+nvm use 22
+pnpm --dir site install
+pnpm --dir site dev      # local preview
+pnpm --dir site build    # production build → site/dist
+pnpm --dir site preview  # serve the built site
 ```
+
+Regenerate the social card after a branding change:
+
+```bash
+node site/scripts/og-image.mjs
+```
+
+## Deploy
+
+On push to `main`, [`.github/workflows/deploy.yml`](./.github/workflows/deploy.yml)
+builds `site/` and deploys to GitHub Pages via GitHub Actions. The repository's
+**Settings → Pages → Source** must be set to **GitHub Actions**.
+
+## License
+
+Content and code are released under the MIT License.
