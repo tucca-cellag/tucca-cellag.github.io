@@ -1,0 +1,93 @@
+---
+/**
+ * Button — Astro shim for the former Docusaurus <Button> (an anchor styled as a
+ * button). Props mirror the old API: link, label, variant, size, outline,
+ * block, disabled. Internal links are base-prefixed; external/anchor links and
+ * already-absolute paths pass through. A disabled button renders inert.
+ */
+interface Props {
+  link: string;
+  label: string;
+  variant?: 'primary' | 'secondary' | 'danger' | 'warning' | 'success' | 'info' | 'link' | string;
+  size?: 'sm' | 'lg' | 'small' | 'medium' | 'large' | null;
+  outline?: boolean;
+  block?: boolean;
+  disabled?: boolean;
+  class?: string;
+  style?: string;
+}
+const {
+  link,
+  label,
+  variant = 'primary',
+  size = null,
+  outline = false,
+  block = false,
+  disabled = false,
+  class: className,
+  style,
+} = Astro.props;
+
+const sizeMap: Record<string, string | null> = { sm: 'sm', small: 'sm', lg: 'lg', large: 'lg', medium: null };
+const sizeClass = size && sizeMap[size] ? `t-button--${sizeMap[size]}` : '';
+
+const base = import.meta.env.BASE_URL.replace(/\/$/, '');
+const isExternal = /^(https?:)?\/\//.test(link) || link.startsWith('#') || link.startsWith('mailto:');
+const href = disabled ? undefined : isExternal ? link : `${base}/${link.replace(/^\//, '')}`;
+---
+<a
+  href={href}
+  role="button"
+  aria-disabled={disabled ? 'true' : undefined}
+  class:list={[
+    't-button',
+    `t-button--${variant}`,
+    sizeClass,
+    outline && 't-button--outline',
+    block && 't-button--block',
+    disabled && 't-button--disabled',
+    className,
+  ]}
+  style={style}
+>{label}</a>
+
+<style>
+  .t-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.4rem;
+    padding: 0.5rem 1rem;
+    font-family: var(--tucca-font-ui);
+    font-size: 0.92rem;
+    font-weight: 600;
+    line-height: 1.2;
+    border-radius: 8px;
+    border: 1px solid transparent;
+    text-decoration: none;
+    cursor: pointer;
+    transition: background 0.15s, color 0.15s, border-color 0.15s;
+  }
+  .t-button--sm { padding: 0.32rem 0.7rem; font-size: 0.82rem; }
+  .t-button--lg { padding: 0.65rem 1.3rem; font-size: 1rem; }
+  .t-button--block { display: flex; width: 100%; }
+
+  .t-button--primary { background: var(--tucca-primary); color: #fff; }
+  .t-button--primary:hover { background: var(--tucca-primary-hover); }
+  .t-button--secondary { background: var(--tucca-surface); color: var(--tucca-ink); border-color: var(--tucca-border); }
+  .t-button--secondary:hover { border-color: var(--tucca-link); color: var(--tucca-primary); }
+  .t-button--success { background: #1c7c54; color: #fff; }
+  .t-button--info { background: var(--tucca-link); color: #fff; }
+  .t-button--warning { background: #b8860b; color: #fff; }
+  .t-button--danger { background: #b3261e; color: #fff; }
+  .t-button--link { background: transparent; color: var(--tucca-link); padding-inline: 0.25rem; }
+  .t-button--link:hover { text-decoration: underline; }
+
+  /* Outline variants invert fill for a border-only look. */
+  .t-button--outline { background: transparent; }
+  .t-button--outline.t-button--primary { color: var(--tucca-primary); border-color: var(--tucca-primary); }
+  .t-button--outline.t-button--primary:hover { background: var(--tucca-primary); color: #fff; }
+  .t-button--outline.t-button--secondary { color: var(--tucca-ink); border-color: var(--tucca-border); }
+
+  .t-button--disabled { opacity: 0.55; pointer-events: none; cursor: default; }
+</style>

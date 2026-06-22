@@ -1,0 +1,54 @@
+---
+title: "AST: Adherent-to-Suspension Transcriptomics"
+description: A time-series RNA-seq study of the adherent-to-suspension transition (AST) in chicken fibroblasts, for scalable cultivated-meat production.
+---
+
+import { LinkCard } from '@astrojs/starlight/components';
+
+A TUCCA computational project using time-series transcriptomics to dissect the
+**adherent-to-suspension transition (AST)** — how cells adapt from anchored to
+free-floating growth, a key bottleneck for scaling cultivated meat.
+
+## The challenge
+
+Scaling cultivated meat means growing large quantities of cells efficiently. Many
+research cell lines grow attached to a surface (adherent), but industrial production
+favours cells grown floating in suspension. The adherent→suspension transition is a
+complex biological process, and engineering it requires understanding the precise
+transcriptomic changes that let cells survive and thrive without attachment.
+
+## The computational approach
+
+Time-series RNA sequencing captured the transcriptional dynamics at five stages of
+adaptation (n = 4 per timepoint). An early development version of
+[`tucca-rna-seq`](/tucca-rna-seq/introduction/) served as the analytical engine —
+quality control (FastQC, Qualimap), alignment (STAR), quantification (Salmon),
+aggregation (MultiQC), differential expression (DESeq2), and functional enrichment
+(clusterProfiler ORA/GSEA) — feeding custom downstream analyses including time-series
+soft clustering (Mfuzz).
+
+## Key findings
+
+- **An acute, transient stress response** at the point of transition (autophagy, MAPK
+  signaling up; DNA replication down).
+- **Permanent reprogramming** of suspension-adapted cells — suppressed metabolism and
+  a committed, anchorage-independent adhesion profile.
+- **A proposed molecular mechanism** for suspension proficiency: oxidative stress →
+  MAPK p38δ → TEAD sequestration → a YAP–FoxO1 complex driving antioxidant production
+  and adhesion-gene downregulation.
+
+## Data
+
+<LinkCard
+  title="NCBI BioProject PRJNA1331774"
+  description="Raw RNA-seq reads (Gallus gallus, DF-1 cell line) for the adherent-to-suspension time series."
+  href="https://www.ncbi.nlm.nih.gov/bioproject/PRJNA1331774"
+/>
+
+## Read the paper
+
+<LinkCard
+  title="Comparative transcriptomics of adherent and suspension chicken fibroblast cell lines for the optimization of cultivated meat processes"
+  description="Contreras, Nagarajan, Bromberg, Villegas & Kaplan (2026), Food Research International. Full study writeup, findings, and links."
+  href="/publications/ast1/"
+/>

@@ -1,0 +1,63 @@
+---
+title: Using VSCode with Tufts HPC
+description: How to edit and run the tucca-rna-seq workflow on the Tufts HPC cluster from Visual Studio Code.
+---
+
+import Button from "@components/docs/Button.astro";
+
+We recommend [Visual Studio Code](https://code.visualstudio.com/) for working
+with `tucca-rna-seq` on the Tufts HPC cluster — it gives you a familiar editor,
+an integrated terminal, and a file browser over the cluster filesystem. Tufts
+Research Technology documents two supported ways to run it, and that guide is the
+authoritative source; the notes below just orient you and call out what matters
+for this workflow.
+
+<Button
+  label="Tufts HPC Guide: VSCode"
+  link="https://rtguides.it.tufts.edu/hpc/application/40-vscode.html"
+  variant="primary"
+/>
+
+## Establish a VPN connection
+
+Any off-campus (non-Tufts-network) access requires the
+[Tufts VPN](https://access.tufts.edu/vpn) first.
+
+:::tip[Consider the VPN even on campus]
+Connecting over `Tufts_Secure` Wi-Fi without the VPN can cause intermittent
+drops that interrupt a remote editing session. The VPN is more stable and
+prompts for Duo less often.
+:::
+
+## Two supported ways to run VSCode on the cluster
+
+1. **OnDemand "VSCode Server" (browser, simplest).** Launch it from the
+   [Tufts OnDemand portal](https://ondemand-prod.pax.tufts.edu/) as an
+   interactive app. It runs on a compute node, so you get a full VSCode in the
+   browser without installing anything locally.
+2. **Local VSCode + `code tunnel`.** Start an interactive session
+   (`srun -p batch --pty bash`), `module load vscode-cli`, run `code tunnel`,
+   authenticate with a GitHub or Microsoft account, and connect from your local
+   VSCode (Remote-Tunnels extension) or a browser.
+
+:::caution[Python environments and the tunnel]
+Per the Tufts guide, *"VSCode does not support Python environments to be ported
+through the remote tunnel."* Activate your conda/`miniforge` environment in the
+integrated terminal rather than relying on the editor to pick it up. Either way,
+**end your OnDemand session or `code tunnel` when you're done** so the compute
+resources free up for others.
+:::
+
+## Recommended extensions for this workflow
+
+Once connected, these extensions make editing `tucca-rna-seq` configs and
+results more comfortable (install from the Extensions view, `Ctrl/Cmd+Shift+X`):
+
+- **[Snakemake Language](https://marketplace.visualstudio.com/items?itemName=Snakemake.snakemake-lang)** and **[Snakefmt](https://marketplace.visualstudio.com/items?itemName=tfehlmann.snakefmt)** — syntax + formatting for the Snakefiles.
+- **[Python](https://marketplace.visualstudio.com/items?itemName=ms-python.python)** and **[Pylance](https://marketplace.visualstudio.com/items?itemName=ms-python.vscode-pylance)** — for the workflow's Python scripts.
+- **[R](https://marketplace.visualstudio.com/items?itemName=Ikuyadeu.r)** — for the downstream DESeq2 / enrichment R code.
+- **[Rainbow CSV](https://marketplace.visualstudio.com/items?itemName=mechatroner.rainbow-csv)** — readable sample sheets and results tables.
+
+For everything else — connection troubleshooting, OnDemand app options, and the
+current `vscode-cli` module version — defer to the
+[Tufts HPC VSCode guide](https://rtguides.it.tufts.edu/hpc/application/40-vscode.html).

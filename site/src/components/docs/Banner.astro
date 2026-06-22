@@ -1,0 +1,38 @@
+---
+/**
+ * Banner — Astro shim for the former Docusaurus <Banner> (was MUI + AOS).
+ * Renders a centered logo band. `logoSrc` is a string path (served from
+ * public/img); relative paths are normalised to root-absolute.
+ */
+interface Props {
+  logoSrc: string;
+  altText: string;
+  backgroundColor?: string;
+  height?: number;
+}
+const { logoSrc, altText, backgroundColor = 'var(--tucca-surface)', height = 150 } = Astro.props;
+const src = /^(https?:)?\//.test(logoSrc) ? logoSrc : `/${logoSrc}`;
+---
+<div class="t-banner" style={`background:${backgroundColor};height:${height}px`}>
+  <img src={src} alt={altText} />
+</div>
+
+<style>
+  .t-banner {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    padding: 1.5rem;
+    border-radius: 12px;
+    margin-block: 1rem;
+  }
+  .t-banner img {
+    max-height: 100%;
+    width: auto;
+    max-width: 70%;
+  }
+  @media (max-width: 40rem) {
+    .t-banner img { max-width: 85%; }
+  }
+</style>

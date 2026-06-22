@@ -1,1 +1,0 @@
-This repo contains the source files for [tucca-cellag.github.io](https://tucca-cellag.github.io/)

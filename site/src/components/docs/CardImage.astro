@@ -1,0 +1,48 @@
+---
+/**
+ * CardImage — Astro shim for the former Docusaurus <CardImage>.
+ * `cardImageUrl` is a string path (e.g. "/img/foo.png"); images live in
+ * public/img so the path resolves verbatim (site base is '/'). Relative paths
+ * are normalised to root-absolute, matching the old useBaseUrl behaviour.
+ */
+interface Props {
+  class?: string;
+  style?: string;
+  cardImageUrl: string;
+  alt: string;
+  title?: string;
+  /**
+   * Optional CSS aspect-ratio (e.g. "1/1", "4/3"). When set, the image fills a
+   * fixed-ratio box (object-fit: cover, anchored to the top) so a row of cards
+   * with differently-proportioned images stays aligned. Omit for diagrams,
+   * which should render at their natural height.
+   */
+  ratio?: string;
+}
+const { class: className, style, cardImageUrl, alt, title, ratio } = Astro.props;
+const src = /^(https?:)?\//.test(cardImageUrl) ? cardImageUrl : `/${cardImageUrl}`;
+const ratioStyle = ratio ? `aspect-ratio:${ratio}` : '';
+const finalStyle = [ratioStyle, style].filter(Boolean).join(';') || undefined;
+---
+<img
+  class:list={['t-card__image', ratio && 't-card__image--ratio', className]}
+  style={finalStyle}
+  src={src}
+  alt={alt}
+  title={title}
+/>
+
+<style>
+  .t-card__image {
+    display: block;
+    width: 100%;
+    height: auto;
+    object-fit: cover;
+  }
+  /* Fixed-ratio variant: fill the box and anchor to the top so portraits keep
+     faces in frame rather than cropping the head. */
+  .t-card__image--ratio {
+    height: auto;
+    object-position: center top;
+  }
+</style>

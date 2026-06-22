@@ -1,0 +1,30 @@
+---
+/**
+ * Columns — Astro shim for the former Docusaurus <Columns> (Infima row).
+ * A responsive flex row; pair with <Column>.
+ */
+interface Props {
+  class?: string;
+  style?: string;
+}
+const { class: className, style } = Astro.props;
+---
+<div class:list={['t-columns', className]} style={style}>
+  <slot />
+</div>
+
+<style>
+  .t-columns {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: stretch;
+    gap: 1.25rem;
+    margin-block: 1rem;
+  }
+  /* Neutralize Starlight's adjacent-sibling top margin that leaks onto the
+     2nd+ flex child (.sl-markdown-content spacing) and would otherwise push
+     later columns down, breaking top-alignment and equal-height. */
+  .t-columns > :global(* + *) {
+    margin-top: 0;
+  }
+</style>

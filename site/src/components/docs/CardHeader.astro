@@ -1,0 +1,55 @@
+---
+/**
+ * CardHeader — Astro shim for the former Docusaurus <CardHeader>.
+ * Supports the text-modifier props the docs used: textAlign, variant (color),
+ * italic, transform, weight. Unknown props are ignored gracefully.
+ */
+interface Props {
+  class?: string;
+  style?: string;
+  textAlign?: 'left' | 'center' | 'right' | 'justify';
+  variant?: string;
+  italic?: boolean;
+  transform?: 'uppercase' | 'lowercase' | 'capitalize';
+  weight?: string;
+}
+const { class: className, style, textAlign, variant, italic, transform, weight } = Astro.props;
+---
+<div
+  class:list={[
+    't-card__header',
+    textAlign && `t-text--${textAlign}`,
+    variant && `t-text--${variant}`,
+    italic && 't-text--italic',
+    transform && `t-text--${transform}`,
+    weight && `t-text--w-${weight}`,
+    className,
+  ]}
+  style={style}
+>
+  <slot />
+</div>
+
+<style>
+  .t-card__header {
+    padding: 1rem 1.1rem 0.4rem;
+    font-family: var(--tucca-font-display);
+    font-weight: 600;
+    font-size: 1.05rem;
+    line-height: 1.25;
+    color: var(--tucca-ink);
+  }
+  .t-text--left { text-align: left; }
+  .t-text--center { text-align: center; }
+  .t-text--right { text-align: right; }
+  .t-text--justify { text-align: justify; }
+  .t-text--italic { font-style: italic; }
+  .t-text--uppercase { text-transform: uppercase; }
+  .t-text--lowercase { text-transform: lowercase; }
+  .t-text--capitalize { text-transform: capitalize; }
+  .t-text--w-bold { font-weight: 700; }
+  .t-text--w-normal { font-weight: 400; }
+  .t-text--primary { color: var(--tucca-primary); }
+  .t-text--secondary, .t-text--muted { color: var(--tucca-muted); }
+  .t-text--link { color: var(--tucca-link); }
+</style>

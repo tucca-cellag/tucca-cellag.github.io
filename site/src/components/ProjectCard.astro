@@ -1,0 +1,79 @@
+---
+/**
+ * ProjectCard — a featured-project card whose whole surface (icon + title +
+ * description) is a single link. Fills the gap between Starlight's <Card>
+ * (icon + rich body, but a non-clickable title) and <LinkCard> (clickable
+ * title, but no icon). Uses Phosphor icons via astro-icon.
+ *
+ * Props:
+ *   title    — the card heading (also the link text).
+ *   href     — destination (internal route or external URL).
+ *   icon     — Phosphor icon name, e.g. "ph:dna".
+ *   external — adds a ↗ affordance + rel="noopener" for off-site links.
+ */
+import { Icon } from 'astro-icon/components';
+
+interface Props {
+  title: string;
+  href: string;
+  icon: string;
+  external?: boolean;
+}
+const { title, href, icon, external = false } = Astro.props;
+---
+<a class="t-project-card" href={href} rel={external ? 'noopener' : undefined}>
+  <span class="t-project-card__icon" aria-hidden="true"><Icon name={icon} /></span>
+  <span class="t-project-card__title">{title}{external && <span class="t-project-card__ext" aria-hidden="true"> ↗</span>}</span>
+  <span class="t-project-card__desc"><slot /></span>
+</a>
+
+<style>
+  .t-project-card {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    height: 100%;
+    padding: 1.25rem;
+    border: 1px solid var(--tucca-border);
+    border-radius: 12px;
+    background: var(--tucca-bg);
+    color: var(--tucca-ink);
+    text-decoration: none;
+    transition: border-color 0.15s, box-shadow 0.15s, transform 0.15s;
+  }
+  .t-project-card:hover {
+    border-color: var(--tucca-link);
+    box-shadow: 0 10px 26px -16px color-mix(in oklab, var(--tucca-primary) 55%, transparent);
+    transform: translateY(-2px);
+  }
+  .t-project-card:focus-visible {
+    outline: 2px solid var(--tucca-link);
+    outline-offset: 3px;
+  }
+  .t-project-card__icon {
+    display: inline-flex;
+    font-size: 1.9rem;
+    line-height: 1;
+    color: var(--tucca-primary);
+  }
+  :root[data-theme='dark'] .t-project-card__icon { color: var(--tucca-link); }
+  .t-project-card__title {
+    font-family: var(--tucca-font-display);
+    font-weight: 600;
+    font-size: 1.15rem;
+    line-height: 1.25;
+    color: var(--tucca-primary);
+  }
+  :root[data-theme='dark'] .t-project-card__title { color: var(--tucca-link); }
+  .t-project-card:hover .t-project-card__title { text-decoration: underline; }
+  .t-project-card__ext { font-weight: 400; }
+  .t-project-card__desc {
+    font-size: 0.95rem;
+    line-height: 1.55;
+    color: var(--tucca-muted);
+  }
+  .t-project-card__desc :global(code) {
+    font-family: var(--tucca-font-mono);
+    font-size: 0.85em;
+  }
+</style>
