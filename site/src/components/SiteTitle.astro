@@ -1,0 +1,307 @@
+---
+/**
+ * SiteTitle override — Starlight's default wordmark plus a horizontal primary
+ * navbar with dropdown menus (Projects, Publications, Docs) and direct links
+ * (Our Team, CAAIL). Search / theme / social stay where Starlight puts them.
+ *
+ * Accessibility: each dropdown trigger is a <button aria-haspopup aria-expanded>
+ * controlling a panel; click/Enter/Space toggles, Escape + outside-click +
+ * link-activation close, and opening one closes the others (click-based, so it
+ * works on touch and keyboard alike).
+ *
+ * Mobile (< 50rem): the dropdown row hides. Doc pages hand off to Starlight's
+ * hamburger + left sidebar (which already lists everything). Splash pages have
+ * no hamburger, so they get a flat disclosure "Menu" of the top destinations.
+ */
+import Default from '@astrojs/starlight/components/SiteTitle.astro';
+import { Icon } from 'astro-icon/components';
+
+const { hasSidebar } = Astro.locals.starlightRoute;
+const base = import.meta.env.BASE_URL.replace(/\/$/, '');
+
+const dropdowns = [
+  {
+    label: 'Projects',
+    match: `${base}/projects/`,
+    items: [
+      { label: 'Computational blue-melanin design', href: `${base}/projects/blue-melanin/` },
+      { label: 'AST: Adherent-to-Suspension Transcriptomics', href: `${base}/projects/comparative-transcriptomics/` },
+      { label: 'tucca-rna-seq', href: `${base}/tucca-rna-seq/introduction/` },
+      { label: 'Browse all →', href: `${base}/#our-projects` },
+    ],
+  },
+  {
+    label: 'Publications',
+    match: `${base}/publications/`,
+    items: [
+      { label: 'Computational blue-melanin design', href: `${base}/publications/blue-melanin/` },
+      { label: 'AST: chicken fibroblast transcriptomics', href: `${base}/publications/ast1/` },
+      { label: 'Artificial Intelligence for Food Innovation', href: `${base}/publications/ai-for-food-innovation/` },
+      { label: 'Biomaterials in cellular agriculture', href: `${base}/publications/biomaterials-cell-ag/` },
+      { label: 'All publications →', href: `${base}/publications/` },
+    ],
+  },
+  {
+    label: 'Docs',
+    match: `${base}/tucca-rna-seq/`,
+    items: [
+      { label: 'Introduction', href: `${base}/tucca-rna-seq/introduction/` },
+      { label: 'Installation', href: `${base}/tucca-rna-seq/install-and-config/installation/` },
+      { label: 'Configuration', href: `${base}/tucca-rna-seq/install-and-config/configuration/` },
+      { label: 'Running the workflow', href: `${base}/tucca-rna-seq/running/` },
+      { label: 'Functional enrichment', href: `${base}/tucca-rna-seq/enrichment-analysis/` },
+      { label: 'R / RStudio extensions', href: `${base}/tucca-rna-seq/r-extensions/` },
+      { label: 'Tufts HPC quick start', href: `${base}/tucca-rna-seq/tufts-specific/hpc-quick-start/` },
+      { label: 'Citing the workflow', href: `${base}/tucca-rna-seq/citing-the-workflow/` },
+      { label: 'Getting help', href: `${base}/tucca-rna-seq/help/` },
+    ],
+  },
+];
+const links = [
+  { label: 'Our Team', href: `${base}/our-team/`, match: `${base}/our-team/` },
+  { label: 'CAAIL ↗', href: 'https://tucca-cellag.github.io/caail/', external: true },
+];
+// Flat list for the splash-page mobile menu.
+const mobileLinks = [
+  { label: 'Projects', href: `${base}/#our-projects` },
+  { label: 'Publications', href: `${base}/publications/` },
+  { label: 'Docs', href: `${base}/tucca-rna-seq/introduction/` },
+  { label: 'Our Team', href: `${base}/our-team/` },
+  { label: 'CAAIL ↗', href: 'https://tucca-cellag.github.io/caail/', external: true },
+];
+
+const here = Astro.url.pathname;
+const isActive = (m) => !!m && here.startsWith(m);
+---
+
+<Default {...Astro.props}><slot /></Default>
+
+<tucca-nav class="tucca-topnav" aria-label="Primary">
+  {dropdowns.map((d) => (
+    <div class="tucca-dd">
+      <button
+        type="button"
+        class="tucca-dd__btn"
+        aria-haspopup="true"
+        aria-expanded="false"
+        aria-current={isActive(d.match) ? 'page' : undefined}
+      >
+        {d.label}
+        <Icon name="ph:caret-down" class="tucca-dd__caret" aria-hidden="true" />
+      </button>
+      <ul class="tucca-dd__panel" role="menu">
+        {d.items.map((it) => (
+          <li role="none"><a role="menuitem" href={it.href}>{it.label}</a></li>
+        ))}
+      </ul>
+    </div>
+  ))}
+  {links.map((l) => (
+    <a
+      class="tucca-topnav__link"
+      href={l.href}
+      aria-current={isActive(l.match) ? 'page' : undefined}
+      {...(l.external ? { rel: 'noopener' } : {})}
+    >{l.label}</a>
+  ))}
+</tucca-nav>
+
+{
+  !hasSidebar && (
+    <tucca-mobilenav class="tucca-mobilenav">
+      <button
+        type="button"
+        class="tucca-mobilenav__toggle"
+        aria-expanded="false"
+        aria-controls="tucca-mobilenav-panel"
+        aria-label="Open navigation menu"
+      >
+        <Icon name="ph:list-bold" class="tucca-mobilenav__icon" aria-hidden="true" />
+        <span>Menu</span>
+      </button>
+      <nav id="tucca-mobilenav-panel" class="tucca-mobilenav__panel" aria-label="Primary">
+        {mobileLinks.map((l) => (
+          <a href={l.href} {...(l.external ? { rel: 'noopener' } : {})}>{l.label}</a>
+        ))}
+      </nav>
+    </tucca-mobilenav>
+  )
+}
+
+<style>
+  .tucca-topnav {
+    display: flex;
+    align-items: center;
+    gap: 0.1rem;
+    margin-inline-start: 1rem;
+  }
+  .tucca-dd { position: relative; }
+  .tucca-dd__btn,
+  .tucca-topnav__link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.2rem;
+    font-family: inherit;
+    font-size: 0.85rem;
+    font-weight: 500;
+    color: var(--tucca-muted);
+    background: none;
+    border: 0;
+    padding: 0.35rem 0.6rem;
+    border-radius: 7px;
+    white-space: nowrap;
+    text-decoration: none;
+    cursor: pointer;
+    transition: color 0.15s, background 0.15s;
+  }
+  .tucca-dd__btn:hover,
+  .tucca-topnav__link:hover { color: var(--tucca-ink); background: var(--tucca-surface); }
+  .tucca-dd__btn[aria-current='page'],
+  .tucca-topnav__link[aria-current='page'] { color: var(--tucca-primary); font-weight: 600; }
+  .tucca-dd__caret { width: 0.8rem; height: 0.8rem; transition: transform 0.15s; }
+  .tucca-dd[data-open] .tucca-dd__caret { transform: rotate(180deg); }
+
+  .tucca-dd__panel {
+    display: none;
+    position: absolute;
+    inset-block-start: calc(100% + 0.3rem);
+    inset-inline-start: 0;
+    z-index: var(--sl-z-index-navbar, 20);
+    min-width: 15rem;
+    margin: 0;
+    padding: 0.35rem;
+    list-style: none;
+    background: var(--tucca-bg);
+    border: 1px solid var(--tucca-border);
+    border-radius: 10px;
+    box-shadow: 0 14px 34px -18px color-mix(in oklab, var(--tucca-primary) 55%, transparent);
+  }
+  .tucca-dd[data-open] .tucca-dd__panel { display: block; }
+  .tucca-dd__panel a {
+    display: block;
+    padding: 0.5rem 0.6rem;
+    font-size: 0.85rem;
+    font-weight: 500;
+    color: var(--tucca-ink);
+    text-decoration: none;
+    border-radius: 6px;
+    white-space: nowrap;
+  }
+  .tucca-dd__panel a:hover { color: var(--tucca-primary); background: var(--tucca-surface); }
+
+  /* Below the sidebar breakpoint, the hamburger + drawer (docs) or the mobile
+     menu (splash) take over. */
+  @media (max-width: 50rem) { .tucca-topnav { display: none; } }
+
+  /* ── Splash-page mobile menu ───────────────────────────────────────────── */
+  .tucca-mobilenav { display: none; }
+  @media (max-width: 50rem) { .tucca-mobilenav { display: inline-flex; align-items: center; } }
+  .tucca-mobilenav__toggle {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.3rem;
+    margin-inline-start: 0.6rem;
+    padding: 0.3rem 0.55rem;
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: var(--tucca-ink);
+    background: var(--tucca-surface);
+    border: 1px solid var(--tucca-border);
+    border-radius: 7px;
+    cursor: pointer;
+    white-space: nowrap;
+  }
+  .tucca-mobilenav__toggle:hover { border-color: var(--tucca-link); color: var(--tucca-primary); }
+  .tucca-mobilenav__icon { width: 1rem; height: 1rem; }
+  .tucca-mobilenav__panel {
+    display: none;
+    position: fixed;
+    inset-block-start: var(--sl-nav-height);
+    inset-inline-start: var(--sl-nav-pad-x);
+    z-index: var(--sl-z-index-menu, 11);
+    width: min(18rem, calc(100vw - 2 * var(--sl-nav-pad-x)));
+    margin-block-start: 0.35rem;
+    padding: 0.4rem;
+    background: var(--tucca-bg);
+    border: 1px solid var(--tucca-border);
+    border-radius: 10px;
+    box-shadow: 0 12px 30px -16px color-mix(in oklab, var(--tucca-primary) 55%, transparent);
+  }
+  .tucca-mobilenav[data-open] .tucca-mobilenav__panel { display: block; }
+  .tucca-mobilenav__panel a {
+    display: block;
+    padding: 0.55rem 0.6rem;
+    font-size: 0.9rem;
+    font-weight: 500;
+    color: var(--tucca-ink);
+    text-decoration: none;
+    border-radius: 7px;
+  }
+  .tucca-mobilenav__panel a:hover { color: var(--tucca-primary); background: var(--tucca-surface); }
+</style>
+
+<script>
+  // Desktop dropdown menus: click to toggle, one open at a time, close on
+  // Escape / outside-click / link activation.
+  class TuccaNav extends HTMLElement {
+    dds: HTMLElement[] = [];
+    connectedCallback() {
+      this.dds = [...this.querySelectorAll<HTMLElement>('.tucca-dd')];
+      this.dds.forEach((dd) => {
+        const btn = dd.querySelector<HTMLButtonElement>('.tucca-dd__btn')!;
+        btn.addEventListener('click', (e) => {
+          e.stopPropagation();
+          const open = dd.hasAttribute('data-open');
+          this.closeAll();
+          if (!open) this.setOpen(dd, true);
+        });
+      });
+      this.addEventListener('keyup', (e) => {
+        if ((e as KeyboardEvent).key === 'Escape') {
+          const open = this.querySelector<HTMLElement>('.tucca-dd[data-open]');
+          this.closeAll();
+          open?.querySelector<HTMLButtonElement>('.tucca-dd__btn')?.focus();
+        }
+      });
+      document.addEventListener('pointerdown', (e) => {
+        if (!this.contains(e.target as Node)) this.closeAll();
+      });
+      this.querySelectorAll('.tucca-dd__panel a').forEach((a) =>
+        a.addEventListener('click', () => this.closeAll())
+      );
+    }
+    setOpen(dd: HTMLElement, open: boolean) {
+      dd.toggleAttribute('data-open', open);
+      dd.querySelector('.tucca-dd__btn')?.setAttribute('aria-expanded', String(open));
+    }
+    closeAll() {
+      this.dds.forEach((dd) => this.setOpen(dd, false));
+    }
+  }
+  customElements.define('tucca-nav', TuccaNav);
+
+  // Splash-page mobile menu disclosure.
+  class TuccaMobileNav extends HTMLElement {
+    btn = this.querySelector<HTMLButtonElement>('.tucca-mobilenav__toggle')!;
+    connectedCallback() {
+      this.btn.addEventListener('click', () => this.setOpen(!this.hasAttribute('data-open')));
+      this.addEventListener('keyup', (e) => {
+        if ((e as KeyboardEvent).key === 'Escape') {
+          this.setOpen(false);
+          this.btn.focus();
+        }
+      });
+      this.querySelector('.tucca-mobilenav__panel')?.addEventListener('click', (e) => {
+        if ((e.target as HTMLElement).closest('a')) this.setOpen(false);
+      });
+      document.addEventListener('pointerdown', (e) => {
+        if (this.hasAttribute('data-open') && !this.contains(e.target as Node)) this.setOpen(false);
+      });
+    }
+    setOpen(open: boolean) {
+      this.toggleAttribute('data-open', open);
+      this.btn.setAttribute('aria-expanded', String(open));
+    }
+  }
+  customElements.define('tucca-mobilenav', TuccaMobileNav);
+</script>

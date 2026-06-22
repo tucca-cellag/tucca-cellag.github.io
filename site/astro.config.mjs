@@ -117,13 +117,7 @@ export default defineConfig({
             { label: 'Biomaterials in cellular agriculture', slug: 'publications/biomaterials-cell-ag' },
           ],
         },
-        {
-          label: 'Helpful Resources',
-          items: [
-            { label: 'What is Cellular Agriculture?', slug: 'helpful-resources/learn-about-cell-ag' },
-            { label: 'Reproducibility', slug: 'helpful-resources/reproducibility' },
-          ],
-        },
+        { label: 'Reproducibility', slug: 'helpful-resources/reproducibility' },
         { label: 'Our Team', slug: 'our-team' },
       ],
       customCss: [
@@ -136,6 +130,8 @@ export default defineConfig({
         Footer: './src/components/Footer.astro',
         // Suppress the Previous/Next pagination links site-wide.
         Pagination: './src/components/EmptyPagination.astro',
+        // Wordmark + horizontal dropdown navbar (Projects/Publications/Docs).
+        SiteTitle: './src/components/SiteTitle.astro',
       },
     }),
     preact(),

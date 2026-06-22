@@ -24,6 +24,17 @@ import TuccaLockup from '@components/TuccaLockup.astro';
   </div>
 </div>
 
+<div class="tucca-newcomer">
+  <p>
+    <strong>New to cellular agriculture?</strong> It's the production of agricultural
+    products from cultured cells rather than whole animals — spanning <em>cellular</em>
+    products like cultivated meat and <em>acellular</em> products (e.g. dairy proteins)
+    made by cells. Get oriented with the
+    <a href="https://tucca-cellag.github.io/caail/primers/cell-ag/">CAAIL primer</a> or
+    <a href="https://cellularagriculture.tufts.edu/about">TUCCA's About page</a>.
+  </p>
+</div>
+
 ## Our projects
 
 <CardGrid>
@@ -76,7 +87,6 @@ import TuccaLockup from '@components/TuccaLockup.astro';
 ## Start here
 
 <CardGrid>
-  <LinkCard title="What is cellular agriculture?" href="/helpful-resources/learn-about-cell-ag/" />
   <LinkCard title="Reproducibility in scientific computing" href="/helpful-resources/reproducibility/" />
   <LinkCard title="Our team" href="/our-team/" />
   <LinkCard title="TUCCA on the web ↗" href="https://cellularagriculture.tufts.edu/" />
@@ -127,5 +137,20 @@ import TuccaLockup from '@components/TuccaLockup.astro';
   .tucca-btn--ghost { background: transparent; color: var(--tucca-primary); border-color: var(--tucca-border); }
   .tucca-btn--ghost:hover { border-color: var(--tucca-link); }
   :root[data-theme='dark'] .tucca-btn--ghost { color: var(--tucca-link); }
+  .tucca-newcomer {
+    max-width: 46rem;
+    margin: -1rem auto 2.5rem;
+    padding: 0.85rem 1.1rem;
+    border: 1px solid var(--tucca-border);
+    border-radius: 10px;
+    background: var(--tucca-surface);
+    font-size: 0.95rem;
+    line-height: 1.55;
+    color: var(--tucca-muted);
+    text-align: center;
+  }
+  .tucca-newcomer p { margin: 0; }
+  .tucca-newcomer a { color: var(--tucca-link); font-weight: 600; }
+  .tucca-newcomer strong { color: var(--tucca-ink); }
   `}
 </style>
