@@ -91,6 +91,7 @@ export default defineConfig({
                 },
                 { label: 'Running the Workflow', slug: 'tucca-rna-seq/running' },
                 { label: 'Functional Enrichment Analysis', slug: 'tucca-rna-seq/enrichment-analysis' },
+                { label: 'R / RStudio Extensions', slug: 'tucca-rna-seq/r-extensions' },
                 {
                   label: 'For Tufts Users',
                   collapsed: true,
@@ -121,7 +122,6 @@ export default defineConfig({
           items: [
             { label: 'What is Cellular Agriculture?', slug: 'helpful-resources/learn-about-cell-ag' },
             { label: 'Reproducibility', slug: 'helpful-resources/reproducibility' },
-            { label: 'R / RStudio Extensions', slug: 'helpful-resources/r-extensions' },
           ],
         },
         { label: 'Our Team', slug: 'our-team' },
@@ -134,6 +134,8 @@ export default defineConfig({
       components: {
         Hero: './src/components/StarlightHeroOverride.astro',
         Footer: './src/components/Footer.astro',
+        // Suppress the Previous/Next pagination links site-wide.
+        Pagination: './src/components/EmptyPagination.astro',
       },
     }),
     preact(),
