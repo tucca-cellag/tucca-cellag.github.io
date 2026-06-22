@@ -51,8 +51,12 @@ You need a **Tufts Cluster Account** to access the HPC cluster:
 
 **SSH Access (Recommended):**
 ```bash
-ssh your_utln@login.tufts.edu
+ssh your_utln@login-prod.pax.tufts.edu
 ```
+
+Off-campus (any non-Tufts network) requires the [Tufts VPN](https://access.tufts.edu/vpn)
+first. For the authoritative connection details, see the
+[Tufts HPC command-line access guide](https://rtguides.it.tufts.edu/hpc/access/20-cli.html).
 
 **VSCode Remote Development (Highly Recommended):**
 <Button
@@ -61,12 +65,19 @@ ssh your_utln@login.tufts.edu
   variant="primary"
 />
 
-### 2. Get Off Login Node
+### 2. Get Off the Login Node
+
+Never run compute on a login node. Drop onto a compute node with an
+interactive session on the default `batch` partition first:
 
 ```bash
-# Request interactive compute node
-srun -p interactive --pty bash
+# Request an interactive compute node (batch partition, 2 h, 1 core)
+srun -p batch --time=02:00:00 --pty bash
 ```
+
+The cluster's partitions are `batch` (CPU, default), `gpu`, and `preempt`,
+each capped at 2 days — see the
+[Tufts partitions guide](https://rtguides.it.tufts.edu/hpc/compute/partition.html).
 
 ### 3. Load Required Modules
 
@@ -79,6 +90,13 @@ module load snakemake/8.27.1
 module load singularity/3.8.4
 module load miniforge/24.11.2-py312
 ```
+
+:::note[Module versions drift]
+The versions above are examples. Run `module av snakemake` (and likewise for
+`singularity` / `miniforge`) to confirm what's currently installed, then pin the
+versions your run actually uses. See the
+[Tufts modules guide](https://rtguides.it.tufts.edu/hpc/access/50-modules.html).
+:::
 
 ### 4. Navigate to Lab Workspace
 
@@ -129,7 +147,7 @@ For detailed instructions, please refer to the main
 
 ### Support
 
-- **TTS Research Technology**: [rt@tufts.edu](mailto:rt@tufts.edu)
+- **TTS Research Technology**: [tts-research@tufts.edu](mailto:tts-research@tufts.edu)
 - **Workflow Team**: [benjamin.bromberg@tufts.edu](mailto:benjamin.bromberg@tufts.edu)
 - **GitHub Issues**: [Report problems](https://github.com/tucca-cellag/tucca-rna-seq/issues)
 - **HPC User Guide**: [https://rtguides.it.tufts.edu/hpc/](https://rtguides.it.tufts.edu/hpc/)

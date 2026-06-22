@@ -30,10 +30,13 @@ workflow on the Tufts HPC cluster efficiently and effectively.
 
 ### Storage Quotas
 
-- **Home directory** (`/cluster/home/your_utln`): 10GB limit
-- **Lab workspace** (`/cluster/tufts/your_lab/your_utln`): 1TB+ available
-- **Monitor usage**: `quota` command
+- **Home directory** (`/cluster/home/your_utln`): 30 GB, fixed — too small to run from
+- **Lab workspace** (`/cluster/tufts/your_lab/your_utln`): from 50 GB up; request more as needed (usage over 10 TB becomes chargeable starting July 1, 2026)
+- **Monitor usage**: `module load hpctools && hpctools` (project-storage and directory-usage options)
 - **Archive old projects** to free up space
+
+Quotas and policies are set by Tufts, not this workflow — always confirm the
+current numbers in the storage guide below before relying on them.
 
 <Button
   label="TTS Research Technology Lab Research Project Storage Guide"
@@ -135,19 +138,25 @@ tar -czf project_archive_$(date +%Y%m%d).tar.gz project_directory/
 
 **Basic interactive session:**
 ```bash
-srun -p interactive --pty bash
+srun -p batch --pty bash
 ```
 
 **Customized interactive session:**
 ```bash
-srun -p interactive -n 4 --mem=8G --time=2:00:00 --pty bash
+srun -p batch -n 4 --mem=8G --time=2:00:00 --pty bash
 ```
 
 **Parameters:**
 - `-n`: Number of CPU cores
 - `--mem`: Memory allocation
-- `--time`: Maximum runtime
-- `-p`: Partition (interactive, batch, gpu)
+- `--time`: Maximum runtime (the `batch`, `gpu`, and `preempt` partitions each cap at 2 days)
+- `-p`: Partition — `batch` (CPU, default), `gpu`, or `preempt`
+
+:::note[The `interactive` partition was retired]
+Tufts retired the `interactive`, `mpi`, and `largemem` partitions — request
+interactive sessions on `batch` (or `gpu` for GPU work) instead. See the
+[Tufts partitions guide](https://rtguides.it.tufts.edu/hpc/compute/partition.html).
+:::
 
 ## Workflow Execution Strategy
 
@@ -179,11 +188,11 @@ supplementary, Tufts-specific best practices.
 
 2.  **Request an interactive node.**
     From within your `screen` session, request an interactive node with
-    enough time for your workflow to complete. A 1 to 3-day allocation is a
-    safe starting point.
+    enough time for your workflow to complete. The `batch` partition caps at
+    2 days, so request up to that limit.
     ```bash
-    # Request a 3-day interactive session
-    srun -p interactive --time=3-00:00:00 --pty bash
+    # Request a 2-day interactive session (the partition maximum)
+    srun -p batch --time=2-00:00:00 --pty bash
     ```
 
 3.  **Prepare your environment and run the workflow.**
@@ -226,7 +235,7 @@ in real-time easily.
 cat > submit_workflow.sh << 'EOF'
 #!/bin/bash
 #SBATCH -p batch
-#SBATCH --time=7-00:00:00
+#SBATCH --time=2-00:00:00
 #SBATCH --mem=32G
 #SBATCH --cpus-per-task=12
 #SBATCH --mail-type=ALL
@@ -274,16 +283,16 @@ Tufts-specific example.
 # profiles/slurm/config.v8+.yaml
 default-resources:
   slurm_partition: "batch"
-  slurm_account: "default"
-  runtime: 4320        # 3 days
+  # slurm_account: omit unless your lab uses Slurm accounts
+  runtime: 1440        # 24 h (batch caps at 2 days = 2880 min)
   mem_mb: 32000        # 32GB RAM
   cpus_per_task: 12    # 12 CPU cores
 
-# Override for specific rules
+# Override for specific rules (keep runtime <= 2880; the partition cap is 2 days)
 set-resources:
   star_index:
     mem_mb: 64000      # 64GB RAM for genome indexing
-    runtime: 8640      # 6 days
+    runtime: 2880      # 2 days (partition maximum)
   salmon_quant:
     cpus_per_task: 8   # 8 cores for quantification
 ```
@@ -301,54 +310,16 @@ snakemake all --use-conda --cores all
 
 ## Monitoring and Debugging
 
-### Job Monitoring
+Job and resource monitoring on Tufts HPC is standard Slurm plus a Tufts helper —
+this workflow doesn't change any of it, so use the cluster's own tooling:
 
-**Check job status:**
-```bash
-# Your jobs
-squeue -u $USER
+- **Your queued/running jobs:** `squeue -u $USER`
+- **Why a finished job over/under-ran its resources:** `seff <job_id>`
+- **Free CPU/GPU/memory, project quota, directory usage:** `module load hpctools && hpctools` (its menu is the canonical Tufts answer for "what's free / how much have I used")
+- **Workflow progress:** tail the Snakemake log under `.snakemake/log/`, and re-run with `--show-failed-logs` to surface a failed rule's job log
 
-# All jobs in partition
-squeue -p batch
-
-# Detailed job information
-squeue -j <job_id> -o "%.18i %.9P %.20j %.8u %.2t %.10M %.6D %R"
-```
-
-**Monitor workflow progress:**
-```bash
-# View Snakemake logs
-tail -f .snakemake/log/$(date +%Y-%m-%d)/snakemake.log
-
-# Check specific job logs
-snakemake --show-failed-logs
-```
-
-### Resource Monitoring
-
-**Check cluster status:**
-```bash
-# Cluster load
-sinfo
-
-# Partition usage
-sinfo -p batch
-
-# Node information
-sinfo -N -l
-```
-
-**Monitor your usage:**
-```bash
-# Check quotas
-quota
-
-# Check disk usage
-du -sh /cluster/tufts/your_lab/your_utln/*
-
-# Check recent jobs
-sacct -u $USER --starttime=$(date -d '7 days ago' +%Y-%m-%d)
-```
+For the full Slurm monitoring reference (`squeue`, `sacct`, `seff`, utilization),
+see the [Tufts SLURM monitoring guide](https://rtguides.it.tufts.edu/hpc/slurm/monitor.html).
 
 ---
 
@@ -362,12 +333,12 @@ sacct -u $USER --starttime=$(date -d '7 days ago' +%Y-%m-%d)
 | **Module not found** | Module not available | Check `module avail` |
 | **Permission denied** | Wrong directory | Use lab workspace, not home |
 | **Quota exceeded** | Storage limit reached | Archive old projects |
-| **Job killed** | Time limit exceeded | Increase `--time` parameter |
+| **Job killed** | Time limit exceeded | Increase `--time` (max 2 days per partition); split long rules or use `preempt` |
 
 ### Getting Help
 
 **TTS Research Technology:**
-- **Email**: [rt@tufts.edu](mailto:rt@tufts.edu)
+- **Email**: [tts-research@tufts.edu](mailto:tts-research@tufts.edu)
 - **HPC Guides**: [https://rtguides.it.tufts.edu/hpc/](https://rtguides.it.tufts.edu/hpc/)
 
 **Workflow-specific issues:**
