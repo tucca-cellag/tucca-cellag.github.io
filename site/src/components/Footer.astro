@@ -13,8 +13,13 @@ import TuccaLockup from './TuccaLockup.astro';
   <span>
     A project hub of the <a href="https://cellularagriculture.tufts.edu/">Tufts University Center for Cellular Agriculture</a>
     · Content licensed MIT · <a href="https://github.com/tucca-cellag">GitHub organization</a>
+    · <a href="https://github.com/tucca-cellag" rel="noopener">Get help</a>
   </span>
 </div>
+<p class="tucca-foot-disclaimer">
+  Linked external resources are independent of TUCCA and Tufts University and
+  remain under their own licenses.
+</p>
 <Default><slot /></Default>
 
 <style>
@@ -32,4 +37,10 @@ import TuccaLockup from './TuccaLockup.astro';
   }
   .tucca-foot-brand { display: inline-flex; align-items: center; }
   .tucca-footer a { color: var(--tucca-link); }
+  .tucca-foot-disclaimer {
+    margin: 0.5rem 0 0;
+    font-size: 0.68rem;
+    line-height: 1.4;
+    color: var(--tucca-muted);
+  }
 </style>

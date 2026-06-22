@@ -17,6 +17,9 @@ export default defineConfig({
       description:
         'Open computational research from the Tufts University Center for Cellular Agriculture — AI, computational biology, and open-source tools for cultivated meat and cellular agriculture.',
       favicon: '/favicon.svg',
+      // Surface a git build-date "Last updated" stamp on doc pages (freshness
+      // signal, mirroring the Tufts RT guides footer).
+      lastUpdated: true,
       head: [
         // Social card. Branded 1200×630 card for every page.
         { tag: 'meta', attrs: { property: 'og:image', content: 'https://tucca-cellag.github.io/og.png' } },
