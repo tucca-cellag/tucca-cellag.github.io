@@ -1,0 +1,227 @@
+---
+/**
+ * TeamCard — a team-member profile card for the Our Team page.
+ *
+ * Wraps the shared Card primitives. The on-card bio is CSS-clamped to a fixed
+ * number of lines so every card is the same height regardless of bio length
+ * (fixes the uneven-grid problem); a "Read more" button opens a single shared
+ * native <dialog> modal with the full bio + links. The modal + its wiring live
+ * in the module <script> below — Astro bundles that script once even though this
+ * component repeats, and a single <dialog> is created on <body> at runtime, so
+ * there's no per-card modal markup and no external library.
+ */
+import Card from "@components/docs/Card.astro";
+import CardImage from "@components/docs/CardImage.astro";
+import CardHeader from "@components/docs/CardHeader.astro";
+import CardBody from "@components/docs/CardBody.astro";
+import CardFooter from "@components/docs/CardFooter.astro";
+import Column from "@components/docs/Column.astro";
+
+interface Props {
+  name: string;
+  role?: string;
+  image: string;
+  links?: { label: string; href: string }[];
+}
+const { name, role, image, links = [] } = Astro.props;
+---
+
+<Column>
+  <Card shadow="tl" class="t-team-card">
+    <CardHeader><h2>{name}</h2></CardHeader>
+    <CardImage cardImageUrl={image} alt={name} title={name} ratio="1/1" />
+    <CardBody>
+      {role && <p class="t-team-role">{role}</p>}
+      <div class="t-team-bio" data-team-bio><slot /></div>
+      <button type="button" class="t-team-readmore" data-team-readmore>Read more</button>
+    </CardBody>
+    {links.length > 0 && (
+      <CardFooter>
+        <p class="t-team-links">
+          {links.map((l) => <a href={l.href}>{l.label}</a>)}
+        </p>
+      </CardFooter>
+    )}
+  </Card>
+</Column>
+
+<style>
+  .t-team-role {
+    font-weight: 700;
+    font-size: 0.9rem;
+    color: var(--tucca-primary);
+    margin: 0 0 0.7rem;
+  }
+  /* Clamp the on-card bio to a fixed block so every card is the same height. */
+  .t-team-bio {
+    display: -webkit-box;
+    -webkit-line-clamp: 4;
+    line-clamp: 4;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    min-height: calc(4 * 1.6em);
+  }
+  .t-team-bio :global(p) { margin: 0; }
+  .t-team-readmore {
+    margin-top: 0.6rem;
+    padding: 0;
+    background: none;
+    border: none;
+    font: inherit;
+    font-weight: 600;
+    font-size: 0.9rem;
+    color: var(--tucca-link);
+    cursor: pointer;
+  }
+  .t-team-readmore:hover { text-decoration: underline; }
+  .t-team-links { display: flex; flex-wrap: wrap; gap: 0.9rem; margin: 0; }
+  .t-team-links a { font-weight: 600; font-size: 0.9rem; }
+</style>
+
+{/* Shared modal styling (the dialog is created on <body>, outside scoped CSS). */}
+<style is:global>
+  .t-team-modal {
+    /* Center in the viewport (top layer) explicitly, across browsers. */
+    position: fixed;
+    inset: 0;
+    margin: auto;
+    width: min(540px, calc(100% - 2rem));
+    max-height: calc(100dvh - 4rem);
+    padding: 0;
+    border: 1px solid var(--tucca-border);
+    border-radius: 14px;
+    background: var(--tucca-bg);
+    color: var(--tucca-ink);
+    box-shadow: 0 24px 60px -20px color-mix(in oklab, var(--tucca-primary) 55%, transparent);
+    overflow: auto;
+  }
+  .t-team-modal::backdrop {
+    background: color-mix(in oklab, var(--tucca-ink) 55%, transparent);
+    backdrop-filter: blur(2px);
+  }
+  .t-team-modal__inner { position: relative; padding: 1.5rem; }
+  .t-team-modal__close {
+    position: absolute;
+    top: 0.75rem;
+    right: 0.75rem;
+    width: 2rem;
+    height: 2rem;
+    display: grid;
+    place-items: center;
+    border: none;
+    border-radius: 999px;
+    background: var(--tucca-surface);
+    color: var(--tucca-ink);
+    font-size: 1.1rem;
+    line-height: 1;
+    cursor: pointer;
+  }
+  .t-team-modal__close:hover { background: var(--tucca-border); }
+  .t-team-modal__head { display: flex; gap: 1rem; align-items: center; margin: 0 2rem 1rem 0; }
+  .t-team-modal__img {
+    width: 84px;
+    height: 84px;
+    flex: none;
+    border-radius: 12px;
+    object-fit: cover;
+    object-position: center top;
+  }
+  .t-team-modal__name {
+    margin: 0;
+    font-family: var(--tucca-font-display);
+    font-size: 1.3rem;
+    line-height: 1.2;
+    color: var(--tucca-ink);
+  }
+  .t-team-modal__role { margin: 0.25rem 0 0; font-weight: 700; font-size: 0.9rem; color: var(--tucca-primary); }
+  .t-team-modal__bio { font-size: 0.95rem; line-height: 1.6; color: var(--tucca-ink); }
+  .t-team-modal__bio p { margin: 0 0 0.75rem; }
+  .t-team-modal__bio p:last-child { margin-bottom: 0; }
+  .t-team-modal__links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.9rem;
+    margin-top: 1.1rem;
+    padding-top: 0.9rem;
+    border-top: 1px solid var(--tucca-border);
+  }
+  .t-team-modal__links a { font-weight: 600; font-size: 0.9rem; }
+  @media (prefers-reduced-motion: no-preference) {
+    .t-team-modal[open] { animation: t-team-modal-in 0.16s ease-out; }
+    @keyframes t-team-modal-in { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
+  }
+</style>
+
+<script>
+  // Wire every TeamCard "Read more" button to a single shared <dialog>.
+  // Module script: Astro bundles it once even though <TeamCard> repeats.
+  function initTeamModal() {
+    const triggers = Array.from(
+      document.querySelectorAll<HTMLButtonElement>("[data-team-readmore]")
+    );
+    if (triggers.length === 0) return;
+
+    const dialog = document.createElement("dialog");
+    dialog.className = "t-team-modal";
+    dialog.innerHTML = `
+      <div class="t-team-modal__inner">
+        <button type="button" class="t-team-modal__close" aria-label="Close" data-close>&#10005;</button>
+        <div class="t-team-modal__head">
+          <img class="t-team-modal__img" alt="" />
+          <div>
+            <h2 class="t-team-modal__name"></h2>
+            <p class="t-team-modal__role"></p>
+          </div>
+        </div>
+        <div class="t-team-modal__bio"></div>
+        <div class="t-team-modal__links"></div>
+      </div>`;
+    document.body.appendChild(dialog);
+
+    const imgEl = dialog.querySelector(".t-team-modal__img") as HTMLImageElement;
+    const nameEl = dialog.querySelector(".t-team-modal__name") as HTMLElement;
+    const roleEl = dialog.querySelector(".t-team-modal__role") as HTMLElement;
+    const bioEl = dialog.querySelector(".t-team-modal__bio") as HTMLElement;
+    const linksEl = dialog.querySelector(".t-team-modal__links") as HTMLElement;
+
+    triggers.forEach((btn) => {
+      btn.addEventListener("click", () => {
+        const card = btn.closest(".t-team-card");
+        if (!card) return;
+        const img = card.querySelector("img");
+        const name = card.querySelector(".t-card__header h2")?.textContent?.trim() ?? "";
+        const role = card.querySelector(".t-team-role")?.textContent?.trim() ?? "";
+        const bio = card.querySelector("[data-team-bio]")?.innerHTML ?? "";
+        const linksHtml = card.querySelector(".t-team-links")?.innerHTML ?? "";
+
+        if (img) {
+          imgEl.src = img.getAttribute("src") ?? "";
+          imgEl.alt = name;
+          imgEl.hidden = false;
+        } else {
+          imgEl.hidden = true;
+        }
+        nameEl.textContent = name;
+        roleEl.textContent = role;
+        roleEl.hidden = role === "";
+        bioEl.innerHTML = bio;
+        linksEl.innerHTML = linksHtml;
+        linksEl.hidden = linksHtml.trim() === "";
+        dialog.setAttribute("aria-label", name || "Team member");
+        dialog.showModal();
+      });
+    });
+
+    // Close: ✕ button, backdrop click (target is the dialog itself), Esc (native).
+    dialog.addEventListener("click", (e) => {
+      const t = e.target as HTMLElement;
+      if (t === dialog || t.closest("[data-close]")) dialog.close();
+    });
+  }
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", initTeamModal);
+  } else {
+    initTeamModal();
+  }
+</script>
