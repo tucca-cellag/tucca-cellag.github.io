@@ -1,12 +1,12 @@
 ---
 /**
- * TeamCard — a team-member profile card for the Our Team page.
+ * TeamCard: a team-member profile card for the Our Team page.
  *
  * Wraps the shared Card primitives. The on-card bio is CSS-clamped to a fixed
  * number of lines so every card is the same height regardless of bio length
  * (fixes the uneven-grid problem); a "Read more" button opens a single shared
  * native <dialog> modal with the full bio + links. The modal + its wiring live
- * in the module <script> below — Astro bundles that script once even though this
+ * in the module <script> below: Astro bundles that script once even though this
  * component repeats, and a single <dialog> is created on <body> at runtime, so
  * there's no per-card modal markup and no external library.
  */
