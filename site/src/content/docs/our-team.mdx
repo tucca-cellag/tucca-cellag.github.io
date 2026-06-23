@@ -1,74 +1,86 @@
 ---
 title: Our Team
 description: The people behind TUCCA's computational and cellular agriculture research at Tufts University.
+template: splash
 ---
 
-import Card from "@components/docs/Card.astro";
-import CardImage from "@components/docs/CardImage.astro";
-import CardHeader from "@components/docs/CardHeader.astro";
-import CardBody from "@components/docs/CardBody.astro";
-import CardFooter from "@components/docs/CardFooter.astro";
-import Columns from "@components/docs/Columns.astro";
-import Column from "@components/docs/Column.astro";
+import TeamCard from "@components/docs/TeamCard.astro";
 
-<Columns>
-  <Column>
-    <Card shadow="tl">
-      <CardHeader>
-        <h2>David Kaplan</h2>
-      </CardHeader>
-      <CardImage cardImageUrl="/img/dkaplan.png" alt="David Kaplan" title="David Kaplan" ratio="1/1" />
-      <CardBody>
-        David Kaplan is the Stern Family Endowed Professor of Engineering at Tufts
-        University, a Distinguished University Professor, and Professor and Chair of
-        the Department of Biomedical Engineering. His research focus is on biopolymer
-        engineering, tissue engineering, regenerative medicine and cellular
-        agriculture. He has published over 1,000 peer-reviewed papers, he is
-        editor-in-chief of ACS Biomaterials Science and Engineering and he serves on
-        many editorial boards and programs for journals and universities. He has
-        received awards for his research and teaching and is an elected Fellow of the
-        American Institute of Medical and Biological Engineering and the National
-        Academy of Engineering.
-      </CardBody>
-      <CardFooter>
-        <p class="t-team-links">
-          <a href="https://sites.tufts.edu/kaplanlab/about-david/">About</a>
-          <a href="mailto:david.kaplan@tufts.edu">Email</a>
-          <a href="https://orcid.org/0000-0002-9245-7774">ORCID</a>
-        </p>
-      </CardFooter>
-    </Card>
-  </Column>
-  <Column>
-    <Card shadow="tl">
-      <CardHeader>
-        <h2>Benji Bromberg</h2>
-      </CardHeader>
-      <CardImage cardImageUrl="/img/bbromberg.png" alt="Benji Bromberg" title="Benji Bromberg" ratio="1/1" />
-      <CardBody>
-        Benji Bromberg is a Research Technician at TUCCA, where he has been working
-        since 2022. Alongside his TUCCA duties, he is a part-time Master's student in
-        Computer Science at Tufts University. Benji's research at TUCCA is concentrated
-        on the development of new cell lines and the bioinformatics analysis of cell-ag
-        cell lines. He is skilled in bioinformatics, RNA sequencing, stem cell research,
-        and cell line development. Benji earned his B.A. in Biochemistry and Molecular
-        Biology from Lewis &amp; Clark College in 2022. Originally from Brookline, MA, he
-        enjoys a range of sports, including soccer, climbing, and tennis. He also likes
-        hiking, playing board games, and reading fantasy and sci-fi.
-      </CardBody>
-      <CardFooter>
-        <p class="t-team-links">
-          <a href="mailto:benjamin.bromberg@tufts.edu">Email</a>
-          <a href="https://orcid.org/0009-0001-3166-6329">ORCID</a>
-          <a href="https://github.com/benjibromberg">GitHub</a>
-          <a href="https://www.linkedin.com/in/benjamin-bromberg-a636891b1/">LinkedIn</a>
-        </p>
-      </CardFooter>
-    </Card>
-  </Column>
-</Columns>
+<p class="t-team-lede">The people behind TUCCA's computational and cellular agriculture research at Tufts University.</p>
+
+<div class="t-team-grid">
+  <TeamCard
+    name="David Kaplan"
+    role="Director, TUCCA · Stern Family Endowed Professor of Engineering, Tufts University"
+    image="/img/dkaplan.png"
+    links={[
+      { label: "About", href: "https://sites.tufts.edu/kaplanlab/about-david/" },
+      { label: "Email", href: "mailto:david.kaplan@tufts.edu" },
+      { label: "ORCID", href: "https://orcid.org/0000-0002-9245-7774" },
+    ]}
+  >
+    David Kaplan is the Stern Family Endowed Professor of Engineering at Tufts University, a Distinguished University Professor, a Professor in the Department of Biomedical Engineering, and the Director of the Tufts University Center for Cellular Agriculture (TUCCA). His research focus is on biopolymer engineering, tissue engineering, regenerative medicine and cellular agriculture. He has published over 1,000 peer reviewed papers, he is editor-in-chief of ACS Biomaterials Science and Engineering and he serves on many editorial boards and programs for journals and universities. He has received awards for his research and teaching and is an elected Fellow of the American Institute of Medical and Biological Engineering, the National Academy of Inventors, and the National Academy of Engineering.
+  </TeamCard>
+
+  <TeamCard
+    name="Benji Bromberg"
+    role="Research Technician, Kaplan Lab @ TUCCA · Computational biology, bioinformatics & Cell Ag × AI"
+    image="/img/bbromberg.png"
+    links={[
+      { label: "Email", href: "mailto:benjamin.bromberg@tufts.edu" },
+      { label: "ORCID", href: "https://orcid.org/0009-0001-3166-6329" },
+      { label: "GitHub", href: "https://github.com/benjibromberg" },
+      { label: "LinkedIn", href: "https://www.linkedin.com/in/benjamin-bromberg-a636891b1/" },
+      { label: "CAAIL", href: "https://tucca-cellag.github.io/caail/" },
+    ]}
+  >
+    Benji Bromberg is a Research Technician in the Kaplan Lab at TUCCA, where he has worked since 2022 and leads the lab's work at the intersection of cellular agriculture and AI. He holds an M.S. in Computer Science from Tufts, where his coursework concentrated on machine learning, computer vision, and computational biology, built on a foundation of probability, statistics, and algorithms. He began in the wet lab (cell line development across mammalian, teleost, avian, and crustacean species) and has since moved into computational biology and bioinformatics, building and maintaining the reproducible pipelines and machine-learning tools behind the lab's computational research. He founded TUCCA's GitHub organization to centralize that work and maintains CAAIL, the Cellular Agriculture AI Library. Benji earned his B.A. in Biochemistry and Molecular Biology from Lewis &amp; Clark College in 2022.
+  </TeamCard>
+
+  <TeamCard
+    name="Jim Plotts"
+    role="Software Engineer, Google · CAAIL co-creator"
+    image="/img/jplotts.png"
+    links={[
+      { label: "ORCID", href: "https://orcid.org/0009-0006-7851-0707" },
+      { label: "LinkedIn", href: "https://www.linkedin.com/in/jim-plotts/" },
+      { label: "CAAIL", href: "https://tucca-cellag.github.io/caail/" },
+    ]}
+  >
+    Jim Plotts is a software engineer at Google who is pursuing Tufts' [Certificate in Cellular Agriculture](https://engineering.tufts.edu/bme/prospective-students/certificates/certificate-cellular-agriculture) and co-created CAAIL, the Cellular Agriculture AI Library. He brings the software-engineering and applied-AI side of the project, with interests spanning large language models and retrieval-augmented generation, including co-authored work on graph-guided RAG for exploratory data analysis. At TUCCA he helps shape the tooling and AI methodology that connect modern machine learning to cellular agriculture research.
+  </TeamCard>
+
+  <TeamCard
+    name="Disheng (Dee) Lee"
+    role="Postdoctoral Researcher, Kaplan Lab @ TUCCA · Protein design & molecular dynamics"
+    image="/img/dlee.png"
+    links={[
+      { label: "Email", href: "mailto:di_sheng.lee@tufts.edu" },
+      { label: "LinkedIn", href: "https://www.linkedin.com/in/dishengleedee/" },
+      { label: "Google Scholar", href: "https://scholar.google.com/citations?user=nYpfpoAAAAAJ" },
+    ]}
+  >
+    Disheng (Dee) Lee is a postdoctoral researcher in the Kaplan Lab at TUCCA, where his work centers on generative protein design and molecular dynamics for cellular agriculture. He earned his Ph.D. from MIT in 2024, and his computational approach to protein and peptide engineering supports the design of cell-ag-relevant biomolecules.
+  </TeamCard>
+
+  <TeamCard
+    name="Dylan Hendrixson"
+    role="BME Ph.D. Student, Kaplan Lab @ TUCCA · Protein design & molecular dynamics"
+    image="/img/dhendrixson.png"
+    links={[
+      { label: "Email", href: "mailto:dylan.hendrixson@tufts.edu" },
+      { label: "LinkedIn", href: "https://www.linkedin.com/in/dylan-hendrixson/" },
+    ]}
+  >
+    Dylan Hendrixson is a biomedical engineering Ph.D. student in the Kaplan Lab at TUCCA, where his work centers on computational protein design and molecular dynamics for cellular agriculture. He completed his undergraduate studies at the University of Illinois Urbana-Champaign.
+  </TeamCard>
+</div>
 
 <style>{`
-  .t-team-links { display: flex; flex-wrap: wrap; gap: 0.9rem; margin: 0; }
-  .t-team-links a { font-weight: 600; font-size: 0.9rem; }
+  .t-team-lede { max-width: 60ch; margin: 0 auto 2.5rem; text-align: center; color: var(--sl-color-gray-2); font-size: 1.05rem; }
+  .t-team-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(16rem, 1fr)); gap: 1.25rem; align-items: stretch; margin-block: 1rem; }
+  /* Neutralize Starlight's .sl-markdown-content adjacent-sibling top margin that
+     leaks onto the 2nd+ card and would push later cards down, breaking the
+     top-aligned grid row (same fix Columns.astro applies for its flex variant). */
+  .t-team-grid > .t-column { flex: none; margin-top: 0; }
 `}</style>
