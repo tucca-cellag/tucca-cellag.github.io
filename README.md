@@ -1,4 +1,4 @@
-# TUCCA — Open Computational Research
+# TUCCA: Open Computational Research
 
 Source for the **Tufts University Center for Cellular Agriculture (TUCCA)** open
 computational-research hub, served at **<https://tucca-cellag.github.io/>**.
@@ -6,8 +6,8 @@ computational-research hub, served at **<https://tucca-cellag.github.io/>**.
 It is the landing point for TUCCA's open-source code, documentation, and AI /
 computational-biology projects, including:
 
-- **`tucca-rna-seq`** — a reproducible RNA-Seq workflow (Snakemake v8+), with full docs.
-- **Computational blue-melanin design** — RFdiffusion-based de novo pigment design.
+- **`tucca-rna-seq`**: a reproducible RNA-Seq workflow (Snakemake v8+), with full docs.
+- **Computational blue-melanin design**: RFdiffusion-based de novo pigment design.
 - **Publications** powered by these tools.
 - **Helpful resources** on cellular agriculture, reproducibility, and R/RStudio.
 

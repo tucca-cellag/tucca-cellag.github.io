@@ -30,12 +30,12 @@ workflow on the Tufts HPC cluster efficiently and effectively.
 
 ### Storage Quotas
 
-- **Home directory** (`/cluster/home/your_utln`): 30 GB, fixed — too small to run from
+- **Home directory** (`/cluster/home/your_utln`): 30 GB, fixed (too small to run from)
 - **Lab workspace** (`/cluster/tufts/your_lab/your_utln`): from 50 GB up; request more as needed (usage over 10 TB becomes chargeable starting July 1, 2026)
 - **Monitor usage**: `module load hpctools && hpctools` (project-storage and directory-usage options)
 - **Archive old projects** to free up space
 
-Quotas and policies are set by Tufts, not this workflow — always confirm the
+Quotas and policies are set by Tufts, not this workflow. Always confirm the
 current numbers in the storage guide below before relying on them.
 
 <Button
@@ -76,7 +76,7 @@ export SNAKEMAKE_APPTAINER_PREFIX="/cluster/tufts/your_lab/shared/apptainer_imag
 
 For any software you install manually (like a specific version of Snakemake via
 Mambaforge), creating a private environment module is an excellent way to
-integrate it seamlessly into your HPC workflow. This makes loading your custom
+integrate it into your HPC workflow. This makes loading your custom
 tools as easy as loading system-wide modules (e.g., `module load my-snakemake`).
 
 The process involves creating a simple text file that defines the necessary
@@ -150,10 +150,10 @@ srun -p batch -n 4 --mem=8G --time=2:00:00 --pty bash
 - `-n`: Number of CPU cores
 - `--mem`: Memory allocation
 - `--time`: Maximum runtime (the `batch`, `gpu`, and `preempt` partitions each cap at 2 days)
-- `-p`: Partition — `batch` (CPU, default), `gpu`, or `preempt`
+- `-p`: Partition (`batch` by default; also `gpu` or `preempt`)
 
 :::note[The `interactive` partition was retired]
-Tufts retired the `interactive`, `mpi`, and `largemem` partitions — request
+Tufts retired the `interactive`, `mpi`, and `largemem` partitions. Request
 interactive sessions on `batch` (or `gpu` for GPU work) instead. See the
 [Tufts partitions guide](https://rtguides.it.tufts.edu/hpc/compute/partition.html).
 :::
@@ -176,7 +176,7 @@ supplementary, Tufts-specific best practices.
 ### Recommended: Interactive Session
 
 1.  **Start a long-running `screen` or `tmux` session.**
-    A terminal multiplexer is essential for preventing your workflow from being
+    A terminal multiplexer keeps your workflow from being
     terminated if your local connection to the HPC is interrupted.
     ```bash
     # Start a screen session
@@ -310,8 +310,8 @@ snakemake all --use-conda --cores all
 
 ## Monitoring and Debugging
 
-Job and resource monitoring on Tufts HPC is standard Slurm plus a Tufts helper —
-this workflow doesn't change any of it, so use the cluster's own tooling:
+Job and resource monitoring on Tufts HPC is standard Slurm plus a Tufts helper.
+This workflow doesn't change any of it, so use the cluster's own tooling:
 
 - **Your queued/running jobs:** `squeue -u $USER`
 - **Why a finished job over/under-ran its resources:** `seff <job_id>`

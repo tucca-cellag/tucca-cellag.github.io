@@ -17,7 +17,7 @@ import Column from "@components/docs/Column.astro";
 
 ### Layered Environments with Singularity/Apptainer + Conda
 
-The most robust and reproducible way to run this workflow is by combining
+The most reliable and reproducible way to run this workflow is by combining
 containers and package management in a layered approach, as described in the
 **[official Snakemake documentation][ad-hoc]**. This is the method we've
 implemented and recommend.
@@ -240,7 +240,7 @@ runners** with sufficient resources. This typically involves changing the
 ### Storage Backends
 
 For workflows that run in the cloud or across different physical locations,
-Snakemake can use **storage plugins** to seamlessly access data from various
+Snakemake can use **storage plugins** to access data from various
 remote storage backends. This means your `Snakefile` can reference remote files
 (e.g., in an S3 bucket) as if they were on your local filesystem.
 
@@ -336,7 +336,7 @@ via SSH. This allows you to edit files, run commands, and manage your workflow
 on the HPC cluster directly from a user-friendly interface on your local
 machine. It offers several key advantages for scientific workflows:
 
-- **Remote Development**: VSCode can seamlessly connect to remote servers,
+- **Remote Development**: VSCode can connect to remote servers,
   allowing you to edit files, run code, and manage projects directly on the
   HPC without leaving your local environment.
 - **Integrated Terminal**: Access the HPC terminal within VSCode, enabling

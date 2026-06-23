@@ -82,7 +82,7 @@ snakemake all --workflow-profile profiles/slurm
 snakemake all --workflow-profile profiles/slurm-dev
 ```
 
-For a comprehensive guide on what profiles are, which ones are available in this
+For a detailed guide on what profiles are, which ones are available in this
 workflow, and how to customize them for your specific needs, please see the
 [**Configuration Guide**](/tucca-rna-seq/install-and-config/configuration/#profile-configuration).
 
@@ -106,7 +106,7 @@ This step:
 
 ### 2. Create Software Environments
 
-Before performing a dry-run, it's essential to create the necessary software
+Before performing a dry-run, you need to create the necessary software
 environments. This step prevents errors during the dry-run, which needs to
 inspect tools inside containers that may not have been downloaded yet.
 
@@ -148,7 +148,7 @@ The workflow will:
 - Use the pre-built software environments for each tool
 - Download reference genomes and annotations
 - Process your sequencing data through the pipeline
-- Generate comprehensive analysis results
+- Generate analysis results
 
 ---
 
@@ -337,7 +337,7 @@ outputs to see which files will be removed.
 
 ### Main Outputs
 
-The workflow generates comprehensive results:
+The workflow generates the following results:
 
 - **Quality Control**: FastQC reports, Qualimap analysis
 - **Alignment**: STAR BAM files, alignment statistics

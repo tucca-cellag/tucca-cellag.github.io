@@ -33,7 +33,7 @@ in a study by members of the Tufts University Center for Cellular Agriculture
           <a href="https://www.ncbi.nlm.nih.gov/bioproject/PRJNA1331774">PRJNA1331774</a>.
         </p>
         <p>
-          This study delves into the transcriptomic changes that occur when chicken
+          This study examines the transcriptomic changes that occur when chicken
           cells are adapted for large-scale cultivated meat production.
         </p>
         <div style="display: flex; gap: 10px; margin-top: 15px; flex-wrap: wrap;">
@@ -74,8 +74,8 @@ survive and thrive without attachment.
 
 The researchers used time-series RNA sequencing to capture the
 transcriptional dynamics at five key stages of the adaptation process. For this
-study, **an early development version of `tucca-rna-seq` was used**, and the
-research was pivotal in shaping the stable, public release of the workflow
+study, **an early development version of `tucca-rna-seq` was used**, and that
+work helped shape the stable, public release of the workflow
 available today.
 
 The workflow served as the analytical engine that turned the massive raw
@@ -83,8 +83,8 @@ dataset (n = 4 for each time point) into biological insights by automating the e
 
 - **Core Processing & QC:** Handled initial quality control (`FastQC`), genome
   alignment (`STAR`), and accurate transcript quantification (`Salmon`),
-  generating comprehensive reports with `MultiQC` and `Qualimap`.
-- **Differential Gene Expression:** The workflow's `DESeq2` module robustly
+  generating reports with `MultiQC` and `Qualimap`.
+- **Differential Gene Expression:** The workflow's `DESeq2` module
   identified which genes significantly changed their expression levels over the
   adaptation timeline.
 - **Functional Enrichment:** Using `clusterProfiler`, the workflow performed
@@ -156,12 +156,10 @@ efforts.
 
 ## Conclusion
 
-This study is a prime example of how `tucca-rna-seq` serves as more than just a
-data processing tool; it is a hypothesis-generating engine. By providing a
-robust, reproducible, and comprehensive analysis, the workflow enabled
-researchers to move from raw sequence reads to a novel biological mechanism,
-accelerating the scientific discovery needed to advance the field of cellular
-agriculture.
+This study shows how `tucca-rna-seq` serves as more than a data-processing
+tool: it helps generate hypotheses. By providing a reproducible analysis from
+raw reads through functional enrichment, the workflow let researchers move from
+raw sequence reads to a novel biological mechanism in cellular agriculture.
 
 ## Reference
 

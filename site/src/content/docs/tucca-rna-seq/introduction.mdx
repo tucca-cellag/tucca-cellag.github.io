@@ -10,17 +10,17 @@ import CardBody from "@components/docs/CardBody.astro";
 
 :::note[Roadmap]
 `tucca-rna-seq` is being reworked into a downstream-analysis toolkit for
-[`nf-core/rna-seq`](https://nf-co.re/rnaseq) — refocusing on differential expression,
+[`nf-core/rna-seq`](https://nf-co.re/rnaseq), refocusing on differential expression,
 functional enrichment, and reporting on top of the nf-core alignment/quantification
 core. These docs describe the current Snakemake workflow.
 :::
 
-The **`tucca-rna-seq`** workflow is a comprehensive solution for RNA-Seq data
+The **`tucca-rna-seq`** workflow is an end-to-end workflow for RNA-Seq data
 analysis. It provides a fast, automated pipeline for researchers and
 bioinformaticians, regardless of their programming experience.
 
 Originally developed for cellular agriculture research, this workflow is
-designed to be a robust, user-friendly toolset that streamlines RNA-Seq
+designed to be a reliable, user-friendly toolset that streamlines RNA-Seq
 data analysis, ensuring accuracy, reproducibility, and scalability for any
 research field.
 
@@ -46,16 +46,14 @@ origins of this project, you can learn more in the [CAAIL primer](https://tucca-
   </CardBody>
 </Card>
 
-## Real-World Impact: A Case Study in Cellular Agriculture
+## A Case Study in Cellular Agriculture
 
-This workflow has been instrumental in generating novel scientific insights for
-published research. An early development version of `tucca-rna-seq` was pivotal
-in a study on cellular adaptation for cultivated meat, enabling the discovery of
-key biological mechanisms that govern how cells transition from adherent to
-suspension growth.
+An early development version of `tucca-rna-seq` was central to a published study
+on cellular adaptation for cultivated meat. It helped identify the biological
+mechanisms that govern how cells transition from adherent to suspension growth.
 
-This case study demonstrates how the workflow can be leveraged to translate raw
-sequencing data into a deeper biological understanding.
+The case study shows how the workflow can be used to translate raw sequencing
+data into deeper biological understanding.
 
 <div style="display: flex; justify-content: center; margin-top: 20px">
   <Button
@@ -69,10 +67,10 @@ sequencing data into a deeper biological understanding.
 
 ## About the Workflow
 
-The **`tucca-rna-seq`** workflow provides an efficient and seamless pipeline for
+The **`tucca-rna-seq`** workflow provides an efficient pipeline for
 RNA-Seq data analysis. Key features include:
 
-### Comprehensive Data Processing
+### Data Processing
 
 - **Quality Control**: Implements `FastQC` and `Qualimap` for quality
   assessment with configurable parameters.
@@ -83,14 +81,14 @@ RNA-Seq data analysis. Key features include:
 
 ### Advanced Differential Expression Analysis
 
-- **Statistical Tools**: Leverages `DESeq2` for robust differential
+- **Statistical Tools**: Uses `DESeq2` for differential
   expression analysis.
 - **Flexible Configurations**: Supports multiple experimental designs and
   contrasts in a single run, with configurable statistical parameters.
 - **Data Transformation**: Provides variance-stabilizing transformations
   (rlog, vst) for downstream analysis.
 
-### Comprehensive Functional Enrichment
+### Functional Enrichment
 
 The workflow integrates multiple enrichment analysis approaches:
 
@@ -108,7 +106,7 @@ The workflow integrates multiple enrichment analysis approaches:
   visualization.
 - **PCA Explorer**: Interactive principal component analysis and sample
   clustering.
-- **GeneTonic Integration**: Comprehensive enrichment analysis visualization
+- **GeneTonic Integration**: Enrichment-analysis visualization
   with exportable figures.
 - **Custom Analysis**: A framework for extending analysis beyond workflow
   outputs.
@@ -135,7 +133,7 @@ figures in multiple formats (PNG, PDF, SVG) directly from the apps.
 - **Multiple Execution Environments**: Support for Slurm, LSF, Kubernetes,
   and cloud platforms.
 - **Modular Design**: Easily extensible and customizable.
-- **Testing Infrastructure**: Comprehensive CI/CD testing with GitHub
+- **Testing Infrastructure**: CI/CD testing with GitHub
   Actions.
 
 ### Modern Snakemake Integration
@@ -204,14 +202,14 @@ through the pipeline from raw input to final results.
 - **[Reproducibility in Bioinformatics](/helpful-resources/reproducibility/)**:
   Best practices for reproducible code and project management.
 - **[R Extensions](/tucca-rna-seq/r-extensions/)**:
-  Essential R packages and tools for data analysis.
+  Useful R packages and tools for data analysis.
 
 ---
 
 ## Connect With Us
 
-We're here to help! If you have questions, feedback, or need assistance, feel
-free to reach out through our social channels:
+If you have questions, feedback, or need assistance, reach out through our
+channels:
 
 - [Tufts University Center for Cellular Agriculture](https://cellularagriculture.tufts.edu/)
 - [TUCCA on LinkedIn](https://www.linkedin.com/company/tufts-cell-ag/)

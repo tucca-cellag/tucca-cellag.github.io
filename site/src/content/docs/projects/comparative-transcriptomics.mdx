@@ -6,7 +6,7 @@ description: A time-series RNA-seq study of the adherent-to-suspension transitio
 import { LinkCard } from '@astrojs/starlight/components';
 
 A TUCCA computational project using time-series transcriptomics to dissect the
-**adherent-to-suspension transition (AST)** — how cells adapt from anchored to
+**adherent-to-suspension transition (AST)**: how cells adapt from anchored to
 free-floating growth, a key bottleneck for scaling cultivated meat.
 
 ## The challenge
@@ -21,17 +21,17 @@ transcriptomic changes that let cells survive and thrive without attachment.
 
 Time-series RNA sequencing captured the transcriptional dynamics at five stages of
 adaptation (n = 4 per timepoint). An early development version of
-[`tucca-rna-seq`](/tucca-rna-seq/introduction/) served as the analytical engine —
+[`tucca-rna-seq`](/tucca-rna-seq/introduction/) served as the analytical engine:
 quality control (FastQC, Qualimap), alignment (STAR), quantification (Salmon),
 aggregation (MultiQC), differential expression (DESeq2), and functional enrichment
-(clusterProfiler ORA/GSEA) — feeding custom downstream analyses including time-series
+(clusterProfiler ORA/GSEA). These fed custom downstream analyses including time-series
 soft clustering (Mfuzz).
 
 ## Key findings
 
 - **An acute, transient stress response** at the point of transition (autophagy, MAPK
   signaling up; DNA replication down).
-- **Permanent reprogramming** of suspension-adapted cells — suppressed metabolism and
+- **Permanent reprogramming** of suspension-adapted cells: suppressed metabolism and
   a committed, anchorage-independent adhesion profile.
 - **A proposed molecular mechanism** for suspension proficiency: oxidative stress →
   MAPK p38δ → TEAD sequestration → a YAP–FoxO1 complex driving antioxidant production
