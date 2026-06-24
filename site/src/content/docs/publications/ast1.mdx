@@ -62,17 +62,26 @@ in a study by members of the Tufts University Center for Cellular Agriculture
 
 For cultivated meat to become a reality, we need to grow large quantities of
 cells efficiently. Many cells used in research naturally grow attached to a
-surface (i.e. adherent). For industrial-scale production, it's much more efficient
-to grow them floating in a nutrient-rich medium (i.e. in suspension).
+surface (i.e. adherent), and that anchorage is the problem at scale: an adherent
+culture can only hold as many cells as its surface area allows, so growing more of
+them means more flasks or more microcarriers, which adds cost and labour with every
+step up. Cells grown floating in a nutrient-rich medium (i.e. in suspension) fill
+the entire volume of a stirred-tank bioreactor instead, the same kind of vessel
+that industrial fermentation already operates at large scale. Production then scales
+with tank volume rather than surface area, and that volumetric scale-up is what makes
+the cost targets for cultivated meat realistic. This is why industrial-scale
+production favours suspension growth.
 
-However, the transition from adherent to suspension growth is a complex
-biological process. To engineer this trait effectively, researchers needed to
-understand the precise transcriptomic and molecular changes that allow cells to
-survive and thrive without attachment.
+The study used the chicken (Gallus gallus) embryonic fibroblast line DF-1,
+comparing adherent DF-1 against a suspension-adapted derivative of the same line.
+The transition from adherent to suspension growth is a complex biological process.
+To engineer this trait effectively, researchers needed to understand the precise
+transcriptomic and molecular changes that allow cells to survive and grow without
+attachment.
 
 ## The `tucca-rna-seq` Solution: An Engine for Discovery
 
-The researchers used time-series RNA sequencing to capture the
+The researchers used time-series bulk RNA sequencing to capture the
 transcriptional dynamics at five key stages of the adaptation process. For this
 study, **an early development version of `tucca-rna-seq` was used**, and that
 work helped shape the stable, public release of the workflow

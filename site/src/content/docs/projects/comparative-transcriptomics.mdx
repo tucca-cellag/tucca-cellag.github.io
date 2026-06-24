@@ -1,26 +1,34 @@
 ---
 title: "AST: Adherent-to-Suspension Transcriptomics"
-description: A time-series RNA-seq study of the adherent-to-suspension transition (AST) in chicken fibroblasts, for scalable cultivated-meat production.
+description: A time-series bulk RNA-seq study of the adherent-to-suspension transition (AST) in chicken fibroblasts, for scalable cultivated-meat production.
 ---
 
 import { LinkCard } from '@astrojs/starlight/components';
 
 A TUCCA computational project using time-series transcriptomics to dissect the
 **adherent-to-suspension transition (AST)**: how cells adapt from anchored to
-free-floating growth, a key bottleneck for scaling cultivated meat.
+free-floating growth, a key bottleneck for scaling cultivated meat. The work used
+the chicken (Gallus gallus) embryonic fibroblast line DF-1, comparing adherent DF-1
+against a suspension-adapted derivative.
 
 ## The challenge
 
 Scaling cultivated meat means growing large quantities of cells efficiently. Many
-research cell lines grow attached to a surface (adherent), but industrial production
-favours cells grown floating in suspension. The adherent→suspension transition is a
-complex biological process, and engineering it requires understanding the precise
-transcriptomic changes that let cells survive and thrive without attachment.
+research cell lines grow attached to a surface (adherent), which caps the cell yield
+at the available surface area: scaling up means more flasks or microcarriers, and
+that gets expensive and labour-intensive fast. Cells grown floating in suspension
+instead fill the whole volume of a stirred-tank bioreactor, the same equipment
+industrial fermentation already runs at scale, so production scales with tank volume
+rather than surface area. That volumetric scale-up is what brings cultivated-meat
+cost targets within reach, so industrial production favours suspension cells. The
+adherent-to-suspension transition is a hard biological process, though, and
+engineering it requires understanding the transcriptomic changes that let cells
+survive and grow without attachment.
 
 ## The computational approach
 
-Time-series RNA sequencing captured the transcriptional dynamics at five stages of
-adaptation (n = 4 per timepoint). An early development version of
+Time-series bulk RNA sequencing captured the transcriptional dynamics at five stages
+of adaptation (n = 4 per timepoint). An early development version of
 [`tucca-rna-seq`](/tucca-rna-seq/introduction/) served as the analytical engine:
 quality control (FastQC, Qualimap), alignment (STAR), quantification (Salmon),
 aggregation (MultiQC), differential expression (DESeq2), and functional enrichment
