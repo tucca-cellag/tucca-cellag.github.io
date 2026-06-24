@@ -114,16 +114,18 @@ cmd_open_pr() {
 }
 
 cmd_watch_checks() {
-  local pr="$1"
+  local pr="$1" out
   # This repo has no pull_request checks, so the common path is "no checks". Keep
   # the block-on-checks behaviour anyway, so the skill stays correct if CI is
-  # added later. `gh pr checks` exits non-zero when there are no checks at all.
-  if ! gh pr checks "$pr" >/dev/null 2>&1; then
-    if gh pr checks "$pr" 2>&1 | grep -qi 'no checks reported'; then
-      note "no checks reported on this PR — proceeding."
-      gh pr view "$pr" --json mergeStateStatus -q '"  mergeStateStatus: " + .mergeStateStatus'
-      return 0
-    fi
+  # added later. `gh pr checks` exits non-zero when there are no checks at all;
+  # capture its output to a variable first (NOT `gh ... | grep`), because under
+  # `set -o pipefail` gh's non-zero exit would mask a grep match and wrongly fall
+  # through to the blocking --watch below.
+  out="$(gh pr checks "$pr" 2>&1 || true)"
+  if printf '%s\n' "$out" | grep -qi 'no checks reported'; then
+    note "no checks reported on this PR — proceeding."
+    gh pr view "$pr" --json mergeStateStatus -q '"  mergeStateStatus: " + .mergeStateStatus'
+    return 0
   fi
   # Checks exist → block on them; non-zero propagates a failure to the caller.
   gh pr checks "$pr" --watch --interval 10
