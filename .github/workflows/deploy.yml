@@ -3,6 +3,17 @@ name: Deploy site
 on:
   push:
     branches: [main]
+    # Skip the Pages rebuild for changes that can't affect the built site.
+    # The built site lives entirely under site/, so a push that touches only
+    # these paths is a no-op deploy. Use workflow_dispatch to force a deploy
+    # (e.g. after editing this workflow). Note: '*.md' is root-only in GitHub
+    # Actions path filters, so site/ content MDX still deploys.
+    paths-ignore:
+      - '.claude/**'
+      - '.github/**'
+      - '*.md'
+      - '.gitignore'
+      - '.dcignore'
   workflow_dispatch:
 
 # Required for the GitHub Actions Pages deploy (OIDC token + Pages write).
