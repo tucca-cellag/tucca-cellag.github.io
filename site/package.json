@@ -22,5 +22,10 @@
     "lite-youtube-embed": "^0.3.4",
     "preact": "^10.29.2",
     "sharp": "^0.34.5"
+  },
+  "pnpm": {
+    "overrides": {
+      "esbuild": "^0.28.1"
+    }
   }
 }
