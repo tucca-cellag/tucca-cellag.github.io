@@ -1,0 +1,83 @@
+---
+title: "cellagdiffexp: cell-ag downstream RNA-seq"
+description: Overview of cellagdiffexp, the Nextflow pipeline for cellular-agriculture differential expression, annotation, and functional enrichment downstream of nf-core/rnaseq.
+---
+
+:::note[Successor to tucca-rna-seq]
+`cellagdiffexp` is the current, actively developed downstream analysis pipeline for
+cellular-agriculture RNA-seq. It replaces the frozen Snakemake
+[`tucca-rna-seq`](/tucca-rna-seq/introduction/) for downstream work (differential
+expression and functional enrichment). The legacy Snakemake docs remain available for
+reference, but new analyses should use `cellagdiffexp`.
+:::
+
+**`tucca-cellag/cellagdiffexp`** is a Nextflow pipeline, built on the
+[nf-core](https://nf-co.re) template, that runs the cell-ag-specific downstream half of
+an RNA-seq analysis. It runs strictly downstream of
+[nf-core/rnaseq](https://nf-co.re/rnaseq): you run rnaseq separately, then hand
+`cellagdiffexp` the gene count matrix and a small amount of experiment metadata. It does
+not take FastQ files.
+
+From that matrix-in starting point it produces tables and reports out:
+
+- **Differential expression** with DESeq2, including complex designs (blocking factors,
+  interaction formulas, and DREAM mixed-effects models for random effects).
+- **Non-model annotation**: it resolves a Bioconductor OrgDb when one exists, or builds
+  one locally with AnnotationForge and borrows orthologs through NCBI, recording per-gene
+  provenance.
+- **Functional enrichment** with clusterProfiler (ORA and GSEA), plus opt-in SPIA pathway
+  impact analysis.
+- **A two-tier report**: a run-level QC report and a per-contrast Quarto report, alongside
+  a MultiQC summary.
+
+First-class species are bovine (_Bos taurus_), chicken (_Gallus gallus_), and pig
+(_Sus scrofa_), each with a packaged Bioconductor OrgDb, plus a non-model local-build path
+demonstrated with Atlantic mackerel (_Scomber scombrus_).
+
+The input contract is adopted verbatim from
+[nf-core/differentialabundance](https://nf-co.re/differentialabundance) v2.0.0
+(matrix-in, tables-out), so the pipeline is drop-in after rnaseq and the DE path carries no
+Bioconductor org.db dependency.
+
+## Key features
+
+**Differential expression**
+
+- DESeq2 fixed-effects GLM as the default method, with fold-change and adjusted-p-value
+  filtering.
+- Complex designs: simple column-based contrasts, blocking factors, design formulas, and
+  interaction terms.
+- DREAM mixed-effects models (variancePartition on voom-normalised counts) for
+  random-effects designs such as repeated measures.
+- Independent Hypothesis Weighting (IHW) as an alternative multiple-testing correction.
+- lfcShrink of DESeq2 log2 fold changes (ashr estimator).
+- Design pre-flight checks: replicate counts and confounding are validated before any fit,
+  so a doomed design fails fast with a clear message.
+
+**Annotation and enrichment**
+
+- Non-model annotation with per-gene `annotation_source` provenance, so every downstream
+  gene-set hit is traceable to the species' own annotation or a borrowed ortholog.
+- One unified gene-set provider contract: GO, MSigDB, custom GMT, and KEGG all enrich
+  through a single clusterProfiler engine and are tagged with a provider name.
+- SPIA pathway impact analysis with two routes: a native KEGG-organism route and an
+  organism-agnostic KO reference route for non-model species. SPIA is opt-in and gated
+  behind a KEGG license acknowledgement.
+
+**Reporting**
+
+- Two report tiers: a run-level QC report (PCA, sample-distance heatmap, cross-contrast
+  summary) and a per-contrast report (volcano, DE diagnostics, enrichment dotplots, and an
+  optional SPIA section), both self-contained HTML rendered by nf-core/quartonotebook.
+- A MultiQC summary that links to both report tiers.
+
+## Where to go next
+
+- **[Usage](/cellagdiffexp/usage/)**: the input contract (matrix, samplesheet, contrasts),
+  cell-ag annotation and enrichment parameters, SPIA, DE options, and how to run the
+  pipeline.
+- **[Output](/cellagdiffexp/output/)**: what the pipeline writes, directory by directory.
+- **[Architecture](/cellagdiffexp/architecture/)**: how the pipeline is built, the owned
+  vs reused boundary, and the design decisions behind it.
+- **[GitHub repository](https://github.com/tucca-cellag/cellagdiffexp)**: source code,
+  releases, and the full in-repo documentation.

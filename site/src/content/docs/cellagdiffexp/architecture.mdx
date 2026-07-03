@@ -1,0 +1,126 @@
+---
+title: "cellagdiffexp: Architecture and design"
+description: How cellagdiffexp is built, the Lean B owned-vs-reused boundary, the load-bearing design decisions, the per-phase feature history, and the verification strategy.
+---
+
+This page is an overview of how the pipeline is built and why. It distills the design
+rationale that drove development. For task-level usage see the
+[Usage](/cellagdiffexp/usage/) page; for the outputs see [Output](/cellagdiffexp/output/);
+for the load-bearing decisions in full see the
+[ADRs](https://github.com/tucca-cellag/cellagdiffexp/tree/dev/docs/adr) in the repository.
+
+## What this pipeline is
+
+`cellagdiffexp` runs **strictly downstream of nf-core/rnaseq**. You run rnaseq separately;
+this pipeline starts from a gene count matrix and sample metadata (matrix-in, tables-out)
+and does the cellular-agriculture-specific downstream analysis: differential expression,
+non-model annotation, and functional enrichment, ending in a unified report.
+
+It is decoupled from rnaseq by design (no FastQ handling here) and adopts the input
+contract of nf-core/differentialabundance v2.0.0 verbatim, so it is drop-in after rnaseq.
+
+## "Lean B": owned vs reused surface
+
+The guiding principle is to own only what is genuinely cell-ag-specific and reuse
+everything else from the nf-core ecosystem, so the maintained surface shrinks over time as
+components are upstreamed.
+
+```text title="Lean B data flow"
+nf-core/rnaseq  ──(run separately)──►  gene counts + lengths + samplesheet + contrasts + gtf
+      │
+      ▼
+  [reused]  abundance_differential_filter  (DESeq2 / limma / DREAM)  → DE tables
+      │
+      ▼
+  [owned]   nonmodel_annotation
+              • OrgDb: Bioconductor package if it exists, else AnnotationForge local build
+              • ortholog map → human/mouse, with annotation_source provenance
+      │
+      ▼
+  [owned]   cellag_functional_enrichment
+              • clusterProfiler ORA + GSEA over a unified gene-set provider contract
+              • SPIA pathway impact (opt-in, native KEGG org or KO reference route)
+      │
+      ▼
+  unified Quarto report (two tiers: per-contrast + run-level) + MultiQC
+```
+
+**Owned (maintained long-term):** the two cell-ag subworkflows (`nonmodel_annotation`,
+`cellag_functional_enrichment`), their modules (`orgdb`, `orthologs`,
+`clusterprofiler/{ora,gsea}`, `spia/{build,run}`, `parse_emapper_ko`, `ihw`), the R logic
+in `bin/`, the report template, the gene-set assets, and the profiles.
+
+**Reused (updated via `nf-core subworkflows/modules update`):** the DESeq2/limma/DREAM DE
+subworkflow, quartonotebook, MultiQC, eggnogmapper, and the nf-core pipeline scaffolding.
+
+Each owned module is authored to the nf-core module spec (`meta.yml`, nf-test + stub, EDAM,
+`environment.yml` as the dependency source of truth, frozen Wave container) so contributing
+it upstream later is a low-friction follow, not a rewrite.
+
+## Key design decisions (ADRs)
+
+The load-bearing decisions are recorded as
+[ADRs](https://github.com/tucca-cellag/cellagdiffexp/tree/dev/docs/adr) in the repository.
+In summary:
+
+- **ADR-0001: one gene-set provider contract.** GO, KEGG, custom GMT, and MSigDB all
+  enrich through a single clusterProfiler `enricher()`/`GSEA()` engine and are tagged with a
+  `provider` name and `annotation_source`. Adding a gene-set source does not touch the
+  enrichment engine.
+- **ADR-0002: KO reference route for non-model SPIA.** Species without a native KEGG
+  organism run SPIA against the organism-agnostic KO reference topology, with genes mapped
+  to KOs (via eggnogmapper or a user-supplied map). Native KEGG organisms (`bta`, `gga`,
+  `ssc`) use their own topology.
+- **ADR-0003: user-populated frozen KEGG cache.** The pipeline never redistributes KEGG
+  data. The user builds the SPIA topology under their own academic-use license (gated by
+  `--spia_license_ack`) into a persistent cache, which compute-node runs then reuse. The
+  AnnotationForge NCBI download cache (`--ncbi_files_dir`) follows the same
+  populate-once/reuse pattern.
+- **ADR-0004: reuse-first, contributable modules.** Prefer nf-core subworkflows; when
+  owning a module, build it to the upstream spec so it can be contributed back.
+
+## What each development phase added
+
+The pipeline was built in sequenced phases, with a hard dependency chain: the Phase 1
+provider contract feeds Phases 2 and 4, the Phase 0 spike gates Phase 4, and Phase 5
+validates the whole.
+
+- **Phase 0, Foundations:** repo hardening, module recon, and the SPIA-KO spike that
+  proved the KO reference route builds non-empty topology across all KEGG signaling
+  pathways (gating Phase 4).
+- **Phase 1, Enrichment breadth:** the unified gene-set provider contract, MSigDB support
+  (`--msigdb_collections`), and GO redundancy collapse (`--enrichment_simplify`).
+- **Phase 2, Reporting:** two-tier reporting (a run-level QC report alongside the
+  per-contrast report), exploratory QC (PCA, sample-distance heatmap), and per-contrast DE
+  diagnostics (MA plot, p-value histogram with shape diagnosis, dispersion, filter funnel).
+- **Phase 3, DE-layer depth:** contrast validation, advanced contrasts (formulas,
+  interactions), blocking designs, the DREAM mixed-effects method for random effects,
+  confounding pre-flight checks, IHW multiple-testing, and lfcShrink.
+- **Phase 4, SPIA:** opt-in SPIA with the native-organism and KO reference routes,
+  eggnogmapper gene-to-KO annotation with a pluggable `--gene_ko_map` bypass, the frozen
+  KEGG cache, and the license-acknowledgement gate.
+- **Phase 5, Species breadth:** chicken (`gga`) and pig (`ssc`) validated as first-class
+  species end-to-end, with the shared enrichment containers provisioned for all four
+  first-class species (bovine, chicken, pig, and non-model via local build).
+
+## Verification strategy
+
+- **nf-test (`-stub`):** every owned module and the pipeline itself have stub nf-tests that
+  verify wiring and the input/output contract (channel construction, the report fan-out,
+  version collation) without running the heavy R work. These are the CI gate.
+- **testthat:** the R logic (annotation, ortholog mapping, enrichment wrappers, SPIA
+  statistics, report helpers) is covered hermetically by testthat, decoupled from Nextflow.
+- **`nf-core pipelines lint`:** template compliance, clean on every PR.
+- **Out-of-band gates:** work that CI cannot run for real, namely the SPIA KEGG-topology
+  build and `spia()` execution, the ~50 GB eggnogmapper run, and species biological-sanity
+  checks, is validated manually on a compute node (Tufts), because CI runs stubs only. The
+  biological-sanity validation follows a separate, out-of-band protocol
+  ([species-validation-protocol.md](https://github.com/tucca-cellag/cellagdiffexp/blob/dev/docs/species-validation-protocol.md)).
+
+## Deployment profiles
+
+- `test` (bovine, offline), `test_nonmodel` (mackerel local-build), `test_chicken`,
+  `test_pig`.
+- `tufts` (SLURM + Singularity; never run compute on login nodes).
+- `seqera` (Seqera Platform / cloud).
+- `docker` / `singularity` / `conda` / `wave` for container execution.

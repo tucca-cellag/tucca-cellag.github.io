@@ -52,10 +52,16 @@ import TuccaLockup from '@components/TuccaLockup.astro';
     suspension growth, uncovering a YAP–FoxO1 mechanism for anchorage-independent
     proliferation.
   </ProjectCard>
-  <ProjectCard title="tucca-rna-seq" href="/tucca-rna-seq/introduction/" icon="ph:tree-structure">
-    A reproducible RNA-Seq workflow on Snakemake v8+: QC through differential
-    expression and functional enrichment, with Tufts HPC guidance. Being reworked
-    into a downstream toolkit for `nf-core/rna-seq`.
+  <ProjectCard title="cellagdiffexp" href="/cellagdiffexp/introduction/" icon="ph:git-diff">
+    A Nextflow (nf-core) pipeline for cellular-agriculture RNA-seq downstream
+    analysis: differential expression, non-model annotation, and functional
+    enrichment (clusterProfiler ORA/GSEA plus opt-in SPIA), running downstream of
+    nf-core/rnaseq. The active successor to tucca-rna-seq.
+  </ProjectCard>
+  <ProjectCard title="tucca-rna-seq (legacy)" href="/tucca-rna-seq/introduction/" icon="ph:tree-structure">
+    The original end-to-end Snakemake v8+ RNA-Seq workflow: QC through differential
+    expression and functional enrichment, with Tufts HPC guidance. Frozen for
+    downstream work, which now lives in cellagdiffexp.
   </ProjectCard>
 </CardGrid>
 
