@@ -22,8 +22,10 @@ contract of nf-core/differentialabundance v2.0.0 verbatim, so it is drop-in afte
 ## "Lean B": owned vs reused surface
 
 The guiding principle is to own only what is genuinely cell-ag-specific and reuse
-everything else from the nf-core ecosystem, so the maintained surface shrinks over time as
-components are upstreamed.
+everything else from the nf-core ecosystem, so the maintained surface stays small and
+shrinks as more of the pipeline can be pulled from upstream nf-core components.
+cellagdiffexp is a standalone pipeline built on the nf-core template and following nf-core
+conventions; it is not an official nf-core pipeline.
 
 ```text title="Lean B data flow"
 nf-core/rnaseq  ──(run separately)──►  gene counts + lengths + samplesheet + contrasts + gtf
@@ -54,8 +56,9 @@ in `bin/`, the report template, the gene-set assets, and the profiles.
 subworkflow, quartonotebook, MultiQC, eggnogmapper, and the nf-core pipeline scaffolding.
 
 Each owned module is authored to the nf-core module spec (`meta.yml`, nf-test + stub, EDAM,
-`environment.yml` as the dependency source of truth, frozen Wave container) so contributing
-it upstream later is a low-friction follow, not a rewrite.
+`environment.yml` as the dependency source of truth, frozen Wave container), so it stays
+compatible with the nf-core tooling (lint, tests, `nf-core modules update`) and could be
+contributed upstream if that ever made sense.
 
 ## Key design decisions (ADRs)
 
@@ -76,8 +79,9 @@ In summary:
   `--spia_license_ack`) into a persistent cache, which compute-node runs then reuse. The
   AnnotationForge NCBI download cache (`--ncbi_files_dir`) follows the same
   populate-once/reuse pattern.
-- **ADR-0004: reuse-first, contributable modules.** Prefer nf-core subworkflows; when
-  owning a module, build it to the upstream spec so it can be contributed back.
+- **ADR-0004: reuse-first; owned modules built to the nf-core spec.** Prefer nf-core
+  subworkflows; author owned modules to the nf-core module spec so they stay compatible
+  with the tooling.
 
 ## What each development phase added
 

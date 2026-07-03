@@ -11,9 +11,10 @@ expression and functional enrichment). The legacy Snakemake docs remain availabl
 reference, but new analyses should use `cellagdiffexp`.
 :::
 
-**`tucca-cellag/cellagdiffexp`** is a Nextflow pipeline, built on the
-[nf-core](https://nf-co.re) template, that runs the cell-ag-specific downstream half of
-an RNA-seq analysis. It runs strictly downstream of
+**`tucca-cellag/cellagdiffexp`** is a standalone Nextflow pipeline, built on the
+[nf-core](https://nf-co.re) template and following nf-core conventions (it is not an
+official nf-core pipeline), that runs the cell-ag-specific downstream half of an RNA-seq
+analysis. It runs strictly downstream of
 [nf-core/rnaseq](https://nf-co.re/rnaseq): you run rnaseq separately, then hand
 `cellagdiffexp` the gene count matrix and a small amount of experiment metadata. It does
 not take FastQ files.
