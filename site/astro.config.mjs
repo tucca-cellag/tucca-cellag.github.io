@@ -70,7 +70,18 @@ export default defineConfig({
             { label: 'Computational blue-melanin design', slug: 'projects/blue-melanin' },
             { label: 'AST: Adherent-to-Suspension Transcriptomics', slug: 'projects/comparative-transcriptomics' },
             {
-              label: 'tucca-rna-seq',
+              label: 'cellagdiffexp',
+              items: [
+                { label: 'Introduction', slug: 'cellagdiffexp/introduction' },
+                { label: 'Usage', slug: 'cellagdiffexp/usage' },
+                { label: 'Output', slug: 'cellagdiffexp/output' },
+                { label: 'Architecture', slug: 'cellagdiffexp/architecture' },
+                { label: 'GitHub Repository', link: 'https://github.com/tucca-cellag/cellagdiffexp' },
+              ],
+            },
+            {
+              label: 'tucca-rna-seq (legacy)',
+              collapsed: true,
               items: [
                 { label: 'Introduction', slug: 'tucca-rna-seq/introduction' },
                 { label: 'GitHub Repository', link: 'https://github.com/tucca-cellag/tucca-rna-seq' },

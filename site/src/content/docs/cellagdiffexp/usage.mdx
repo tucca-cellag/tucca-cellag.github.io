@@ -1,0 +1,496 @@
+---
+title: "cellagdiffexp: Usage"
+description: Input contract, cell-ag annotation and enrichment parameters, SPIA, differential expression options, and how to run the cellagdiffexp pipeline.
+---
+
+`cellagdiffexp` runs strictly downstream of [nf-core/rnaseq](https://nf-co.re/rnaseq). It
+does not take FastQ files. It takes the gene count matrix produced by rnaseq plus a small
+amount of experiment metadata, runs DESeq2 differential expression, annotates the genes
+(resolving a Bioconductor OrgDb or building one and borrowing orthologs for non-model
+species), and runs clusterProfiler functional enrichment. The result is a per-contrast
+Quarto report and a MultiQC summary.
+
+You prepare three things before running: a count matrix, a sample-metadata samplesheet,
+and a contrasts file. Each is described below.
+
+:::note[Full parameter reference]
+This page covers the input contract and the cell-ag-specific substance. For the exhaustive
+parameter list plus the core Nextflow arguments (profiles, `-resume`, `-c`, resource
+tuning, background running), see the canonical
+[`docs/usage.md`](https://github.com/tucca-cellag/cellagdiffexp/blob/dev/docs/usage.md) in
+the repository.
+:::
+
+## Inputs
+
+The pipeline reads a count matrix, a samplesheet, a contrasts file, and a GTF. The
+samplesheet `sample` values are the join key: they must match the count-matrix column
+headers and supply the experimental variables that the contrasts file references.
+
+| Parameter                 | Required | Description                                                                                                                       |
+| ------------------------- | -------- | --------------------------------------------------------------------------------------------------------------------------------- |
+| `--matrix`                | yes      | Gene x sample raw count matrix from rnaseq (e.g. `salmon.merged.gene_counts.tsv`). First column `gene_id`; one column per sample. |
+| `--input`                 | yes      | Sample-metadata samplesheet (CSV). Key column `sample` plus the experimental-variable columns the contrasts reference.            |
+| `--contrasts`             | yes      | Contrasts file (YAML), `id`/`variable`/`reference`/`target` per contrast.                                                         |
+| `--gtf`                   | yes      | Genome GTF annotation. Drives gene annotation; the DE path itself has no Bioconductor org.db dependency.                          |
+| `--feature_length_matrix` | no       | Gene x sample length matrix (`salmon.merged.gene_lengths.tsv`) used as the DESeq2 length offset.                                  |
+| `--outdir`                | yes      | Output directory. Use an absolute path on cloud infrastructure.                                                                   |
+
+### Count matrix (`--matrix`)
+
+A tab-separated gene x sample matrix of raw counts. The first column must be `gene_id`; the
+remaining column headers must match the `sample` values in your samplesheet. This matrix
+also supplies the gene universe for ortholog mapping. The feature IDs are typically Ensembl
+gene IDs from a Salmon/rnaseq run (see `--orgdb_keytype` below if yours are not).
+
+### Samplesheet (`--input`)
+
+A CSV carrying sample metadata, not FastQ paths. The only required column is `sample`; add
+one column per experimental variable your contrasts reference (for example `condition`).
+
+```csv title="samplesheet.csv"
+sample,condition
+sample1,control
+sample2,control
+sample3,treated
+sample4,treated
+```
+
+| Column     | Description                                                                                        |
+| ---------- | -------------------------------------------------------------------------------------------------- |
+| `sample`   | Sample identifier. Must match a column header in `--matrix`. No spaces.                            |
+| _(others)_ | Any experimental variables referenced by the contrasts file, for example `condition`, `treatment`. |
+
+### Contrasts (`--contrasts`)
+
+A YAML file of contrasts, adopted from
+[nf-core/differentialabundance](https://nf-co.re/differentialabundance) v2.0.0 so the file
+is drop-in compatible. Two shapes are accepted: a **simple list** of column-based
+contrasts, and an **advanced `{contrasts: [...]}` object** for design formulas and
+interaction or mixed-effects models.
+
+#### Simple form
+
+Each contrast names a samplesheet column (`variable`) and the two levels to compare.
+`reference` is the baseline; `target` is the level tested against it.
+
+```yaml title="contrasts.yml"
+- id: treated_vs_control
+  variable: condition
+  reference: control
+  target: treated
+```
+
+Both `reference` and `target` are validated at parse time against the levels actually
+observed in the `variable` column. A contrast that names a level not present in the
+samplesheet is rejected before any analysis runs.
+
+##### Blocking factor
+
+A simple contrast may add an optional `blocking` field to correct for a nuisance factor
+(for example a processing batch). The blocking column is passed to DESeq2 as
+`--blocking_variables`, so the fit becomes `~ <blocking> + <variable>`. Give a single
+column, or several separated by `;`. Each blocking column must exist in the samplesheet and
+differ from the contrast `variable`.
+
+```yaml title="contrasts.yml (blocking)"
+- id: treated_vs_control
+  variable: condition
+  reference: control
+  target: treated
+  blocking: batch
+```
+
+The blocking factor must be crossed with the contrast variable, not aliased to it. If every
+blocking level maps to a single contrast level (the factors are perfectly confounded), the
+effect cannot be separated and the run is rejected by the confounding pre-flight (see
+[Design pre-flight checks](#design-pre-flight-checks)).
+
+#### Advanced form (formulas, interactions, mixed effects)
+
+For designs that a single `variable` cannot express, provide a top-level `contrasts:` key
+whose value is a list of objects. Each object carries an `id`, a design `formula`, and
+either a `comparison` array or a `make_contrasts_str` string:
+
+- `formula`: the design formula, for example `~ genotype * treatment` (interaction) or
+  `~ condition + (1|donor)` (random intercept).
+- `comparison`: an array of at least three tokens (`[variable, reference, target]`, the
+  limma `makeContrasts` convention). The schema requires three or more items.
+- `make_contrasts_str`: a single coefficient string. Use this when the contrast is one
+  coefficient (one token), since `comparison` cannot hold fewer than three items.
+- `blocking_factors` (optional): an array of nuisance columns to add to the formula.
+
+##### Interaction design
+
+Fit `genotype * treatment` and test the single interaction coefficient. Because that
+coefficient is one token, it is supplied through `make_contrasts_str` rather than
+`comparison`. Coefficient names follow R's `model.matrix` after `make.names`, so `genotype`
+level `wt` crossed with `treatment` level `treated` gives `genotypewt.treatmenttreated`:
+
+```yaml title="contrasts.yml (interaction)"
+contrasts:
+  - id: interaction_geno_treat
+    formula: "~ genotype * treatment"
+    make_contrasts_str: "genotypewt.treatmenttreated"
+```
+
+##### Random effects (repeated measures)
+
+A `(1|...)` term in the formula declares a random intercept, for example a per-donor
+baseline in a paired design. Random-effects designs require `--differential_method dream`
+(see [Differential expression options](#differential-expression-options)); a `(1|...)` term
+without it is rejected at parse time.
+
+```yaml title="contrasts.yml (repeated measures, DREAM)"
+contrasts:
+  - id: treated_vs_control
+    formula: "~ condition + (1|donor)"
+    make_contrasts_str: "conditiontreated"
+```
+
+Here each donor contributes a paired control and treated sample. Since
+`model.matrix(~ condition + (1|donor))` reduces to `model.matrix(~ condition)`, the
+non-reference coefficient (`control` sorts first as the reference) is `conditiontreated`.
+Run this contrast with `--differential_method dream`.
+
+#### Design pre-flight checks
+
+Before fitting, every contrast is validated so a doomed design fails fast with a clear
+message rather than deep inside DESeq2:
+
+- **Replicates.** Each contrast group must have at least two biological replicates. A group
+  with a single sample is rejected. Replicate counts are logged per contrast.
+- **Confounding.** A blocking factor perfectly confounded with the contrast variable (each
+  blocking level maps to exactly one contrast level) is rejected, because its effect cannot
+  be separated from the effect of interest.
+
+## Cell-ag annotation and enrichment
+
+| Parameter            | Default      | Description                                                                                                                                                                                                                            |
+| -------------------- | ------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `--species`          | _(required)_ | Species as `Genus_species`, underscore-separated (e.g. `Bos_taurus`, `Gallus_gallus`, `Sus_scrofa`, `Scomber_scombrus`).                                                                                                               |
+| `--tax_id`           | _(required)_ | NCBI taxonomy id (e.g. `9913` for _Bos taurus_, `9031` for _Gallus gallus_, `9823` for _Sus scrofa_, `13677` for _Scomber scombrus_).                                                                                                  |
+| `--orgdb_keytype`    | `ENSEMBL`    | AnnotationDbi keytype of the gene IDs in `--matrix`. Use `ENTREZID` for matrices keyed on NCBI Gene IDs.                                                                                                                               |
+| `--ncbi_files_dir`   | _(none)_     | Persistent cache dir for the AnnotationForge NCBI gene-file downloads used by the local-OrgDb-build path (non-model species only). Populate on a network node; reuse on offline compute nodes. Unset downloads into the task work dir. |
+| `--rebuild_cache`    | _(none)_     | Force-rebuild (`true`) or reuse (`false`) the `--ncbi_files_dir` download cache. Unset uses `makeOrgPackageFromNCBI`'s own default.                                                                                                    |
+| `--cellag_gene_sets` | _(none)_     | Optional cell-ag curated gene sets (GMT) for clusterProfiler ORA/GSEA.                                                                                                                                                                 |
+
+`--species` and `--tax_id` drive annotation: the pipeline resolves a Bioconductor OrgDb
+when one exists, otherwise it builds one locally with AnnotationForge and borrows orthologs
+through the NCBI Datasets API. Bovine (`org.Bt.eg.db`), chicken (`org.Gg.eg.db`), and pig
+(`org.Ss.eg.db`) all have a packaged OrgDb, so they take the bioconda-native branch; a
+species like Atlantic mackerel with no OrgDb takes the local-build branch. The strict
+`Genus_species` pattern is also a safety check, since the value reaches the annotation and
+enrichment R tools.
+
+`--orgdb_keytype` tells clusterProfiler how to map the matrix feature IDs to `ENTREZID`
+through the OrgDb. Salmon/rnaseq matrices are Ensembl gene IDs (the `ENSEMBL` default); a
+non-model matrix keyed on NCBI Gene IDs uses `ENTREZID`. Any keytype your OrgDb supports is
+accepted; it is validated against the resolved OrgDb at runtime.
+
+For non-model species, the local OrgDb build downloads gene files from NCBI, which needs
+network access. On an air-gapped cluster you can split that download from the compute run
+the same way the SPIA KEGG cache does (see
+[The KEGG topology cache](#the-kegg-topology-cache)): point `--ncbi_files_dir` at a
+persistent directory, populate it once on a network-capable node, then bind that directory
+into offline compute-node runs to reuse the frozen download. `--rebuild_cache true` forces
+a fresh download into that directory; `false` reuses it. Model species (bovine, chicken,
+pig) resolve a packaged OrgDb and never touch this path.
+
+### Gene-set sources for enrichment
+
+Enrichment runs every requested gene-set source through one clusterProfiler engine. Each
+source is tagged with a `provider` name that becomes its report panel and its key in the
+ORA/GSEA output lists. The available sources are:
+
+| Source     | How to enable                                | Provider key          | Notes                                                                                                   |
+| ---------- | -------------------------------------------- | --------------------- | ------------------------------------------------------------------------------------------------------- |
+| GO         | Always run                                   | `GO`                  | Built from the resolved OrgDb, so it needs no network access.                                           |
+| MSigDB     | `--msigdb_collections H,C2,C5`               | `MSigDB_<collection>` | Species-aware. Comma-separated collection codes; leave unset to skip MSigDB.                            |
+| Custom GMT | `--cellag_gene_sets <file.gmt>`              | `CustomGMT_<name>`    | Cell-ag curated gene sets in GMT (or two-column `.txt`) form.                                           |
+| KEGG       | Custom-config `ext.args` (`--kegg_organism`) | `KEGG`                | Live KEGG API. Off by default and not a pipeline flag; add `--kegg_organism <code>` in a custom config. |
+
+`--msigdb_collections` takes MSigDB collection codes (for example `H` for hallmark, `C2`
+for curated, `C5` for ontology), comma-separated. The species is resolved from `--species`,
+so only gene sets for that organism are pulled. Leaving it unset skips MSigDB.
+
+`--enrichment_simplify` (default `true`) collapses redundant GO terms with clusterProfiler
+`simplify()` before plotting, so the GO panels show representative terms rather than many
+near-duplicate ones. Set `--enrichment_simplify false` to keep all GO terms. It affects
+only the GO source.
+
+KEGG is supported by the underlying enrichment tools but is not exposed as a pipeline
+parameter. It stays offline unless you add `--kegg_organism <code>` to the
+`CLUSTERPROFILER_ORA|CLUSTERPROFILER_GSEA` process arguments through a custom config.
+
+## SPIA pathway impact (opt-in)
+
+SPIA (Signaling Pathway Impact Analysis) scores KEGG signaling pathways for both
+over-representation and the direction and magnitude of the measured fold changes, so it
+goes beyond a gene-set hit count to a pathway-level perturbation estimate. It is off by
+default and gated behind an explicit license acknowledgement.
+
+| Parameter              | Default  | Description                                                                                                      |
+| ---------------------- | -------- | ---------------------------------------------------------------------------------------------------------------- |
+| `--spia`               | `false`  | Enable SPIA. Requires `--spia_license_ack true`.                                                                 |
+| `--spia_license_ack`   | `false`  | Acknowledge KEGG's academic-use license terms. Must be `true` when `--spia` is set.                              |
+| `--kegg_organism`      | _(none)_ | KEGG 3-4 letter organism code (e.g. `bta`, `gga`, `ssc`) for native-organism SPIA. Omit to use the KO route.     |
+| `--kegg_cache`         | _(none)_ | Persistent directory holding the frozen SPIA topology (`<org>SPIA.RData`). Unset builds it in the task work dir. |
+| `--rebuild_kegg_cache` | _(none)_ | Set `true` to force a rebuild of the KEGG topology cache instead of reusing an existing build.                   |
+| `--gene_ko_map`        | _(none)_ | Gene-to-KO map TSV (`gene<TAB>ko`) for the KO route, bypassing eggnogmapper.                                     |
+| `--proteome`           | _(none)_ | Protein FASTA for the species, fed to eggnogmapper for gene-to-KO annotation (KO route).                         |
+| `--eggnog_db_dir`      | _(none)_ | Pre-downloaded eggNOG data directory (~50 GB, user-provided) that eggnogmapper needs to annotate genes to KOs.   |
+
+### Enabling SPIA and the license acknowledgement
+
+SPIA runs only with `--spia true --spia_license_ack true`. The acknowledgement is required
+because SPIA uses KEGG pathway topology, and KEGG's data is distributed under academic-use
+license terms that each user accepts on their own account. This pipeline never
+redistributes KEGG-derived data: you download the topology yourself under your own license,
+and the acknowledgement flag records that you have done so. A `--spia` run without
+`--spia_license_ack true` is rejected.
+
+### Native-organism route vs KO reference route
+
+The presence of `--kegg_organism` selects the route:
+
+- **Native-organism route.** Give `--kegg_organism <code>` (for example `bta` for
+  _Bos taurus_) when the species has its own KEGG organism. SPIA uses that organism's native
+  pathway topology directly. Setting `--kegg_organism` also activates KEGG gene-set ORA/GSEA
+  in the enrichment step, so a native run gains a `KEGG` provider panel alongside SPIA.
+- **KO reference route.** Omit `--kegg_organism` for a non-model species with no native
+  KEGG organism. SPIA then runs against the organism-agnostic KEGG Orthology (KO) reference
+  pathways, and you supply a gene-to-KO mapping (see below).
+
+### The KEGG topology cache
+
+Building the SPIA topology (`<org>SPIA.RData`) calls the KEGG REST API. Compute nodes on
+locked-down clusters cannot reach it (the KEGG REST endpoint returns 403), so populate the
+cache once on a network-capable node and bind the directory into later compute-node runs:
+
+```bash
+# one-time populate on a network-capable node
+nextflow run tucca-cellag/cellagdiffexp -profile docker \
+   --spia --spia_license_ack --kegg_organism bta \
+   --kegg_cache /shared/kegg_cache \
+   ...
+
+# later compute-node runs reuse the frozen build
+--kegg_cache /shared/kegg_cache
+```
+
+Leave `--kegg_cache` unset to build the topology in the task work directory instead (only
+workable where the compute node can reach KEGG). Add `--rebuild_kegg_cache true` to force a
+fresh build over an existing cached one.
+
+### Gene-to-KO sources for the KO route
+
+The KO route needs a gene-to-KO mapping. Provide exactly one of:
+
+- `--gene_ko_map <file.tsv>`: a two-column `gene<TAB>ko` TSV. This bypasses eggnogmapper
+  entirely and is the fastest option when you already have KO assignments.
+- `--proteome <file.fasta>` together with `--eggnog_db_dir <dir>`: the pipeline runs
+  [nf-core/eggnogmapper](https://nf-co.re/modules/eggnogmapper) on the protein FASTA, parses
+  the `KEGG_ko` column of its annotations, and collapses many-to-many gene-to-KO
+  relationships by keeping the most significant gene per KO. The eggNOG data directory is
+  large (~50 GB) and is not downloaded by the pipeline: pre-fetch it with
+  `download_eggnog_data.py` and point `--eggnog_db_dir` at it.
+
+:::note[The `de` and `all` gene sets]
+SPIA compares a differentially expressed subset against the full measured background. This
+pipeline supplies both correctly: `de` is the significant DE subset (genes passing the
+`--fc_threshold` and `--stat_threshold` filters) and `all` is the full measured universe, a
+superset of `de`. Passing an `all` set that is not a proper superset of `de` (a common
+mistake in naive SPIA usage) is avoided by construction here.
+:::
+
+#### Worked example: native organism
+
+```bash
+nextflow run tucca-cellag/cellagdiffexp \
+   -profile docker \
+   --input ./samplesheet.csv \
+   --matrix ./salmon.merged.gene_counts.tsv \
+   --contrasts ./contrasts.yml \
+   --gtf ./genes.gtf \
+   --species Bos_taurus \
+   --tax_id 9913 \
+   --spia \
+   --spia_license_ack \
+   --kegg_organism bta \
+   --kegg_cache /shared/kegg_cache \
+   --outdir ./results
+```
+
+#### Worked example: KO reference route
+
+```bash
+nextflow run tucca-cellag/cellagdiffexp \
+   -profile docker \
+   --input ./samplesheet.csv \
+   --matrix ./salmon.merged.gene_counts.tsv \
+   --contrasts ./contrasts.yml \
+   --gtf ./genes.gtf \
+   --species Scomber_scombrus \
+   --tax_id 13677 \
+   --spia \
+   --spia_license_ack \
+   --gene_ko_map ./scomber_gene_ko.tsv \
+   --kegg_cache /shared/kegg_cache \
+   --outdir ./results
+```
+
+Swap `--gene_ko_map ./scomber_gene_ko.tsv` for
+`--proteome ./scomber_proteins.fasta --eggnog_db_dir /shared/eggnog_db` to derive the
+gene-to-KO map with eggnogmapper instead.
+
+## Differential expression options
+
+| Parameter               | Default            | Description                                                                                                        |
+| ----------------------- | ------------------ | ------------------------------------------------------------------------------------------------------------------ |
+| `--differential_method` | `deseq2`           | Differential method: `deseq2` (fixed-effects GLM) or `dream` (variancePartition mixed models, for random effects). |
+| `--multiple_testing`    | `bh`               | Multiple-testing correction: `bh` (DESeq2 Benjamini-Hochberg padj) or `ihw`. `ihw` requires `deseq2`.              |
+| `--lfc_shrink`          | `true`             | Shrink DESeq2 log2 fold changes (ashr estimator). Type is fixed to ashr; apeglm/normal selection is deferred.      |
+| `--deseq2_vs_method`    | _(module default)_ | DESeq2 variance-stabilising transform, `vst` or `rlog`. Unset uses the module default (`vst`).                     |
+| `--fc_threshold`        | `2.0`              | Absolute fold-change threshold used to flag differentially expressed genes.                                        |
+| `--stat_threshold`      | `0.05`             | Adjusted p-value (padj) threshold used to flag differentially expressed genes.                                     |
+
+Set `--deseq2_vs_method rlog` for very small matrices, where `vst`'s sub-sampling fails.
+The `test` and `test_nonmodel` profiles set `rlog` for this reason.
+
+### Choosing a differential method
+
+`--differential_method deseq2` (the default) fits a fixed-effects negative-binomial GLM and
+is the right choice for the simple and blocking contrast forms and for fixed-effect
+interaction designs.
+
+`--differential_method dream` fits linear mixed models via variancePartition on
+voom-normalised counts. It is required for any design with a random-effects `(1|...)` term,
+such as repeated measures. A random-effects contrast without `dream` is rejected at parse
+time. A worked example, using the `~ condition + (1|donor)` formula:
+
+```bash
+nextflow run tucca-cellag/cellagdiffexp \
+   -profile docker \
+   --input ./samplesheet.csv \
+   --matrix ./salmon.merged.gene_counts.tsv \
+   --contrasts ./contrasts.yml \
+   --gtf ./genes.gtf \
+   --species Bos_taurus \
+   --tax_id 9913 \
+   --differential_method dream \
+   --outdir ./results
+```
+
+The two methods name their result columns differently (DESeq2
+`log2FoldChange`/`padj`/`baseMean` versus DREAM `logFC`/`adj.P.Val`/`AveExpr`). The report
+plots and the enrichment ranking read the column names from the chosen method, so both
+produce sensible reports without further configuration.
+
+### IHW multiple testing
+
+`--multiple_testing ihw` re-weights the DESeq2 p-values with Independent Hypothesis
+Weighting (covariate = `baseMean`) through an owned post-DE module, then re-applies the
+significance filter on the IHW-adjusted padj. It requires `--differential_method deseq2`.
+The output table is `report/<contrast>.ihw.results.tsv`; the original Benjamini-Hochberg
+values are retained in a `padj_bh` column (see the [output docs](/cellagdiffexp/output/)).
+The default `bh` uses DESeq2's own Benjamini-Hochberg padj with no re-weighting.
+
+## Reporting options
+
+The pipeline emits two report tiers (see the [output docs](/cellagdiffexp/output/)): one
+run-level QC report per run, and one report per contrast.
+
+| Parameter                  | Default | Description                                                                                       |
+| -------------------------- | ------- | ------------------------------------------------------------------------------------------------- |
+| `--exploratory_n_features` | `500`   | Number of most-variable genes used for the run-level PCA (and its scree plot).                    |
+| `--report_top_de_genes`    | `10`    | Number of top DE genes (by adjusted p-value) shown in the per-contrast expression box-plot panel. |
+
+## Running the pipeline
+
+The typical command is:
+
+```bash
+nextflow run tucca-cellag/cellagdiffexp \
+   -profile docker \
+   --input ./samplesheet.csv \
+   --matrix ./salmon.merged.gene_counts.tsv \
+   --feature_length_matrix ./salmon.merged.gene_lengths.tsv \
+   --contrasts ./contrasts.yml \
+   --gtf ./genes.gtf \
+   --species Bos_taurus \
+   --tax_id 9913 \
+   --outdir ./results
+```
+
+This launches the pipeline with the `docker` configuration profile.
+
+Before running on your own data, check your setup with one of the bundled test profiles.
+The `test` profile uses a bovine dataset; `test_chicken` and `test_pig` mirror it for
+chicken (_Gallus gallus_) and pig (_Sus scrofa_), the other two first-class model species:
+
+```bash
+# bovine
+nextflow run tucca-cellag/cellagdiffexp -profile test,docker --outdir ./results
+
+# chicken
+nextflow run tucca-cellag/cellagdiffexp -profile test_chicken,docker --outdir ./results
+
+# pig
+nextflow run tucca-cellag/cellagdiffexp -profile test_pig,docker --outdir ./results
+```
+
+### Parameter files
+
+If you reuse the same parameters across runs, put them in a `yaml` or `json` file and pass
+it with `-params-file <file>` instead of typing each flag:
+
+```bash
+nextflow run tucca-cellag/cellagdiffexp -profile docker -params-file params.yaml
+```
+
+```yaml title="params.yaml"
+input: "./samplesheet.csv"
+matrix: "./salmon.merged.gene_counts.tsv"
+feature_length_matrix: "./salmon.merged.gene_lengths.tsv"
+contrasts: "./contrasts.yml"
+gtf: "./genes.gtf"
+species: "Bos_taurus"
+tax_id: 9913
+outdir: "./results/"
+```
+
+:::caution[Do not pass parameters with `-c`]
+Provide pipeline parameters via the CLI or the Nextflow `-params-file` option. Custom config
+files supplied with `-c` must only be used for resource tuning, other infrastructural
+tweaks, or module arguments (`ext.args`), never for pipeline parameters, as that will
+result in errors.
+:::
+
+### Deployment profiles
+
+- `test` (bovine, offline), `test_chicken`, `test_pig`: minimal offline datasets for the
+  three first-class model species, each taking the packaged-OrgDb branch. Need no other
+  parameters except `--outdir`.
+- `test_nonmodel`: an Atlantic mackerel (_Scomber scombrus_) dataset that exercises the
+  non-model path (a local AnnotationForge OrgDb build plus live NCBI ortholog mapping). Not
+  CI-runnable; run it out of band.
+- `test_full`: a full-size test dataset.
+- `tufts`: the TUCCA Tufts HPC profile (SLURM + Singularity). Run from a compute node, never
+  a login node.
+- `seqera`: the TUCCA profile for the Seqera Platform.
+- `docker` / `singularity` / `podman` / `apptainer` / `conda` / `wave`: software-packaging
+  profiles. Docker or Singularity are recommended for full reproducibility.
+
+### Reproducibility
+
+Nextflow caches the pipeline code after the first run. To update to the latest version:
+
+```bash
+nextflow pull tucca-cellag/cellagdiffexp
+```
+
+Pin a specific version with `-r` (one hyphen), for example `-r 1.3.1`, so a run uses a known
+version of the code and software. Find versions on the
+[releases page](https://github.com/tucca-cellag/cellagdiffexp/releases). The version number
+is logged in reports, so you know what you used when you look back later.

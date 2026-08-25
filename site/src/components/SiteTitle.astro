@@ -26,7 +26,8 @@ const dropdowns = [
     items: [
       { label: 'Computational blue-melanin design', href: `${base}/projects/blue-melanin/` },
       { label: 'AST: Adherent-to-Suspension Transcriptomics', href: `${base}/projects/comparative-transcriptomics/` },
-      { label: 'tucca-rna-seq', href: `${base}/tucca-rna-seq/introduction/` },
+      { label: 'cellagdiffexp', href: `${base}/cellagdiffexp/introduction/` },
+      { label: 'tucca-rna-seq (legacy)', href: `${base}/tucca-rna-seq/introduction/` },
       { label: 'Browse all →', href: `${base}/#our-projects` },
     ],
   },
@@ -43,17 +44,14 @@ const dropdowns = [
   },
   {
     label: 'Docs',
-    match: `${base}/tucca-rna-seq/`,
+    match: `${base}/cellagdiffexp/`,
     items: [
-      { label: 'Introduction', href: `${base}/tucca-rna-seq/introduction/` },
-      { label: 'Installation', href: `${base}/tucca-rna-seq/install-and-config/installation/` },
-      { label: 'Configuration', href: `${base}/tucca-rna-seq/install-and-config/configuration/` },
-      { label: 'Running the workflow', href: `${base}/tucca-rna-seq/running/` },
-      { label: 'Functional enrichment', href: `${base}/tucca-rna-seq/enrichment-analysis/` },
-      { label: 'R / RStudio extensions', href: `${base}/tucca-rna-seq/r-extensions/` },
-      { label: 'Tufts HPC quick start', href: `${base}/tucca-rna-seq/tufts-specific/hpc-quick-start/` },
-      { label: 'Citing the workflow', href: `${base}/tucca-rna-seq/citing-the-workflow/` },
-      { label: 'Getting help', href: `${base}/tucca-rna-seq/help/` },
+      { label: 'Introduction', href: `${base}/cellagdiffexp/introduction/` },
+      { label: 'Usage', href: `${base}/cellagdiffexp/usage/` },
+      { label: 'Output', href: `${base}/cellagdiffexp/output/` },
+      { label: 'Architecture', href: `${base}/cellagdiffexp/architecture/` },
+      { label: 'GitHub repository ↗', href: 'https://github.com/tucca-cellag/cellagdiffexp', external: true },
+      { label: 'tucca-rna-seq (legacy) →', href: `${base}/tucca-rna-seq/introduction/` },
     ],
   },
 ];
@@ -66,7 +64,7 @@ const links = [
 const mobileLinks = [
   { label: 'Projects', href: `${base}/#our-projects` },
   { label: 'Publications', href: `${base}/publications/` },
-  { label: 'Docs', href: `${base}/tucca-rna-seq/introduction/` },
+  { label: 'Docs', href: `${base}/cellagdiffexp/introduction/` },
   { label: 'Our Team', href: `${base}/our-team/` },
   { label: 'Help', href: 'https://github.com/tucca-cellag', external: true },
   { label: 'CAAIL ↗', href: 'https://tucca-cellag.github.io/caail/', external: true },
