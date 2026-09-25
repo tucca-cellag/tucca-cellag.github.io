@@ -18,7 +18,7 @@
 #   ship-pr.sh watch-checks <pr>         # blocks on PR checks; 0 if none/clean, non-zero if a check fails
 #   ship-pr.sh merge <pr>               # merge + delete remote branch, with the gotcha fallback; prints SHA
 #   ship-pr.sh watch-deploy <merge-sha> # finds + watches the deploy.yml run for that SHA; 0 if no deploy fires
-#   ship-pr.sh verify-live <route>...   # curls https://tucca-cellag.github.io/<route>/; non-zero if any != 200
+#   ship-pr.sh verify-live <route>...   # curls https://tucca-compbio.tufts.edu/<route>/; non-zero if any != 200
 #
 # Everything is read-only except `push`, `open-pr`, and `merge`.
 
@@ -27,7 +27,7 @@ set -euo pipefail
 # --- repo facts ---------------------------------------------------------------
 REPO="$(gh repo view --json nameWithOwner -q .nameWithOwner)"                       # e.g. tucca-cellag/tucca-cellag.github.io
 DEFAULT_BRANCH="$(gh repo view --json defaultBranchRef -q .defaultBranchRef.name)"  # e.g. main
-PAGES_BASE="https://tucca-cellag.github.io"                                         # this site is the org Pages root (no subpath)
+PAGES_BASE="https://tucca-compbio.tufts.edu"                                       # this site is the org Pages root (no subpath)
 DEPLOY_WORKFLOW="deploy.yml"                                                        # the only workflow; push-to-main + workflow_dispatch
 
 die() { printf 'ship-pr: %s\n' "$*" >&2; exit 1; }

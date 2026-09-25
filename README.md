@@ -1,7 +1,7 @@
 # TUCCA: Open Computational Research
 
 Source for the **Tufts University Center for Cellular Agriculture (TUCCA)** open
-computational-research hub, served at **<https://tucca-cellag.github.io/>**.
+computational-research hub, served at **<https://tucca-compbio.tufts.edu/>**.
 
 It is the landing point for TUCCA's open-source code, documentation, and AI /
 computational-biology projects, including:
@@ -13,7 +13,7 @@ computational-biology projects, including:
 
 The curated **CAAIL** library (papers, software, databases, datasets at the
 intersection of cellular agriculture and AI) is a separate site at
-**<https://tucca-cellag.github.io/caail/>** ([`tucca-cellag/caail`](https://github.com/tucca-cellag/caail)).
+**<https://caail.tufts.edu/>** ([`tucca-cellag/caail`](https://github.com/tucca-cellag/caail)).
 
 ## Stack
 
