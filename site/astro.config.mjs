@@ -5,10 +5,12 @@ import preact from '@astrojs/preact';
 import icon from 'astro-icon';
 
 // Org/user GitHub Pages site: served at the domain root (base '/'), NOT a
-// subpath. The sibling CAAIL project site lives independently at /caail/.
+// subpath. The sibling CAAIL site lives independently at caail.tufts.edu.
 // trailingSlash 'always' matches the prior Docusaurus URLs (URL parity).
+const SITE = 'https://tucca-compbio.tufts.edu';
+
 export default defineConfig({
-  site: 'https://tucca-cellag.github.io',
+  site: SITE,
   base: '/',
   trailingSlash: 'always',
   integrations: [
@@ -22,12 +24,12 @@ export default defineConfig({
       lastUpdated: true,
       head: [
         // Social card. Branded 1200×630 card for every page.
-        { tag: 'meta', attrs: { property: 'og:image', content: 'https://tucca-cellag.github.io/og.png' } },
+        { tag: 'meta', attrs: { property: 'og:image', content: `${SITE}/og.png` } },
         { tag: 'meta', attrs: { property: 'og:image:width', content: '1200' } },
         { tag: 'meta', attrs: { property: 'og:image:height', content: '630' } },
-        { tag: 'meta', attrs: { name: 'twitter:image', content: 'https://tucca-cellag.github.io/og.png' } },
+        { tag: 'meta', attrs: { name: 'twitter:image', content: `${SITE}/og.png` } },
         // Structured data: Organization (TUCCA) + WebSite, rooted at the domain
-        // root (distinct from CAAIL's /caail/#org graph).
+        // root (distinct from CAAIL's own graph).
         {
           tag: 'script',
           attrs: { type: 'application/ld+json' },
@@ -36,20 +38,20 @@ export default defineConfig({
             '@graph': [
               {
                 '@type': 'Organization',
-                '@id': 'https://tucca-cellag.github.io/#org',
+                '@id': `${SITE}/#org`,
                 name: 'Tufts University Center for Cellular Agriculture (TUCCA)',
                 url: 'https://cellularagriculture.tufts.edu/',
                 sameAs: ['https://github.com/tucca-cellag'],
               },
               {
                 '@type': 'WebSite',
-                '@id': 'https://tucca-cellag.github.io/#website',
+                '@id': `${SITE}/#website`,
                 name: 'TUCCA — Open Computational Research',
-                url: 'https://tucca-cellag.github.io/',
+                url: `${SITE}/`,
                 description:
                   'Open computational research from the Tufts University Center for Cellular Agriculture — AI, computational biology, and open-source tools for cellular agriculture.',
                 inLanguage: 'en',
-                publisher: { '@id': 'https://tucca-cellag.github.io/#org' },
+                publisher: { '@id': `${SITE}/#org` },
               },
             ],
           }),
@@ -63,7 +65,7 @@ export default defineConfig({
       ],
       sidebar: [
         { label: 'Home', link: '/' },
-        { label: 'CAAIL Library ↗', link: 'https://tucca-cellag.github.io/caail/' },
+        { label: 'CAAIL Library ↗', link: 'https://caail.tufts.edu/' },
         {
           label: 'Projects',
           items: [
