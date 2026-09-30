@@ -20,7 +20,7 @@ This repo is deliberately simple, and this skill is the trimmed sibling of CAAIL
   `main` + `workflow_dispatch`. A PR therefore legitimately has **zero checks**.
 - **No Lighthouse gate.** The deploy is just build + upload + Deploy to Pages.
 - **No test suite.** The local gate is the production build, `pnpm --dir site build`.
-- **The site is the org Pages root** (`https://tucca-cellag.github.io/`, no `/caail/` subpath).
+- **The site is the org Pages root** (`https://tucca-compbio.tufts.edu/`, no subpath).
 - **`deploy.yml` has a `paths-ignore` guard**, so a `.claude/**`-, `.github/**`-, or root-`*.md`-only
   push does **not** deploy.
 
@@ -116,7 +116,7 @@ on this repo, so a green run is the whole story.
 bash .claude/skills/tucca-pr-wrapup/ship-pr.sh verify-live <route> [<route> ...]   # '' = homepage
 ```
 Use the routes preflight suggested. Beyond the 200 check the helper does, add a content assertion
-for what you changed — e.g. `curl -s https://tucca-cellag.github.io/<route>/ | grep` for a new
+for what you changed — e.g. `curl -s https://tucca-compbio.tufts.edu/<route>/ | grep` for a new
 heading or the corrected text — so you confirm the *content* shipped, not just that the page exists.
 
 ### 8. Clean up

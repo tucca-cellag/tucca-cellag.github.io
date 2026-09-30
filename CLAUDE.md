@@ -1,12 +1,12 @@
 # TUCCA hub site: context for Claude
 
 Source for the **Tufts University Center for Cellular Agriculture (TUCCA)** open
-computational-research hub at <https://tucca-cellag.github.io/>. Astro + Starlight; site
+computational-research hub at <https://tucca-compbio.tufts.edu/>. Astro + Starlight; site
 source in [`site/`](./site). Build/deploy details and commands live in [`README.md`](./README.md).
 Don't duplicate them here. Deploy is GitHub Actions **on push to `main`** (`.github/workflows/deploy.yml`).
 
 The curated **CAAIL** library is a *separate* repo/site (`tucca-cellag/caail`, served at
-`/caail/`). Don't edit CAAIL content from here, and vice-versa.
+<https://caail.tufts.edu/>). Don't edit CAAIL content from here, and vice-versa.
 
 Content pages are Starlight MDX under `site/src/content/docs/`. Reusable card primitives
 (`Card`, `CardImage`, `CardHeader/Body/Footer`, `Columns`, `Column`) live in
