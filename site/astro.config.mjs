@@ -23,6 +23,15 @@ export default defineConfig({
       // signal, mirroring the Tufts RT guides footer).
       lastUpdated: true,
       head: [
+        // Google Search Console ownership for the Tufts account. Search Console
+        // issues one token per Google account, so this tag verifies every property
+        // that account adds; the CAAIL site carries the same one. The older HTML-file
+        // verification (public/google*.html) belongs to the account that set the site
+        // up and stays alongside.
+        {
+          tag: 'meta',
+          attrs: { name: 'google-site-verification', content: 'EfjIjiDvU1wMiT-AY61WMslZGzJz5ey4xNqy1ihVgO0' },
+        },
         // Social card. Branded 1200×630 card for every page.
         { tag: 'meta', attrs: { property: 'og:image', content: `${SITE}/og.png` } },
         { tag: 'meta', attrs: { property: 'og:image:width', content: '1200' } },
