@@ -8,11 +8,12 @@ import Card from "@components/docs/Card.astro";
 import CardImage from "@components/docs/CardImage.astro";
 import CardBody from "@components/docs/CardBody.astro";
 
-:::note[Roadmap]
-`tucca-rna-seq` is being reworked into a downstream-analysis toolkit for
-[`nf-core/rna-seq`](https://nf-co.re/rnaseq), refocusing on differential expression,
-functional enrichment, and reporting on top of the nf-core alignment/quantification
-core. These docs describe the current Snakemake workflow.
+:::caution[Frozen: superseded by cellagdiffexp]
+The downstream analysis (differential expression, functional enrichment, and reporting)
+has moved to **[cellagdiffexp](/cellagdiffexp/introduction/)**, a Nextflow (nf-core)
+pipeline that runs downstream of [`nf-core/rnaseq`](https://nf-co.re/rnaseq). Use
+cellagdiffexp for new work. These pages describe the original Snakemake workflow and are
+kept for reference; the Tufts HPC guidance here still applies.
 :::
 
 The **`tucca-rna-seq`** workflow is an end-to-end workflow for RNA-Seq data
