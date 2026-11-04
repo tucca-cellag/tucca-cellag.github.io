@@ -58,3 +58,14 @@ On this Starlight version, `template: splash` removes the left sidebar, right "O
 TOC, and prev/next pagination, but it **still renders the page title** (the `title:`
 frontmatter) as an `<h1>`. Do **not** add a manual `<h1>{title}</h1>` in the MDX body, or the
 title renders **twice**. Add only sub-title/lede prose below it if needed.
+
+## Agent skills
+
+Planning for this site (specs, tickets, bugs, decisions) is issues in the private repo
+`tucca-cellag/tucca-compbio-planning`, on the organization Project "tucca-compbio planning".
+`/to-spec`, `/to-tickets` and `/wayfinder` write there. Every `gh issue` command names its repo with
+`-R`, because `gh` otherwise acts on this public checkout. This repo's own issues are left to
+outside contributors. Cite a planning ticket here as `tucca-cellag/tucca-compbio-planning#<n>`, and
+never quote or paraphrase a planning ticket's text in this repo: its issues, pull requests, commit
+messages and branch names are public. The tracker's conventions live in that repo's `docs/agents/`,
+so finding none here means read this section: the tracker is configured.
