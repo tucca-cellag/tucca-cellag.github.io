@@ -17,8 +17,19 @@ import TuccaLockup from './TuccaLockup.astro';
   </span>
 </div>
 <p class="tucca-foot-disclaimer">
-  Linked external resources are independent of TUCCA and Tufts University and
-  remain under their own licenses.
+  This site or any product or service provided by the site is not affiliated
+  with or endorsed by Tufts University. Linked external resources are
+  independent of TUCCA and Tufts University and remain under their own
+  licenses.
+</p>
+<p class="tucca-foot-legal">
+  <span>© 2026 Tufts University</span>
+  <span>
+    <a href="https://access.tufts.edu/digital-accessibility-policy">Digital Accessibility Policy</a>.
+    To report an accessibility problem, email <a href="mailto:cellag@tufts.edu">cellag@tufts.edu</a>.
+  </span>
+  <a href="https://www.tufts.edu/about/privacy">Privacy Statement</a>
+  <a href="https://oeo.tufts.edu/policies-procedures/non-discrimination-statement/">Non-Discrimination Statement</a>
 </p>
 <Default><slot /></Default>
 
@@ -29,7 +40,7 @@ import TuccaLockup from './TuccaLockup.astro';
     justify-content: space-between;
     flex-wrap: wrap;
     gap: 0.6rem;
-    font-size: 0.72rem;
+    font-size: 0.8125rem; /* 13px */
     color: var(--tucca-muted);
     border-top: 1px solid var(--tucca-border);
     padding-top: 0.8rem;
@@ -39,8 +50,20 @@ import TuccaLockup from './TuccaLockup.astro';
   .tucca-footer a { color: var(--tucca-link); }
   .tucca-foot-disclaimer {
     margin: 0.5rem 0 0;
-    font-size: 0.68rem;
+    font-size: 0.8125rem; /* 13px */
     line-height: 1.4;
     color: var(--tucca-muted);
   }
+  /* Tufts' statements, on every page: copyright, accessibility policy and
+     contact, privacy, non-discrimination. */
+  .tucca-foot-legal {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.3rem 1rem;
+    margin: 0.5rem 0 0;
+    font-size: 0.8125rem; /* 13px */
+    line-height: 1.4;
+    color: var(--tucca-muted);
+  }
+  .tucca-foot-legal a { color: var(--tucca-link); }
 </style>
