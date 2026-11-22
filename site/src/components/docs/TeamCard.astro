@@ -29,7 +29,8 @@ const { name, role, image, links = [] } = Astro.props;
 <Column>
   <Card shadow="tl" class="t-team-card">
     <CardHeader><h2>{name}</h2></CardHeader>
-    <CardImage cardImageUrl={image} alt={name} title={name} ratio="1/1" />
+    {/* Empty alt: the name is already the heading above the photo. */}
+    <CardImage cardImageUrl={image} alt="" title={name} ratio="1/1" />
     <CardBody>
       {role && <p class="t-team-role">{role}</p>}
       <div class="t-team-bio" data-team-bio><slot /></div>
