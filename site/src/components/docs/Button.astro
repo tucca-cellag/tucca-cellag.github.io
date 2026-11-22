@@ -72,13 +72,14 @@ const href = disabled ? undefined : isExternal ? link : `${base}/${link.replace(
   .t-button--lg { padding: 0.65rem 1.3rem; font-size: 1rem; }
   .t-button--block { display: flex; width: 100%; }
 
-  .t-button--primary { background: var(--tucca-primary); color: #fff; }
+  .t-button--primary { background: var(--tucca-primary); color: var(--tucca-on-primary); }
   .t-button--primary:hover { background: var(--tucca-primary-hover); }
   .t-button--secondary { background: var(--tucca-surface); color: var(--tucca-ink); border-color: var(--tucca-border); }
   .t-button--secondary:hover { border-color: var(--tucca-link); color: var(--tucca-primary); }
   .t-button--success { background: #1c7c54; color: #fff; }
-  .t-button--info { background: var(--tucca-link); color: #fff; }
-  .t-button--warning { background: #b8860b; color: #fff; }
+  .t-button--info { background: var(--tucca-link); color: var(--tucca-on-primary); }
+  /* Dark text: white on this gold is 3.25:1; #14213D is 4.91:1, in both themes. */
+  .t-button--warning { background: #b8860b; color: #14213d; }
   .t-button--danger { background: #b3261e; color: #fff; }
   .t-button--link { background: transparent; color: var(--tucca-link); padding-inline: 0.25rem; }
   .t-button--link:hover { text-decoration: underline; }
@@ -86,7 +87,7 @@ const href = disabled ? undefined : isExternal ? link : `${base}/${link.replace(
   /* Outline variants invert fill for a border-only look. */
   .t-button--outline { background: transparent; }
   .t-button--outline.t-button--primary { color: var(--tucca-primary); border-color: var(--tucca-primary); }
-  .t-button--outline.t-button--primary:hover { background: var(--tucca-primary); color: #fff; }
+  .t-button--outline.t-button--primary:hover { background: var(--tucca-primary); color: var(--tucca-on-primary); }
   .t-button--outline.t-button--secondary { color: var(--tucca-ink); border-color: var(--tucca-border); }
 
   .t-button--disabled { opacity: 0.55; pointer-events: none; cursor: default; }
