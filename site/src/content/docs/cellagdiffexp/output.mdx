@@ -1,0 +1,218 @@
+---
+title: "cellagdiffexp: Output"
+description: The directories and files cellagdiffexp writes, from DESeq2 results and species annotation through functional enrichment, SPIA, and the two-tier report.
+---
+
+This page describes the output produced by the pipeline. Most of the plots come from the
+MultiQC report and the per-contrast Quarto report, which summarise results at the end of
+the run.
+
+The directories below are created in the results directory after the pipeline finishes. All
+paths are relative to the top-level results directory. Throughout, `<species>` is the
+`--species` value lowercased (e.g. `bos_taurus` for `--species Bos_taurus`, `gallus_gallus`
+for chicken, `sus_scrofa` for pig) and `<contrast>` is a contrast `id` from the contrasts
+file (e.g. `treated_vs_control`).
+
+## Pipeline overview
+
+The pipeline runs downstream of nf-core/rnaseq and processes the gene count matrix through
+these steps:
+
+- [DESeq2 differential expression](#deseq2-differential-expression): model fit, normalised
+  counts, per-contrast results.
+- [Differential expression filtering](#differential-expression-filtering): genes flagged by
+  fold-change and padj thresholds.
+- [Species annotation](#species-annotation): OrgDb resolution and ortholog mapping with
+  provenance.
+- [Functional enrichment](#functional-enrichment): clusterProfiler ORA and GSEA.
+- [SPIA pathway impact](#spia-pathway-impact): opt-in KEGG signaling pathway impact
+  analysis.
+- [Analysis reports](#analysis-reports): self-contained run-level and per-contrast Quarto
+  reports.
+- [MultiQC](#multiqc): aggregate run report.
+- [Pipeline information](#pipeline-information): execution metrics and run provenance.
+
+## DESeq2 differential expression
+
+**Output files (`deseq2/`)**
+
+- `<species>.normalised_counts.tsv`: DESeq2 size-factor-normalised counts.
+- `<species>.rlog.tsv` or `<species>.vst.tsv`: variance-stabilised counts. The filename
+  matches `--deseq2_vs_method` (`vst` is the module default; the test profiles use `rlog`).
+- `<species>.dds.rld.rds`: serialised DESeq2 dataset and the transformed object.
+- `<species>.deseq2.sizefactors.tsv`: per-sample size factors.
+- `<species>.deseq2.model.txt`: the design used for the fit.
+- `<species>.R_sessionInfo.log`: R session info for the DESeq2 step.
+- `<contrast>_<species>.deseq2.results.tsv`: per-contrast results table with columns
+  `gene_id`, `baseMean`, `log2FoldChange`, `lfcSE`, `stat`, `pvalue`, `padj`.
+- `<contrast>_<species>.deseq2.dispersion.png` / `.pdf`: dispersion-estimate plot.
+
+[DESeq2](https://bioconductor.org/packages/DESeq2/) fits the negative-binomial model and,
+for each contrast, produces a results table of log2 fold changes and adjusted p-values.
+When `--feature_length_matrix` is supplied it is used as the DESeq2 length offset. The
+results table is the input to filtering and enrichment.
+
+With `--differential_method dream` the fit is a variancePartition linear mixed model on
+voom-normalised counts instead of DESeq2. The result columns are then named `logFC` and
+`adj.P.Val` (with `AveExpr` for mean expression) rather than the DESeq2 `log2FoldChange`,
+`padj`, and `baseMean`. Downstream filtering, the report plots, and the enrichment ranking
+read the column names from the chosen method, so the outputs adapt automatically.
+
+### IHW re-weighted results
+
+With `--multiple_testing ihw` (DESeq2 only), an owned post-DE module re-weights the DESeq2
+p-values with Independent Hypothesis Weighting (covariate = `baseMean`) and re-applies the
+significance filter on the re-weighted values.
+
+**Output files (`report/`)**
+
+- `<contrast>.ihw.results.tsv`: the full IHW results table. `padj` holds the IHW-adjusted
+  value; the original Benjamini-Hochberg values are kept in a `padj_bh` column.
+
+The filtered gene lists (see
+[Differential expression filtering](#differential-expression-filtering)) are then
+re-filtered on the IHW-adjusted `padj`. Under the default `--multiple_testing bh`, no IHW
+table is written and filtering uses DESeq2's own Benjamini-Hochberg padj.
+
+## Differential expression filtering
+
+**Output files (`custom/`)**
+
+- `<contrast>_<species>_filtered.tsv`: genes passing both the fold-change and padj
+  thresholds.
+- `<contrast>_<species>_filtered_up.tsv`: the up-regulated subset.
+- `<contrast>_<species>_filtered_down.tsv`: the down-regulated subset.
+
+The DESeq2 results are filtered by `--fc_threshold` (absolute fold change, default `2.0`)
+and `--stat_threshold` (padj, default `0.05`) to flag differentially expressed genes, split
+into up- and down-regulated sets. These filtered gene lists feed the over-representation
+analysis.
+
+## Species annotation
+
+This is the owned cell-ag layer. It resolves the annotation database for the species and
+produces an ortholog map whose provenance is recorded per gene.
+
+**Output files**
+
+- `orgdb/`
+  - `<species>.orgdb_resolution.json`: how the OrgDb was obtained, including `install_method`
+    (`bioconda` or `local`) and `org_db_pkg`.
+- `orthologs/`
+  - `<species>.ortholog_map.tsv`: per-gene ortholog map. Columns: `native_gene_id`,
+    `native_symbol`, `ortholog_gene_id`, `ortholog_symbol`, `target_tax_id`,
+    `annotation_source`. A four-line `# key\tvalue` provenance header precedes the column
+    header.
+
+For a species with a packaged Bioconductor OrgDb (for example bovine `org.Bt.eg.db`,
+chicken `org.Gg.eg.db`, or pig `org.Ss.eg.db`), `install_method` is `bioconda` and every
+row's `annotation_source` is `native`. Chicken and pig take this same bioconda-native path
+as bovine. For a non-model species with no OrgDb (for example Atlantic mackerel), the
+pipeline builds an OrgDb locally with AnnotationForge (`install_method` is `local`) and
+borrows orthologs through the NCBI Datasets API; those rows carry `annotation_source`
+`ortholog:hsapiens` with `target_tax_id` `9606`. The `annotation_source` column is the
+headline cell-ag feature: it makes every downstream gene-set hit traceable back to whether
+it came from the species' own annotation or from a borrowed ortholog.
+
+## Functional enrichment
+
+**Output files (`clusterprofiler/`)**
+
+- `<contrast>_<species>.ora.rds`: over-representation analysis results (a named list of
+  clusterProfiler `enrichResult` objects, one per gene-set provider).
+- `<contrast>_<species>.gsea.rds`: gene-set enrichment analysis results (a named list of
+  `gseaResult` objects, one per gene-set provider).
+
+[clusterProfiler](https://bioconductor.org/packages/clusterProfiler/) runs ORA on the
+filtered DE gene lists and GSEA on the ranked results, using the ortholog-mapped gene
+universe. Every requested gene-set source runs through one engine and is tagged with a
+`provider` key: `GO` (always), `MSigDB_<collection>` (with `--msigdb_collections`),
+`CustomGMT_<name>` (with `--cellag_gene_sets`), and `KEGG` (opt-in via a custom config). GO
+terms are redundancy-collapsed with clusterProfiler `simplify()` unless
+`--enrichment_simplify false` is set. On very small inputs (such as the bundled test data)
+these results may be empty.
+
+## SPIA pathway impact
+
+Written only when SPIA is enabled with `--spia --spia_license_ack` (see the
+[usage docs](/cellagdiffexp/usage/#spia-pathway-impact-opt-in)). With `--spia` off, none of
+these files are produced.
+
+**Output files**
+
+- `report/`
+  - `<contrast>.spia.tsv`: the per-contrast SPIA pathway impact table. Columns: `Name`
+    (pathway name), `ID` (KEGG pathway id), `Status` (`Activated` or `Inhibited`), `pSize`
+    (pathway size), `NDE` (number of DE genes in the pathway), `pNDE` (over-representation
+    p-value), `pPERT` (perturbation p-value), `pG` (combined global p-value), `pGFdr`
+    (FDR-adjusted global p-value), and `KEGGLINK` (a KEGG URL for the pathway with the DE
+    genes highlighted).
+  - `<contrast>.spia.rds`: the raw `spia()` result object, consumed by the report's
+    "Pathway impact (SPIA)" section.
+- The frozen KEGG topology cache directory (`<org>SPIA.RData`) built for the run. When
+  `--kegg_cache` is set, it is populated there for reuse; otherwise it is built in the task
+  work directory.
+
+[SPIA](https://bioconductor.org/packages/SPIA/) scores KEGG signaling pathways by combining
+over-representation of the DE genes with a perturbation estimate that accounts for pathway
+topology and fold-change direction. Small inputs (such as the bundled test data) may yield
+an empty-but-valid table with the standard columns and no rows.
+
+## Analysis reports
+
+The pipeline emits two report tiers, both rendered by
+[nf-core/quartonotebook](https://nf-co.re/modules/quartonotebook) as self-contained HTML.
+
+**Output files (`report/`)**
+
+- `<species>.html`: the **run-level QC report** (one per run). Exploratory QC across all
+  samples (PCA + scree of the top most-variable genes, coloured by condition and batch; a
+  sample-to-sample distance heatmap on `1 - Spearman correlation`), a per-contrast
+  feature-accounting funnel (features in the matrix, tested, and passing the significance
+  filter), and a cross-contrast summary of significant gene counts.
+- `<contrast>_<species>.html`: the **per-contrast report**. A provenance banner, the DE
+  summary and volcano plot, a DESeq2-native diagnostic panel (MA plot, raw p-value histogram
+  with an automated shape diagnosis, the dispersion plot, per-sample expression densities,
+  and box plots of the top DE genes), one ORA and one GSEA dotplot per gene-set provider
+  (`GO`, `MSigDB_<collection>`, `CustomGMT_<name>`, `KEGG`), and, when `--spia` is enabled, a
+  "Pathway impact (SPIA)" section from the contrast's `.spia.rds`.
+- `cellagdiffexp_run_report.qmd` / `cellagdiffexp_report.qmd`: the Quarto sources rendered
+  for the two tiers.
+- `params.yml`: the parameters passed to each report render.
+
+The run-level report sits at a fan-in node: it consumes the variance-stabilised (VST/rlog)
+matrix and samplesheet once, plus every contrast's DE tables, so it gives a single QC
+overview of the whole run. The per-contrast report bundles the DE and enrichment results
+for one contrast into a shareable HTML file, leading with annotation provenance so the
+reader knows the basis of every gene mapping. Both are linked from the MultiQC landing
+page; the Quarto HTML is self-contained (`embed-resources`) rather than embedded into
+MultiQC.
+
+The run-level PCA uses the top `--exploratory_n_features` most-variable genes; the
+per-contrast box-plot panel shows the top `--report_top_de_genes` genes by adjusted
+p-value.
+
+## MultiQC
+
+**Output files (`multiqc/`)**
+
+- `multiqc_report.html`: a standalone HTML file that can be viewed in your web browser.
+- `multiqc_data/`: directory containing parsed statistics from the tools used in the
+  pipeline.
+
+[MultiQC](http://multiqc.info) collates the run's QC and software-version reporting into a
+single HTML report across all samples.
+
+## Pipeline information
+
+**Output files (`pipeline_info/`)**
+
+- `cellagdiffexp_software_mqc_versions.yml`: software versions used in the run.
+- Reports generated by Nextflow: `execution_report_<timestamp>.html`,
+  `execution_timeline_<timestamp>.html`, `execution_trace_<timestamp>.txt`, and
+  `pipeline_dag_<timestamp>.html`, where `<timestamp>` is `yyyy-MM-dd_HH-mm-ss`.
+- Parameters used by the pipeline run: `params_*.json`.
+
+[Nextflow](https://www.nextflow.io/docs/latest/tracing.html) generates reports on the
+running and execution of the pipeline. These help you troubleshoot errors and give you
+launch commands, run times, and resource usage.
