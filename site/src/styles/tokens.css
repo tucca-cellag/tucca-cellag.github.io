@@ -11,6 +11,11 @@
   --tucca-primary-hover: oklch(36% 0.13 264);  /* #013A86 */
   --tucca-link: oklch(52% 0.11 256);           /* #3172AE Tufts Digital Blue (AA) */
   --tucca-accent: oklch(40% 0.035 60);         /* #5E4B3C Tufts Brown */
+  /* Text on a primary or link fill (buttons): the page ground of each theme,
+     since both themes set their tokens on this element. Light: white, 13.39:1
+     on primary, 11.18:1 on its hover, 5.52:1 on link. Dark: ~#090F1C, 7.73:1
+     on primary and link, 10.30:1 on hover (white there was 2.48:1). */
+  --tucca-on-primary: var(--tucca-bg);
 
   /* Fonts */
   --tucca-font-display: 'Bricolage Grotesque Variable', 'Inter Variable', system-ui, sans-serif;
